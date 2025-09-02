@@ -1,0 +1,95 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { useGameStore } from '@/stores/gameStore';
+import { usePuzzleStore } from '@/stores/puzzleStore';
+import Room from '@/components/Room.vue';
+import GameUI from '@/components/GameUI.vue';
+import PuzzleModal from '@/components/puzzles/PuzzleModal.vue';
+import { PUZZLES } from '@/gameData';
+
+// Import all NEW puzzle components
+import PhishingAnalysisPuzzle from '@/components/puzzles/PhishingAnalysisPuzzle.vue';
+import FirewallConfigPuzzle from '@/components/puzzles/FirewallConfigPuzzle.vue';
+import LogDecryptionPuzzle from '@/components/puzzles/LogDecryptionPuzzle.vue';
+import TicketPriorityPuzzle from '@/components/puzzles/TicketPriorityPuzzle.vue';
+import RemoteRebootPuzzle from '@/components/puzzles/RemoteRebootPuzzle.vue';
+import KbSearchPuzzle from '@/components/puzzles/KbSearchPuzzle.vue';
+import AgileBoardPuzzle from '@/components/puzzles/AgileBoardPuzzle.vue';
+import CodeDebugPuzzle from '@/components/puzzles/CodeDebugPuzzle.vue';
+import FinalDeploymentPuzzle from '@/components/puzzles/FinalDeploymentPuzzle.vue';
+
+const gameStore = useGameStore();
+const puzzleStore = usePuzzleStore();
+
+const activePuzzleId = ref<string | null>(null);
+
+const currentRoomData = computed(() => gameStore.currentRoom);
+
+const activePuzzleData = computed(() => {
+  if (!activePuzzleId.value) return null;
+  return PUZZLES[activePuzzleId.value];
+});
+
+const puzzleComponent = computed(() => {
+  const type = activePuzzleData.value?.type;
+  switch (type) {
+    case 'phishing-analysis': return PhishingAnalysisPuzzle;
+    case 'firewall-config': return FirewallConfigPuzzle;
+    case 'log-decryption': return LogDecryptionPuzzle;
+    case 'ticket-priority': return TicketPriorityPuzzle;
+    case 'remote-reboot': return RemoteRebootPuzzle;
+    case 'kb-search': return KbSearchPuzzle;
+    case 'agile-board': return AgileBoardPuzzle;
+    case 'code-debug': return CodeDebugPuzzle;
+    case 'final-deployment': return FinalDeploymentPuzzle;
+    default: return null;
+  }
+});
+
+function onObjectInteract(objectId: string) {
+  const obj = currentRoomData.value.interactiveObjects.find(o => o.id === objectId);
+  if (obj?.linkedPuzzleId) {
+    const puzzleStatus = puzzleStore.getPuzzleStatus(obj.linkedPuzzleId);
+    if (puzzleStatus === 'unlocked') {
+      activePuzzleId.value = obj.linkedPuzzleId;
+    } else if (puzzleStatus === 'solved') {
+      console.log("Puzzle already solved.");
+    } else {
+      console.log("This is locked.");
+    }
+  }
+}
+
+function closePuzzle() {
+  activePuzzleId.value = null;
+}
+
+function onPuzzleSolved(puzzleId: string) {
+    puzzleStore.solvePuzzle(puzzleId);
+    closePuzzle();
+
+    // Check for room transitions
+    if (puzzleId === 'logDecryption') {
+        gameStore.advanceToRoom('it-services');
+    } else if (puzzleId === 'kbSearch') {
+        gameStore.advanceToRoom('it-applications');
+    } else if (puzzleId === 'finalDeployment') {
+        gameStore.endGame();
+    }
+}
+</script>
+
+<template>
+  <div class="w-full h-full relative">
+    <Room :room-data="currentRoomData" @interact="onObjectInteract" />
+    <GameUI />
+    <PuzzleModal :is-open="!!activePuzzleId" @close="closePuzzle">
+      <component 
+        v-if="puzzleComponent && activePuzzleData" 
+        :is="puzzleComponent" 
+        :puzzle-data="activePuzzleData"
+        @solved="onPuzzleSolved(activePuzzleData.id)"
+      />
+    </PuzzleModal>
+  </div>
+</template>

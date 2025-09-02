@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* CHANGED: Swapped from font-delivery to font-sans for better readability */
+  @apply bg-gray-900 text-white font-sans;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
