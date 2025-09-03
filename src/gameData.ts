@@ -70,7 +70,7 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
             { text: `The number of letters in the word "SAFE"` },
           ],
           '9': [
-            { text: `The number of letters in "ENCRYPTION"` },
+            { text: `The number of letters in "FIREWALLS"` },
             { text: `The number on the NINE key` },
           ],
         },
@@ -238,7 +238,7 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
         title: 'Intermediate Diagnostics',
         hintOptions: {
           '4': [{ text: `How many letters in the word "DESK"?` }],
-          '8': [{ text: `The number of letters in "TROUBLE"` }],
+          '7': [{ text: `The number of letters in "TROUBLE"` }],
         },
         questions: [
           {
@@ -338,7 +338,7 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
       title: 'Master Ticket Resolution',
       description:
         'An automated system has locked the Service Desk. Combine the hints from the three levels to find the Master Ticket ID and unlock the system.',
-      solutions: ['T4H', 'H8D'],
+      solutions: ['T4H', 'H7D'],
     },
   },
   'it-applications': {

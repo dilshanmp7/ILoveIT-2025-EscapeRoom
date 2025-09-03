@@ -19,8 +19,15 @@ const levelData = computed(() => PUZZLE_DATA[props.roomId].levels[props.levelId]
 
 const assignedHint = computed(() => roomStore.currentHints[props.levelId])
 
-const currentQuestionIndex = ref(0)
-const correctAnswers = ref(0)
+// Use the persistent current question index from the store
+const currentQuestionIndex = computed({
+  get: () => roomStore.currentQuestionIndex[props.levelId],
+  set: (value) => roomStore.setCurrentQuestion(props.levelId, value),
+})
+
+// Use the persistent correct answers count from the store
+const correctAnswers = computed(() => roomStore.correctAnswersCount[props.levelId])
+
 const selectedOption = ref<string | null>(null)
 const feedback = ref('')
 
@@ -30,12 +37,17 @@ function submitAnswer() {
   if (selectedOption.value === null) return
 
   if (selectedOption.value === currentQuestion.value.correctOptionId) {
-    correctAnswers.value++
+    roomStore.incrementCorrectAnswers(props.levelId)
+    console.log(`Correct answer for ${props.levelId}! Count now: ${correctAnswers.value + 1}`)
     feedback.value = 'Correct!'
   } else {
+    console.log(`Incorrect answer for ${props.levelId}. Count remains: ${correctAnswers.value}`)
     feedback.value = 'Incorrect.'
     playerStore.applyIncorrectAnswerPenalty()
   }
+
+  // Save state after each answer to persist progress
+  roomStore.saveState()
 
   setTimeout(() => {
     feedback.value = ''
@@ -43,11 +55,21 @@ function submitAnswer() {
     if (currentQuestionIndex.value < questions.value.length - 1) {
       currentQuestionIndex.value++
     } else {
+      console.log(`Level ${props.levelId} completed check:`, {
+        correctAnswers: correctAnswers.value,
+        totalQuestions: questions.value.length,
+        isComplete: correctAnswers.value === questions.value.length,
+      })
       if (correctAnswers.value === questions.value.length) {
+        console.log(`Level ${props.levelId} completed successfully!`)
         roomStore.completeLevel(props.levelId)
       } else {
+        console.log(
+          `Level ${props.levelId} failed - resetting. Expected: ${questions.value.length}, Got: ${correctAnswers.value}`
+        )
         currentQuestionIndex.value = 0
-        correctAnswers.value = 0
+        roomStore.resetCorrectAnswers(props.levelId)
+        roomStore.saveState() // Save state after reset
         alert('You did not answer all questions correctly. Resetting this level.')
       }
     }

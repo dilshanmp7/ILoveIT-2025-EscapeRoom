@@ -28,6 +28,18 @@ export const useRoomStore = defineStore('room', () => {
     level2: [],
     level3: [],
   })
+  // NEW: Track current question index for each level
+  const currentQuestionIndex = ref<Record<LevelId, number>>({
+    level1: 0,
+    level2: 0,
+    level3: 0,
+  })
+  // NEW: Track correct answers count for each level
+  const correctAnswersCount = ref<Record<LevelId, number>>({
+    level1: 0,
+    level2: 0,
+    level3: 0,
+  })
   const finalPuzzle = ref<any>(null) // NEW: State for current final puzzle
 
   const currentSolution = ref<string>('')
@@ -42,9 +54,15 @@ export const useRoomStore = defineStore('room', () => {
   })
 
   function setupRoom(roomId: Room['id']) {
+    console.log(`Setting up room: ${roomId}`)
     currentRoomId.value = roomId
     levelStatus.value = { level1: 'unlocked', level2: 'locked', level3: 'locked' }
     collectedHints.value = []
+    // Reset current question progress
+    currentQuestionIndex.value = { level1: 0, level2: 0, level3: 0 }
+    // Reset correct answers count for new room
+    correctAnswersCount.value = { level1: 0, level2: 0, level3: 0 }
+    console.log(`Room ${roomId} setup complete - all counters reset`)
 
     const roomPuzzleData = PUZZLE_DATA[roomId]
 
@@ -69,6 +87,26 @@ export const useRoomStore = defineStore('room', () => {
     finalPuzzle.value = roomPuzzleData.finalPuzzle // ADDED: Set the final puzzle
   }
 
+  // NEW: Update current question progress
+  function setCurrentQuestion(levelId: LevelId, questionIndex: number) {
+    currentQuestionIndex.value[levelId] = questionIndex
+  }
+
+  // NEW: Set room ID without resetting progress (for restoration)
+  function setRoomId(roomId: Room['id']) {
+    currentRoomId.value = roomId
+  }
+
+  // NEW: Increment correct answers for a level
+  function incrementCorrectAnswers(levelId: LevelId) {
+    correctAnswersCount.value[levelId]++
+  }
+
+  // NEW: Reset correct answers for a level
+  function resetCorrectAnswers(levelId: LevelId) {
+    correctAnswersCount.value[levelId] = 0
+  }
+
   function completeLevel(levelId: LevelId) {
     levelStatus.value[levelId] = 'solved'
 
@@ -76,6 +114,9 @@ export const useRoomStore = defineStore('room', () => {
     if (hint && !collectedHints.value.includes(hint.text)) {
       collectedHints.value.push(hint.text)
     }
+
+    // Reset correct answers count after level completion
+    correctAnswersCount.value[levelId] = 0
 
     if (levelId === 'level1') levelStatus.value.level2 = 'unlocked'
     if (levelId === 'level2') levelStatus.value.level3 = 'unlocked'
@@ -86,6 +127,8 @@ export const useRoomStore = defineStore('room', () => {
     levelStatus.value = { level1: 'unlocked', level2: 'locked', level3: 'locked' }
     collectedHints.value = []
     questionsForLevels.value = { level1: [], level2: [], level3: [] }
+    currentQuestionIndex.value = { level1: 0, level2: 0, level3: 0 }
+    correctAnswersCount.value = { level1: 0, level2: 0, level3: 0 } // Reset correct answers
     finalPuzzle.value = null
   }
 
@@ -95,7 +138,11 @@ export const useRoomStore = defineStore('room', () => {
     levelStatus.value = state.levelStatus
     collectedHints.value = state.collectedHints
     questionsForLevels.value = state.questionsForLevels
+    currentQuestionIndex.value = state.currentQuestionIndex || { level1: 0, level2: 0, level3: 0 }
+    correctAnswersCount.value = state.correctAnswersCount || { level1: 0, level2: 0, level3: 0 } // Restore correct answers
     finalPuzzle.value = state.finalPuzzle
+    currentSolution.value = state.currentSolution || ''
+    currentHints.value = state.currentHints || { level1: null, level2: null, level3: null }
   }
 
   // NEW: Save state to localStorage
@@ -105,21 +152,32 @@ export const useRoomStore = defineStore('room', () => {
       levelStatus: levelStatus.value,
       collectedHints: collectedHints.value,
       questionsForLevels: questionsForLevels.value,
+      currentQuestionIndex: currentQuestionIndex.value,
+      correctAnswersCount: correctAnswersCount.value, // Save correct answers
       finalPuzzle: finalPuzzle.value,
+      currentSolution: currentSolution.value,
+      currentHints: currentHints.value,
     }
     localStorage.setItem('escaperoomRoomState', JSON.stringify(state))
   }
 
   return {
+    currentRoomId, // Expose currentRoomId
     levelStatus,
     collectedHints,
     questionsForLevels,
+    currentQuestionIndex, // NEW: Expose current question tracking
+    correctAnswersCount, // NEW: Expose correct answers tracking
     finalPuzzle, // NEW: Expose final puzzle state
     areAllLevelsSolved,
     currentSolution,
     currentHints,
     setupRoom,
     completeLevel,
+    setCurrentQuestion, // NEW: Expose function to update question progress
+    setRoomId, // NEW: Expose function to set room ID without resetting progress
+    incrementCorrectAnswers, // NEW: Expose correct answer increment function
+    resetCorrectAnswers, // NEW: Expose correct answer reset function
     reset, // NEW: Expose reset function
     rehydrate, // NEW: Expose rehydrate function
     saveState, // NEW: Expose save function

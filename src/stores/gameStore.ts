@@ -40,12 +40,24 @@ export const useGameStore = defineStore('game', () => {
 
     console.log('gameState after:', gameState.value)
     console.log('startTime set to:', startTime.value)
+
+    // Save the initial game state
+    saveState()
   }
 
   function advanceToNextRoom() {
     if (currentRoomIndex.value < ROOM_DATA.length - 1) {
+      console.log(
+        'Advancing from room index:',
+        currentRoomIndex.value,
+        'to:',
+        currentRoomIndex.value + 1
+      )
       currentRoomIndex.value++
       roomStore.setupRoom(currentRoom.value.id)
+      // Save the state after advancing to next room
+      saveState()
+      console.log('Room advanced and state saved. New room:', currentRoom.value.name)
     } else {
       endGame(true) // Successful finish
     }
@@ -84,7 +96,16 @@ export const useGameStore = defineStore('game', () => {
       department: playerStore.department,
       score: playerStore.score,
       completed: true,
+      timestamp: Date.now(), // Add timestamp for better tracking
     }
+
+    // Save individual completed game with unique identifier
+    const gameId = `dhl-it-lockdown-completed-${Date.now()}-${Math.random()
+      .toString(36)
+      .substr(2, 9)}`
+    localStorage.setItem(gameId, JSON.stringify(finalResult))
+
+    // Also keep the single completed game for replay prevention
     localStorage.setItem('dhl-it-lockdown-completed-game', JSON.stringify(finalResult))
   }
 
@@ -99,7 +120,34 @@ export const useGameStore = defineStore('game', () => {
       timerInterval = setInterval(() => {
         currentTime.value = Date.now()
       }, 1000)
+
+      // Only fix room ID if there's a mismatch, but don't call setupRoom
+      // which would reset all progress. The roomStore should already be restored.
+      const expectedRoomId = ROOM_DATA[currentRoomIndex.value].id
+      if (roomStore.currentRoomId !== expectedRoomId) {
+        console.log(
+          'Room mismatch detected. Expected:',
+          expectedRoomId,
+          'Got:',
+          roomStore.currentRoomId
+        )
+        console.log('Setting currentRoomId without resetting progress...')
+        // Just set the room ID without calling setupRoom to preserve restored state
+        roomStore.setRoomId(expectedRoomId)
+      } else {
+        console.log('Room correctly set:', roomStore.currentRoomId)
+      }
     }
+  }
+
+  function saveState() {
+    const state = {
+      gameState: gameState.value,
+      currentRoomIndex: currentRoomIndex.value,
+      startTime: startTime.value,
+    }
+    console.log('Saving game state:', state)
+    localStorage.setItem('escaperoomGameState', JSON.stringify(state))
   }
 
   return {
@@ -111,6 +159,7 @@ export const useGameStore = defineStore('game', () => {
     endGame,
     timeUp,
     rehydrate,
+    saveState,
     saveFinalResult, // NEW: Expose saveFinalResult function
   }
 })

@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
+import router from './router'
 import './assets/main.css'
 import { useGameStore } from './stores/gameStore'
 import { usePlayerStore } from './stores/playerStore'
@@ -11,6 +12,7 @@ const app = createApp(App)
 const pinia = createPinia()
 
 app.use(pinia)
+app.use(router)
 
 // NEW: Restore state from localStorage on app startup
 function restoreState() {
@@ -28,17 +30,19 @@ function restoreState() {
     const playerStore = usePlayerStore()
     const roomStore = useRoomStore()
 
-    if (gameState) {
-      console.log('Restoring game state:', JSON.parse(gameState))
-      gameStore.rehydrate(JSON.parse(gameState))
+    // IMPORTANT: Restore room state FIRST before game state
+    if (roomState) {
+      console.log('Restoring room state first...')
+      roomStore.rehydrate(JSON.parse(roomState))
     }
 
     if (playerState) {
       playerStore.rehydrate(JSON.parse(playerState))
     }
 
-    if (roomState) {
-      roomStore.rehydrate(JSON.parse(roomState))
+    if (gameState) {
+      console.log('Restoring game state:', JSON.parse(gameState))
+      gameStore.rehydrate(JSON.parse(gameState))
     }
   } catch (error) {
     console.warn('Failed to restore state from localStorage:', error)
@@ -68,7 +72,7 @@ function setupStatePersistence() {
 }
 
 // Restore state after pinia is initialized
-// restoreState() // TEMPORARILY DISABLED FOR DEBUGGING
-// setupStatePersistence() // TEMPORARILY DISABLED FOR DEBUGGING
+restoreState()
+setupStatePersistence()
 
 app.mount('#app')
