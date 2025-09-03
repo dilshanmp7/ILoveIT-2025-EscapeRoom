@@ -19,7 +19,7 @@ function restoreState() {
   try {
     console.log('Attempting to restore state from localStorage...')
     const gameState = localStorage.getItem('escaperoomGameState')
-    const playerState = localStorage.getItem('escaperoomPlayerState')
+    const playerState = localStorage.getItem('playerStore')
     const roomState = localStorage.getItem('escaperoomRoomState')
 
     console.log('Found gameState in localStorage:', !!gameState)
@@ -37,7 +37,8 @@ function restoreState() {
     }
 
     if (playerState) {
-      playerStore.rehydrate(JSON.parse(playerState))
+      console.log('Restoring player state...')
+      playerStore.rehydrate()
     }
 
     if (gameState) {
@@ -62,7 +63,7 @@ function setupStatePersistence() {
 
   // Save player state whenever it changes
   playerStore.$subscribe(() => {
-    playerStore.saveState()
+    playerStore.persist()
   })
 
   // Save room state whenever it changes

@@ -32,6 +32,10 @@ export const useGameStore = defineStore('game', () => {
     currentRoomIndex.value = 0
     startTime.value = Date.now()
     currentTime.value = Date.now()
+
+    // Start player timing
+    playerStore.startTiming()
+
     if (timerInterval) clearInterval(timerInterval)
     timerInterval = setInterval(() => {
       currentTime.value = Date.now()
@@ -68,16 +72,28 @@ export const useGameStore = defineStore('game', () => {
     if (timerInterval) {
       clearInterval(timerInterval)
     }
-    // Save final score regardless of success
-    saveFinalResult()
+
+    // End player timing and set completion bonus
+    playerStore.endTiming()
+    playerStore.setCompletionBonus(success ? 3 : currentRoomIndex.value)
+
+    // Save to leaderboard if successful
+    if (success) {
+      playerStore.saveToLeaderboard()
+    }
+
     gameState.value = success ? 'finished' : 'intro'
   }
 
   // NEW: Game over logic when time runs out
   function timeUp() {
     if (timerInterval) clearInterval(timerInterval)
-    playerStore.applyTimePenalty(3600) // Apply full time penalty
-    saveFinalResult()
+
+    // End timing and save result
+    playerStore.endTiming()
+    playerStore.setCompletionBonus(0) // No bonus for timeout
+    playerStore.saveToLeaderboard()
+
     localStorage.removeItem('dhl-it-lockdown-state') // Clean up in-progress game
 
     // Reset stores to initial state
@@ -85,7 +101,7 @@ export const useGameStore = defineStore('game', () => {
     roomStore.reset()
 
     gameState.value = 'intro' // Redirect to intro screen
-    alert("Time's up! Your final score has been recorded.")
+    alert(`Time's up! Your final score: ${playerStore.finalScore} points`)
   }
 
   // NEW: Helper to save the final game result
@@ -94,7 +110,8 @@ export const useGameStore = defineStore('game', () => {
       firstName: playerStore.firstName,
       lastName: playerStore.lastName,
       department: playerStore.department,
-      score: playerStore.score,
+      score: playerStore.finalScore,
+      timeSpent: playerStore.timeSpent,
       completed: true,
       timestamp: Date.now(), // Add timestamp for better tracking
     }

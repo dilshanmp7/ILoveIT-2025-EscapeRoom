@@ -1,17 +1,81 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export const usePlayerStore = defineStore('player', () => {
-  // NEW: State for player information
+  // Player information
   const firstName = ref('')
   const lastName = ref('')
   const department = ref('')
   const workTime = ref('')
 
-  const score = ref<number>(100000)
+  // Scoring components
+  const baseScore = ref<number>(100) // Start with perfect score
+  const wrongAnswerPenalties = ref<number>(0) // Track wrong answers
   const hintsUsed = ref<number>(0)
+  const completionBonus = ref<number>(0) // Bonus for completing all rooms
+  const startTime = ref<number>(0)
+  const endTime = ref<number>(0)
 
-  // NEW: Action to set player info
+  // Enhanced scoring logic (0-100 points)
+  const finalScore = computed(() => {
+    let score = baseScore.value
+
+    // Time penalty: SECOND-BASED scoring for 1000+ player tournament
+    // Perfect time: 300 seconds (5 minutes) or less = no penalty
+    // Every second over 300 = -0.1 points
+    // This creates very fine granularity for competitive ranking
+    const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
+    const perfectTimeSeconds = 300 // 5 minutes in seconds
+    let timePenalty = 0
+
+    if (elapsedSeconds > perfectTimeSeconds) {
+      // Each second over 5 minutes = -0.1 points
+      const excessSeconds = elapsedSeconds - perfectTimeSeconds
+      timePenalty = excessSeconds * 0.1
+    }
+
+    // Cap maximum time penalty at 80 points (leaving minimum 20 points possible)
+    timePenalty = Math.min(80, timePenalty)
+
+    // Wrong answer penalty: -5 points each
+    const wrongAnswerPenalty = wrongAnswerPenalties.value * 5
+
+    // Hint penalty: -3 points each
+    const hintPenalty = hintsUsed.value * 3
+
+    // Apply penalties
+    score = score - timePenalty - wrongAnswerPenalty - hintPenalty
+
+    // Add completion bonus
+    score = score + completionBonus.value
+
+    // Ensure score stays within 0-100 range
+    return Math.max(0, Math.min(100, Math.round(score * 10) / 10)) // Round to 1 decimal
+  })
+
+  // Computed time penalty for display purposes
+  const timePenalty = computed(() => {
+    const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
+    const perfectTimeSeconds = 300 // 5 minutes
+    let penalty = 0
+
+    if (elapsedSeconds > perfectTimeSeconds) {
+      const excessSeconds = elapsedSeconds - perfectTimeSeconds
+      penalty = excessSeconds * 0.1
+    }
+
+    return Math.min(80, Math.round(penalty * 10) / 10) // Round to 1 decimal
+  })
+
+  // Computed time spent in a readable format
+  const timeSpent = computed(() => {
+    if (startTime.value === 0 || endTime.value === 0) return '00:00'
+    const totalSeconds = Math.floor((endTime.value - startTime.value) / 1000)
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  })
+
   function setPlayerInfo(info: {
     firstName: string
     lastName: string
@@ -24,51 +88,93 @@ export const usePlayerStore = defineStore('player', () => {
     workTime.value = info.workTime
   }
 
-  function useHint() {
-    hintsUsed.value++
-    const penalty = 1000 * Math.pow(2, hintsUsed.value - 1)
-    score.value -= penalty
+  function startTiming() {
+    startTime.value = Date.now()
   }
 
-  function applyTimePenalty(seconds: number) {
-    score.value -= seconds * 10
+  function endTiming() {
+    endTime.value = Date.now()
+  }
+
+  function useHint() {
+    hintsUsed.value++
   }
 
   function applyIncorrectAnswerPenalty() {
-    score.value -= 250
+    wrongAnswerPenalties.value++
   }
 
-  // NEW: Reset function
+  function setCompletionBonus(rooms: number) {
+    // Bonus for completing all rooms: +10 points
+    completionBonus.value = rooms === 3 ? 10 : 0
+  }
+
   function reset() {
     firstName.value = ''
     lastName.value = ''
     department.value = ''
     workTime.value = ''
-    score.value = 100000
+    baseScore.value = 100
+    wrongAnswerPenalties.value = 0
     hintsUsed.value = 0
+    completionBonus.value = 0
+    startTime.value = 0
+    endTime.value = 0
   }
 
-  // NEW: Function to restore player state
-  function rehydrate(state: any) {
-    firstName.value = state.firstName
-    lastName.value = state.lastName
-    department.value = state.department
-    workTime.value = state.workTime
-    score.value = state.score
-    hintsUsed.value = state.hintsUsed
-  }
-
-  // NEW: Save state to localStorage
-  function saveState() {
-    const state = {
+  // Save player data to localStorage (for leaderboard)
+  function saveToLeaderboard() {
+    const playerResult = {
       firstName: firstName.value,
       lastName: lastName.value,
       department: department.value,
       workTime: workTime.value,
-      score: score.value,
-      hintsUsed: hintsUsed.value,
+      score: finalScore.value,
+      timeSpent: timeSpent.value,
+      timestamp: Date.now(),
     }
-    localStorage.setItem('escaperoomPlayerState', JSON.stringify(state))
+
+    // Save to leaderboard
+    const existingResults = JSON.parse(localStorage.getItem('leaderboard') || '[]')
+    existingResults.push(playerResult)
+    localStorage.setItem('leaderboard', JSON.stringify(existingResults))
+  }
+
+  // Load player data from localStorage
+  function rehydrate() {
+    const saved = localStorage.getItem('playerStore')
+    if (saved) {
+      const state = JSON.parse(saved)
+      firstName.value = state.firstName || ''
+      lastName.value = state.lastName || ''
+      department.value = state.department || ''
+      workTime.value = state.workTime || ''
+      baseScore.value = state.baseScore || 100
+      wrongAnswerPenalties.value = state.wrongAnswerPenalties || 0
+      hintsUsed.value = state.hintsUsed || 0
+      completionBonus.value = state.completionBonus || 0
+      startTime.value = state.startTime || 0
+      endTime.value = state.endTime || 0
+    }
+  }
+
+  // Save player data to localStorage
+  function persist() {
+    localStorage.setItem(
+      'playerStore',
+      JSON.stringify({
+        firstName: firstName.value,
+        lastName: lastName.value,
+        department: department.value,
+        workTime: workTime.value,
+        baseScore: baseScore.value,
+        wrongAnswerPenalties: wrongAnswerPenalties.value,
+        hintsUsed: hintsUsed.value,
+        completionBonus: completionBonus.value,
+        startTime: startTime.value,
+        endTime: endTime.value,
+      })
+    )
   }
 
   return {
@@ -76,14 +182,24 @@ export const usePlayerStore = defineStore('player', () => {
     lastName,
     department,
     workTime,
-    score,
+    baseScore,
+    wrongAnswerPenalties,
     hintsUsed,
-    setPlayerInfo, // EXPOSED: Make the new action available
+    completionBonus,
+    startTime,
+    endTime,
+    finalScore,
+    timePenalty,
+    timeSpent,
+    setPlayerInfo,
+    startTiming,
+    endTiming,
     useHint,
-    applyTimePenalty,
     applyIncorrectAnswerPenalty,
-    reset, // NEW: Expose reset function
-    rehydrate, // NEW: Expose rehydrate function
-    saveState, // NEW: Expose save function
+    setCompletionBonus,
+    reset,
+    saveToLeaderboard,
+    rehydrate,
+    persist,
   }
 })
