@@ -28,6 +28,7 @@ export const useRoomStore = defineStore('room', () => {
     level2: [],
     level3: [],
   })
+  const finalPuzzle = ref<any>(null) // NEW: State for current final puzzle
 
   const currentSolution = ref<string>('')
   const currentHints = ref<Record<LevelId, HintOption | null>>({
@@ -65,6 +66,7 @@ export const useRoomStore = defineStore('room', () => {
       const allQuestions = roomQuestions.levels[levelKey].questions
       questionsForLevels.value[levelKey] = shuffle([...allQuestions]).slice(0, 3)
     })
+    finalPuzzle.value = roomPuzzleData.finalPuzzle // ADDED: Set the final puzzle
   }
 
   function completeLevel(levelId: LevelId) {
@@ -79,14 +81,47 @@ export const useRoomStore = defineStore('room', () => {
     if (levelId === 'level2') levelStatus.value.level3 = 'unlocked'
   }
 
+  // NEW: Reset function
+  function reset() {
+    levelStatus.value = { level1: 'unlocked', level2: 'locked', level3: 'locked' }
+    collectedHints.value = []
+    questionsForLevels.value = { level1: [], level2: [], level3: [] }
+    finalPuzzle.value = null
+  }
+
+  // NEW: Function to restore room state
+  function rehydrate(state: any) {
+    currentRoomId.value = state.currentRoomId
+    levelStatus.value = state.levelStatus
+    collectedHints.value = state.collectedHints
+    questionsForLevels.value = state.questionsForLevels
+    finalPuzzle.value = state.finalPuzzle
+  }
+
+  // NEW: Save state to localStorage
+  function saveState() {
+    const state = {
+      currentRoomId: currentRoomId.value,
+      levelStatus: levelStatus.value,
+      collectedHints: collectedHints.value,
+      questionsForLevels: questionsForLevels.value,
+      finalPuzzle: finalPuzzle.value,
+    }
+    localStorage.setItem('escaperoomRoomState', JSON.stringify(state))
+  }
+
   return {
     levelStatus,
     collectedHints,
     questionsForLevels,
+    finalPuzzle, // NEW: Expose final puzzle state
     areAllLevelsSolved,
     currentSolution,
     currentHints,
     setupRoom,
     completeLevel,
+    reset, // NEW: Expose reset function
+    rehydrate, // NEW: Expose rehydrate function
+    saveState, // NEW: Expose save function
   }
 })

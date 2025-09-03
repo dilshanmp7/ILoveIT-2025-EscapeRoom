@@ -510,20 +510,20 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
 export const ROOM_DATA: Room[] = [
   {
     id: 'it-security',
-    name: 'DHL IT Security Operations Center',
-    backgroundImage: 'https://placehold.co/1920x1080/1a202c/4a5568?text=IT+Security+SOC',
+    name: 'IT Security',
+    backgroundImage: 'https://placehold.co/1920x1080/1a202c/4a5568?text=IT+Security',
     ...PUZZLE_DATA['it-security'],
   },
   {
     id: 'it-services',
-    name: 'DHL IT Service Management Hub',
-    backgroundImage: 'https://placehold.co/1920x1080/2d3748/4a5568?text=IT+Services+Hub',
+    name: 'IT Service',
+    backgroundImage: 'https://placehold.co/1920x1080/2d3748/4a5568?text=IT+Services',
     ...PUZZLE_DATA['it-services'],
   },
   {
     id: 'it-applications',
-    name: 'DHL IT Application Development',
-    backgroundImage: 'https://placehold.co/1920x1080/4a5568/718096?text=IT+Application+Dev',
+    name: 'IT Applications',
+    backgroundImage: 'https://placehold.co/1920x1080/4a5568/718096?text=IT+Application',
     ...PUZZLE_DATA['it-applications'],
   },
 ]

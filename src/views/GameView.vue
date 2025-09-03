@@ -1,35 +1,42 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useGameStore } from '@/stores/gameStore';
-import Room from '@/components/Room.vue';
-import GameUI from '@/components/GameUI.vue';
-import DoorLockPuzzle from '@/components/puzzles/DoorLockPuzzle.vue';
+import { ref, computed, watch } from 'vue'
+import { useGameStore } from '@/stores/gameStore'
+import Room from '@/components/Room.vue'
+import GameUI from '@/components/GameUI.vue'
+import DoorLockPuzzle from '@/components/puzzles/DoorLockPuzzle.vue'
 
-const gameStore = useGameStore();
-const currentRoomData = computed(() => gameStore.currentRoom);
-const isDoorPuzzleVisible = ref(false);
+const gameStore = useGameStore()
+
+const currentRoomData = computed(() => gameStore.currentRoom)
+const isDoorPuzzleVisible = ref(false)
+
+// NEW: Watch the timer and end the game when time is up
+const elapsedTime = computed(() => gameStore.elapsedTime)
+watch(elapsedTime, (newTime) => {
+  if (newTime >= 3600) {
+    gameStore.timeUp()
+  }
+})
 
 function onAllLevelsSolved() {
-    isDoorPuzzleVisible.value = true;
+  isDoorPuzzleVisible.value = true
 }
 
 function onDoorUnlocked() {
-    isDoorPuzzleVisible.value = false;
-    gameStore.advanceToNextRoom();
+  isDoorPuzzleVisible.value = false
+  gameStore.advanceToNextRoom()
 }
 </script>
+
 <template>
   <div class="w-full h-full relative">
-    <Room 
-        :room-data="currentRoomData"
-        @all-levels-solved="onAllLevelsSolved"
-    />
+    <Room :room-data="currentRoomData" @all-levels-solved="onAllLevelsSolved" />
     <GameUI />
-    <DoorLockPuzzle 
-        v-if="isDoorPuzzleVisible"
-        :puzzle-data="currentRoomData.finalPuzzle"
-        @unlocked="onDoorUnlocked"
-        @close="isDoorPuzzleVisible = false"
+    <DoorLockPuzzle
+      v-if="isDoorPuzzleVisible"
+      :puzzle-data="currentRoomData.finalPuzzle"
+      @unlocked="onDoorUnlocked"
+      @close="isDoorPuzzleVisible = false"
     />
   </div>
 </template>

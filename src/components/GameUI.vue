@@ -2,10 +2,25 @@
 import { computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { useRoomStore } from '@/stores/roomStore'
+// NEW: Import the local logo image
+import dhlLogo from '@/assets/dhl_logo2.png'
+
 const gameStore = useGameStore()
 const roomStore = useRoomStore()
+
+// DEBUG: Function to reset everything (remove in production)
+function resetGame() {
+  localStorage.clear()
+  location.reload()
+}
+
 const formattedTime = computed(() => {
-  const totalSeconds = 60 * 60 - gameStore.elapsedTime
+  // Only show timer if game is actually playing
+  if (gameStore.gameState !== 'playing' || gameStore.elapsedTime === 0) {
+    return '60:00'
+  }
+
+  const totalSeconds = Math.max(0, 60 * 60 - gameStore.elapsedTime)
   const minutes = Math.floor(totalSeconds / 60)
     .toString()
     .padStart(2, '0')
@@ -16,15 +31,22 @@ const formattedTime = computed(() => {
 <template>
   <div class="absolute top-0 left-0 w-full p-4 bg-black/50 flex justify-between items-center z-10">
     <div class="flex items-center">
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/a/a2/DHL_Logo.svg"
-        alt="DHL Logo"
-        class="h-8 mr-4"
-      />
+      <!-- CHANGED: The img src now points to the imported local logo -->
+      <img :src="dhlLogo" alt="DHL Logo" class="h-8 mr-4" />
       <h1 class="text-2xl font-bold text-dhl-yellow">{{ gameStore.currentRoom.name }}</h1>
     </div>
-    <div class="text-4xl font-mono font-bold text-dhl-red bg-black px-4 py-1 rounded">
-      {{ formattedTime }}
+    <div class="flex items-center gap-4">
+      <!-- DEBUG: Reset button (remove in production) -->
+      <button
+        @click="resetGame"
+        class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+        title="Reset Game (Debug)"
+      >
+        🔄 Reset
+      </button>
+      <div class="text-4xl font-mono font-bold text-dhl-red bg-black px-4 py-1 rounded">
+        {{ formattedTime }}
+      </div>
     </div>
   </div>
 
