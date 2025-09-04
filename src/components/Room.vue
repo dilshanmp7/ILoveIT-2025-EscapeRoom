@@ -23,14 +23,16 @@ watch(
 </script>
 <template>
   <div
-    class="w-full h-full bg-cover bg-center relative flex justify-around items-center p-24"
+    class="w-full h-full bg-cover bg-center relative flex flex-col sm:flex-row justify-around items-center p-4 sm:p-8 lg:p-24 gap-4 sm:gap-8"
     :style="{ backgroundImage: `url(${roomData.backgroundImage})` }"
   >
+    <!-- Mobile: Stack puzzle boxes vertically, Desktop: Arrange horizontally -->
     <QuizLevelBox
       v-for="levelId in levelIds"
       :key="`${roomData.id}-${levelId}`"
       :level-id="levelId"
       :room-id="roomData.id"
+      class="w-full sm:w-auto flex-shrink-0"
     />
   </div>
 </template>

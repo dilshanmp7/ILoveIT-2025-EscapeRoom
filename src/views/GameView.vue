@@ -49,9 +49,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full relative">
-    <Room :room-data="currentRoomData" @all-levels-solved="onAllLevelsSolved" />
-    <GameUI />
+  <div class="w-full h-full relative overflow-hidden">
+    <!-- Main game room -->
+    <Room :room-data="currentRoomData" @all-levels-solved="onAllLevelsSolved" class="h-full" />
+
+    <!-- Game UI overlay -->
+    <GameUI class="absolute top-0 left-0 right-0" />
+
+    <!-- Door puzzle modal -->
     <DoorLockPuzzle
       v-if="isDoorPuzzleVisible"
       :puzzle-data="currentRoomData.finalPuzzle"

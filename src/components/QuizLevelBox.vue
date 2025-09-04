@@ -78,7 +78,7 @@ function submitAnswer() {
 </script>
 <template>
   <div
-    class="w-1/4 h-3/4 p-6 rounded-lg border-4 transition-all duration-500"
+    class="w-full sm:w-1/4 h-64 sm:h-3/4 p-4 sm:p-6 rounded-lg border-4 transition-all duration-500 flex flex-col"
     :class="{
       'border-dhl-yellow bg-black/50': status === 'unlocked',
       'border-gray-600 bg-black/30 text-gray-600': status === 'locked',
@@ -86,42 +86,45 @@ function submitAnswer() {
     }"
   >
     <h2
-      class="text-2xl font-bold mb-4 text-center"
+      class="text-lg sm:text-2xl font-bold mb-2 sm:mb-4 text-center"
       :class="{ 'text-dhl-yellow': status !== 'locked', 'text-green-400': status === 'solved' }"
     >
       {{ levelData.title }}
     </h2>
 
-    <div v-if="status === 'locked'" class="flex flex-col items-center justify-center h-full">
-      <p class="text-5xl">🔒</p>
-      <p class="mt-2 text-xl">LOCKED</p>
+    <div v-if="status === 'locked'" class="flex flex-col items-center justify-center flex-1">
+      <p class="text-3xl sm:text-5xl">🔒</p>
+      <p class="mt-2 text-lg sm:text-xl">LOCKED</p>
     </div>
 
     <div
       v-if="status === 'solved'"
-      class="flex flex-col items-center justify-center h-full text-center"
+      class="flex flex-col items-center justify-center flex-1 text-center"
     >
-      <p class="text-5xl">✅</p>
-      <p class="mt-2 text-xl font-bold text-green-300">LEVEL COMPLETE</p>
-      <p v-if="assignedHint" class="mt-4">Hint Awarded:</p>
-      <p
-        v-if="assignedHint"
-        class="text-lg font-mono bg-black p-2 rounded border border-green-500 text-center"
-      >
-        "{{ assignedHint.text }}"
-      </p>
+      <p class="text-3xl sm:text-5xl">✅</p>
+      <p class="mt-2 text-lg sm:text-xl font-bold text-green-300">LEVEL COMPLETE</p>
+      <div v-if="assignedHint" class="mt-2 sm:mt-4 w-full">
+        <p class="text-sm sm:text-base">Hint Awarded:</p>
+        <p
+          class="text-sm sm:text-lg font-mono bg-black p-2 rounded border border-green-500 text-center mt-1 break-words"
+        >
+          "{{ assignedHint.text }}"
+        </p>
+      </div>
     </div>
 
-    <div v-if="status === 'unlocked'">
-      <p class="text-center mb-4 text-lg">
+    <div v-if="status === 'unlocked'" class="flex flex-col flex-1 overflow-hidden">
+      <p class="text-center mb-2 sm:mb-4 text-sm sm:text-lg">
         Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
       </p>
-      <div v-if="currentQuestion">
-        <p class="mb-4 text-xl">{{ currentQuestion.question }}</p>
-        <div class="space-y-3">
+      <div v-if="currentQuestion" class="flex-1 flex flex-col overflow-hidden">
+        <p class="mb-2 sm:mb-4 text-base sm:text-xl">{{ currentQuestion.question }}</p>
+
+        <!-- Scrollable options container for mobile -->
+        <div class="space-y-2 sm:space-y-3 flex-1 overflow-y-auto mb-2">
           <div v-for="option in currentQuestion.options" :key="option.id">
             <label
-              class="block w-full p-3 rounded border-2 cursor-pointer"
+              class="block w-full p-2 sm:p-3 rounded border-2 cursor-pointer text-sm sm:text-base transition-colors touch-manipulation"
               :class="{
                 'border-gray-500 hover:bg-gray-700': selectedOption !== option.id,
                 'bg-dhl-yellow text-black border-dhl-yellow': selectedOption === option.id,
@@ -132,14 +135,17 @@ function submitAnswer() {
             </label>
           </div>
         </div>
-        <button
-          @click="submitAnswer"
-          :disabled="selectedOption === null"
-          class="w-full bg-dhl-red text-white p-3 mt-6 rounded font-bold disabled:bg-gray-500"
-        >
-          Submit
-        </button>
-        <p class="text-center h-6 mt-2 text-xl font-bold">{{ feedback }}</p>
+
+        <div class="mt-auto">
+          <button
+            @click="submitAnswer"
+            :disabled="selectedOption === null"
+            class="w-full bg-dhl-red text-white p-3 sm:p-3 rounded font-bold disabled:bg-gray-500 text-sm sm:text-base touch-manipulation"
+          >
+            Submit Answer
+          </button>
+          <p class="text-center h-6 mt-2 text-lg sm:text-xl font-bold">{{ feedback }}</p>
+        </div>
       </div>
     </div>
   </div>

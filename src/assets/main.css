@@ -2,13 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px; /* Smaller base font for mobile */
+  }
+}
+
 body {
   /* CHANGED: Swapped from font-delivery to font-sans for better readability */
   @apply bg-gray-900 text-white font-sans;
+  /* Prevent zoom on input focus for mobile */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 #app {
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  /* Allow scrolling on mobile if needed */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Mobile touch improvements */
+@media (max-width: 768px) {
+  #app {
+    height: 100dvh; /* Use dynamic viewport height on mobile */
+  }
+
+  /* Ensure buttons are touch-friendly */
+  button,
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better text readability on mobile */
+  .text-xs {
+    font-size: 0.75rem;
+  }
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  .text-base {
+    font-size: 1rem;
+  }
 }

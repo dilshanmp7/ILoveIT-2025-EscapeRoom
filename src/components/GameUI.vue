@@ -29,38 +29,58 @@ const formattedTime = computed(() => {
 })
 </script>
 <template>
-  <div class="absolute top-0 left-0 w-full p-4 bg-black/50 flex justify-between items-center z-10">
-    <div class="flex items-center">
-      <!-- CHANGED: The img src now points to the imported local logo -->
-      <img :src="dhlLogo" alt="DHL Logo" class="h-8 mr-4" />
-      <h1 class="text-2xl font-bold text-dhl-yellow">{{ gameStore.currentRoom.name }}</h1>
+  <!-- Top UI Bar - Responsive -->
+  <div
+    class="absolute top-0 left-0 w-full p-2 sm:p-4 bg-black/50 flex justify-between items-center z-10"
+  >
+    <div class="flex items-center overflow-hidden">
+      <!-- Responsive logo -->
+      <img :src="dhlLogo" alt="DHL Logo" class="h-6 sm:h-8 mr-2 sm:mr-4 flex-shrink-0" />
+      <h1 class="text-lg sm:text-2xl font-bold text-dhl-yellow truncate">
+        {{ gameStore.currentRoom.name }}
+      </h1>
     </div>
-    <div class="flex items-center gap-4">
-      <!-- DEBUG: Reset button (remove in production) -->
+
+    <div class="flex items-center gap-2 sm:gap-4">
+      <!-- DEBUG: Mobile-optimized reset button -->
       <button
         @click="resetGame"
-        class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+        class="bg-red-600 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm hover:bg-red-700"
         title="Reset Game (Debug)"
       >
-        🔄 Reset
+        <span class="hidden sm:inline">🔄 Reset</span>
+        <span class="sm:hidden">🔄</span>
       </button>
-      <div class="text-4xl font-mono font-bold text-dhl-red bg-black px-4 py-1 rounded">
+
+      <!-- Mobile-optimized timer -->
+      <div
+        class="text-2xl sm:text-4xl font-mono font-bold text-dhl-red bg-black px-2 sm:px-4 py-1 rounded"
+      >
         {{ formattedTime }}
       </div>
     </div>
   </div>
 
-  <div class="absolute bottom-0 left-0 w-full p-4 bg-black/70 z-10">
+  <!-- Bottom Hints Panel - Mobile Responsive -->
+  <div class="absolute bottom-0 left-0 w-full p-2 sm:p-4 bg-black/70 z-10">
     <div class="max-w-4xl mx-auto text-center">
-      <h3 class="text-lg font-bold text-dhl-yellow mb-2">Collected Hints</h3>
-      <div v-if="roomStore.collectedHints.length === 0" class="text-gray-500 italic">
+      <h3 class="text-base sm:text-lg font-bold text-dhl-yellow mb-2">Collected Hints</h3>
+
+      <div
+        v-if="roomStore.collectedHints.length === 0"
+        class="text-gray-500 italic text-sm sm:text-base"
+      >
         No hints collected yet.
       </div>
-      <div class="flex justify-center items-center gap-4 font-mono text-2xl">
+
+      <!-- Mobile: Stack hints vertically, Desktop: Horizontal -->
+      <div
+        class="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 font-mono text-lg sm:text-2xl"
+      >
         <div
           v-for="(hint, index) in roomStore.collectedHints"
           :key="index"
-          class="bg-gray-900 text-dhl-yellow px-4 py-2 rounded border border-dhl-yellow"
+          class="bg-gray-900 text-dhl-yellow px-3 sm:px-4 py-1 sm:py-2 rounded border border-dhl-yellow w-full sm:w-auto text-center break-words"
         >
           {{ hint }}
         </div>
