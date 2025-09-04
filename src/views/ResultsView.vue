@@ -63,12 +63,23 @@
         <h3 class="text-2xl font-bold text-dhl-yellow mb-4 text-center">Score Breakdown</h3>
         <div class="space-y-3">
           <div class="flex justify-between items-center py-2 border-b border-gray-700">
-            <span class="text-gray-300">Base Score</span>
-            <span class="text-green-400 font-mono text-lg">+{{ playerStore.baseScore }}</span>
+            <span class="text-gray-300">Starting Score</span>
+            <span class="text-green-400 font-mono text-lg">100</span>
           </div>
           <div class="flex justify-between items-center py-2 border-b border-gray-700">
-            <span class="text-gray-300">Time Penalty ({{ elapsedSeconds }}s over 300s)</span>
-            <span class="text-red-400 font-mono text-lg">-{{ timePenalty }}</span>
+            <span class="text-gray-300">
+              Time Penalty
+              <span v-if="elapsedSeconds <= 60" class="text-green-400"
+                >({{ elapsedSeconds }}s ≤ 60s - Perfect Time!)</span
+              >
+              <span v-else>({{ Math.ceil((elapsedSeconds - 60) / 60) }} extra minutes)</span>
+            </span>
+            <span
+              class="font-mono text-lg"
+              :class="timePenalty > 0 ? 'text-red-400' : 'text-green-400'"
+            >
+              {{ timePenalty > 0 ? '-' : '+' }}{{ timePenalty }}
+            </span>
           </div>
           <div class="flex justify-between items-center py-2 border-b border-gray-700">
             <span class="text-gray-300"
@@ -79,12 +90,22 @@
             >
           </div>
           <div class="flex justify-between items-center py-2 border-b border-gray-700">
-            <span class="text-gray-300">Hint Penalty ({{ playerStore.hintsUsed }} × 3)</span>
-            <span class="text-red-400 font-mono text-lg">-{{ playerStore.hintsUsed * 3 }}</span>
+            <span class="text-gray-300">Hints Penalty ({{ playerStore.hintsUsed }} × 2)</span>
+            <span
+              class="font-mono text-lg"
+              :class="playerStore.hintsPenalty > 0 ? 'text-red-400' : 'text-gray-400'"
+            >
+              {{ playerStore.hintsPenalty > 0 ? '-' : '' }}{{ playerStore.hintsPenalty }}
+            </span>
           </div>
           <div class="flex justify-between items-center py-2 border-b border-gray-700">
             <span class="text-gray-300">Completion Bonus</span>
-            <span class="text-green-400 font-mono text-lg">+{{ playerStore.completionBonus }}</span>
+            <span
+              class="font-mono text-lg"
+              :class="playerStore.completionBonus > 0 ? 'text-green-400' : 'text-gray-400'"
+            >
+              {{ playerStore.completionBonus > 0 ? '+' : '' }}{{ playerStore.completionBonus }}
+            </span>
           </div>
           <div class="flex justify-between items-center py-3 border-t-2 border-dhl-yellow mt-4">
             <span class="text-xl font-bold text-dhl-yellow">Final Score</span>

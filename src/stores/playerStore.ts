@@ -16,55 +16,61 @@ export const usePlayerStore = defineStore('player', () => {
   const startTime = ref<number>(0)
   const endTime = ref<number>(0)
 
-  // Enhanced scoring logic (0-100 points)
+  // Enhanced scoring logic (0-100 points) - IMPROVED SPECIFICATION
   const finalScore = computed(() => {
-    let score = baseScore.value
+    const maxScore = 100
+    let score = maxScore
 
-    // Time penalty: SECOND-BASED scoring for 1000+ player tournament
-    // Perfect time: 300 seconds (5 minutes) or less = no penalty
-    // Every second over 300 = -0.1 points
-    // This creates very fine granularity for competitive ranking
     const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
-    const perfectTimeSeconds = 300 // 5 minutes in seconds
-    let timePenalty = 0
+    const wrongAnswersCount = wrongAnswerPenalties.value
 
-    if (elapsedSeconds > perfectTimeSeconds) {
-      // Each second over 5 minutes = -0.1 points
-      const excessSeconds = elapsedSeconds - perfectTimeSeconds
-      timePenalty = excessSeconds * 0.1
+    // Case 1: Perfect run bonus - Finished within 1 minute without mistakes
+    if (elapsedSeconds <= 60 && wrongAnswersCount === 0) {
+      return maxScore
     }
 
-    // Cap maximum time penalty at 80 points (leaving minimum 20 points possible)
-    timePenalty = Math.min(80, timePenalty)
+    // Time penalty if > 1 minute
+    if (elapsedSeconds > 60) {
+      const extraMinutes = Math.ceil((elapsedSeconds - 60) / 60)
+      const TIME_PENALTY_VALUE = 10
+      score -= extraMinutes * TIME_PENALTY_VALUE
+    }
 
-    // Wrong answer penalty: -5 points each
-    const wrongAnswerPenalty = wrongAnswerPenalties.value * 5
+    // Wrong answers penalty
+    const WRONG_ANSWER_PENALTY = 5
+    score -= wrongAnswersCount * WRONG_ANSWER_PENALTY
 
-    // Hint penalty: -3 points each
-    const hintPenalty = hintsUsed.value * 3
+    // Hints penalty (optional if required)
+    const HINT_PENALTY = 2
+    score -= hintsUsed.value * HINT_PENALTY
 
-    // Apply penalties
-    score = score - timePenalty - wrongAnswerPenalty - hintPenalty
+    // Completion bonus
+    score += completionBonus.value
 
-    // Add completion bonus
-    score = score + completionBonus.value
+    // Boundaries
+    if (score > maxScore) score = maxScore
+    if (score < 0) score = 0
 
-    // Ensure score stays within 0-100 range
-    return Math.max(0, Math.min(100, Math.round(score * 10) / 10)) // Round to 1 decimal
+    return Math.round(score)
   })
 
   // Computed time penalty for display purposes
   const timePenalty = computed(() => {
     const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
-    const perfectTimeSeconds = 300 // 5 minutes
-    let penalty = 0
 
-    if (elapsedSeconds > perfectTimeSeconds) {
-      const excessSeconds = elapsedSeconds - perfectTimeSeconds
-      penalty = excessSeconds * 0.1
+    if (elapsedSeconds <= 60) {
+      return 0 // No penalty for 1 minute or less
     }
 
-    return Math.min(80, Math.round(penalty * 10) / 10) // Round to 1 decimal
+    const extraMinutes = Math.ceil((elapsedSeconds - 60) / 60)
+    const TIME_PENALTY_VALUE = 10
+    return extraMinutes * TIME_PENALTY_VALUE
+  })
+
+  // Computed hints penalty for display purposes
+  const hintsPenalty = computed(() => {
+    const HINT_PENALTY = 2
+    return hintsUsed.value * HINT_PENALTY
   })
 
   // Computed time spent in a readable format
@@ -190,6 +196,7 @@ export const usePlayerStore = defineStore('player', () => {
     endTime,
     finalScore,
     timePenalty,
+    hintsPenalty,
     timeSpent,
     setPlayerInfo,
     startTiming,
