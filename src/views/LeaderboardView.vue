@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import dhlLogo from '@/assets/dhl_logo2.png'
 
@@ -11,31 +11,99 @@ interface LeaderboardEntry {
   score: number
   timeSpent: string
   timestamp: number
+  rank: number
+  playerId: string
 }
 
 const router = useRouter()
 const leaderboardData = ref<LeaderboardEntry[]>([])
+const isLoading = ref(true)
+const error = ref('')
+const lastUpdated = ref('')
+const tournamentStats = ref({
+  totalPlayers: 0,
+  topScore: 0,
+  averageScore: 0
+})
 
-// Load leaderboard data from localStorage
+let refreshInterval: ReturnType<typeof setInterval> | null = null
+
+// ✅ REAL-TIME LEADERBOARD - Load from backend with live updates
+async function loadLeaderboard() {
+  try {
+    isLoading.value = true
+    error.value = ''
+
+    const response = await fetch('/api/leaderboard?limit=50')
+    const data = await response.json()
+
+    if (data.success) {
+      leaderboardData.value = data.leaderboard
+      tournamentStats.value = {
+        totalPlayers: data.totalPlayers,
+        topScore: data.topScore,
+        averageScore: data.averageScore
+      }
+      lastUpdated.value = new Date().toLocaleTimeString()
+    } else {
+      throw new Error(data.error || 'Failed to load leaderboard')
+    }
+  } catch (fetchError) {
+    console.error('Backend leaderboard failed, trying localStorage:', fetchError)
+    error.value = 'Live leaderboard unavailable, showing local data'
+    
+    // ✅ BACKUP STRATEGY - Fallback to localStorage
+    const data = localStorage.getItem('leaderboard')
+    if (data) {
+      const localData = JSON.parse(data)
+        .sort((a: LeaderboardEntry, b: LeaderboardEntry) => b.score - a.score)
+        .slice(0, 50)
+        .map((entry: LeaderboardEntry, index: number) => ({
+          ...entry,
+          rank: index + 1,
+          playerId: `${entry.firstName}-${entry.lastName}`
+        }))
+      
+      leaderboardData.value = localData
+      tournamentStats.value = {
+        totalPlayers: localData.length,
+        topScore: localData[0]?.score || 0,
+        averageScore: localData.length > 0 
+          ? Math.round(localData.reduce((sum: number, entry: any) => sum + entry.score, 0) / localData.length)
+          : 0
+      }
+      lastUpdated.value = 'Local data - ' + new Date().toLocaleTimeString()
+    }
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// ✅ LIVE TOURNAMENT TRACKING - Auto-refresh every 30 seconds
 onMounted(() => {
-  const data = localStorage.getItem('leaderboard')
-  if (data) {
-    leaderboardData.value = JSON.parse(data)
-      .sort((a: LeaderboardEntry, b: LeaderboardEntry) => b.score - a.score) // Sort by score descending
-      .slice(0, 50) // Show top 50
+  loadLeaderboard()
+  
+  // Set up auto-refresh for live tournament tracking
+  refreshInterval = setInterval(() => {
+    loadLeaderboard()
+  }, 30000) // Refresh every 30 seconds
+})
+
+onUnmounted(() => {
+  if (refreshInterval) {
+    clearInterval(refreshInterval)
   }
 })
 
-// Computed properties for statistics
-const topScore = computed(() =>
-  leaderboardData.value.length > 0 ? leaderboardData.value[0].score : 0
-)
-const averageScore = computed(() => {
-  if (leaderboardData.value.length === 0) return 0
-  const sum = leaderboardData.value.reduce((acc, entry) => acc + entry.score, 0)
-  return Math.round((sum / leaderboardData.value.length) * 10) / 10
-})
-const totalPlayers = computed(() => leaderboardData.value.length)
+// Manual refresh function
+async function refreshLeaderboard() {
+  await loadLeaderboard()
+}
+
+// Computed properties for display
+const topScore = computed(() => tournamentStats.value.topScore)
+const averageScore = computed(() => tournamentStats.value.averageScore)
+const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
 
 function getRankBadge(index: number) {
   if (index === 0) return '🥇'
@@ -59,29 +127,52 @@ function goBack() {
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white p-4">
     <div class="max-w-6xl mx-auto">
-      <!-- Header -->
+      <!-- Header with Live Updates -->
       <div class="text-center mb-8">
-        <img :src="dhlLogo" alt="DHL Logo" class="h-16 mx-auto mb-6" />
+        <img :src="dhlLogo" alt="DHL Logo" class="h-12 sm:h-16 mx-auto mb-4 sm:mb-6" />
         <h1
-          class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-dhl-yellow to-dhl-red mb-4"
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-dhl-yellow to-dhl-red mb-4"
         >
           Tournament Leaderboard
         </h1>
-        <h2 class="text-2xl text-gray-300 mb-6">"The IT Lockdown" Champions</h2>
+        <h2 class="text-xl sm:text-2xl text-gray-300 mb-4">🏆 "The IT Lockdown" Champions</h2>
+        
+        <!-- ✅ REAL-TIME STATUS -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span class="text-sm text-gray-400">
+              {{ error ? 'Offline Mode' : 'Live Updates' }} • Last: {{ lastUpdated }}
+            </span>
+          </div>
+          
+          <button
+            @click="refreshLeaderboard"
+            :disabled="isLoading"
+            class="bg-dhl-yellow text-black px-4 py-2 rounded-lg font-bold text-sm hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ isLoading ? '⏳ Updating...' : '🔄 Refresh Now' }}
+          </button>
+        </div>
+
+        <!-- Error notification -->
+        <div v-if="error" class="bg-orange-900/50 border border-orange-500 rounded-lg p-3 mb-6 text-orange-200 text-sm">
+          ⚠️ {{ error }}
+        </div>
 
         <!-- Statistics -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           <div class="bg-black/60 border border-dhl-yellow rounded-lg p-4">
-            <div class="text-3xl font-bold text-dhl-yellow">{{ topScore }}</div>
-            <div class="text-gray-300">Top Score</div>
+            <div class="text-2xl sm:text-3xl font-bold text-dhl-yellow">{{ topScore }}</div>
+            <div class="text-gray-300 text-sm sm:text-base">Top Score</div>
           </div>
           <div class="bg-black/60 border border-dhl-red rounded-lg p-4">
-            <div class="text-3xl font-bold text-dhl-red">{{ averageScore }}</div>
-            <div class="text-gray-300">Average Score</div>
+            <div class="text-2xl sm:text-3xl font-bold text-dhl-red">{{ averageScore }}</div>
+            <div class="text-gray-300 text-sm sm:text-base">Average Score</div>
           </div>
           <div class="bg-black/60 border border-gray-600 rounded-lg p-4">
-            <div class="text-3xl font-bold text-blue-400">{{ totalPlayers }}</div>
-            <div class="text-gray-300">Total Players</div>
+            <div class="text-2xl sm:text-3xl font-bold text-blue-400">{{ totalPlayers }}</div>
+            <div class="text-gray-300 text-sm sm:text-base">Total Players</div>
           </div>
         </div>
       </div>

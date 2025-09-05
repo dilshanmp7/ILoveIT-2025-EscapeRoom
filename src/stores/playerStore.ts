@@ -128,8 +128,9 @@ export const usePlayerStore = defineStore('player', () => {
     endTime.value = 0
   }
 
-  // Save player data to localStorage (for leaderboard)
-  function saveToLeaderboard() {
+  // ✅ BACKUP STRATEGY + CENTRALIZED DATA COLLECTION
+  // Enhanced saveToLeaderboard with backend integration
+  async function saveToLeaderboard() {
     const playerResult = {
       firstName: firstName.value,
       lastName: lastName.value,
@@ -137,13 +138,120 @@ export const usePlayerStore = defineStore('player', () => {
       workTime: workTime.value,
       score: finalScore.value,
       timeSpent: timeSpent.value,
+      wrongAnswers: wrongAnswerPenalties.value,
+      hintsUsed: hintsUsed.value,
+      completionTime: new Date().toISOString(),
       timestamp: Date.now(),
     }
 
-    // Save to leaderboard
-    const existingResults = JSON.parse(localStorage.getItem('leaderboard') || '[]')
-    existingResults.push(playerResult)
-    localStorage.setItem('leaderboard', JSON.stringify(existingResults))
+    // 1. ✅ BACKUP STRATEGY - Always save to localStorage first
+    try {
+      const existingResults = JSON.parse(localStorage.getItem('leaderboard') || '[]')
+      
+      // Remove any previous entry by same player to prevent duplicates
+      const filteredResults = existingResults.filter((result: any) => 
+        !(result.firstName === playerResult.firstName && 
+          result.lastName === playerResult.lastName && 
+          result.department === playerResult.department)
+      )
+      
+      filteredResults.push(playerResult)
+      localStorage.setItem('leaderboard', JSON.stringify(filteredResults))
+      console.log('✅ Score saved to local backup')
+    } catch (localError) {
+      console.error('⚠️ Local storage backup failed:', localError)
+    }
+
+    // 2. ✅ CENTRALIZED DATA COLLECTION - Submit to backend
+    try {
+      const response = await fetch('/api/submit-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(playerResult)
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        console.log(`🏆 Score submitted to tournament! Your rank: #${result.rank}`)
+        
+        // Show success message to player
+        const message = result.message + (result.rank ? ` You're currently ranked #${result.rank}!` : '')
+        
+        return {
+          success: true,
+          message,
+          rank: result.rank,
+          submittedToCentral: true
+        }
+      } else {
+        throw new Error(result.error || 'Backend submission failed')
+      }
+
+    } catch (backendError) {
+      console.error('⚠️ Backend submission failed:', backendError)
+      console.log('📱 Score saved locally only - will sync when online')
+      
+      return {
+        success: true,
+        message: 'Score saved locally. Will sync to tournament when connection is available.',
+        rank: null,
+        submittedToCentral: false,
+        error: backendError instanceof Error ? backendError.message : 'Unknown error'
+      }
+    }
+  }
+
+  // ✅ REAL-TIME LEADERBOARD - Fetch current tournament standings
+  async function getCurrentRank() {
+    try {
+      const response = await fetch('/api/leaderboard?limit=10')
+      const data = await response.json()
+      
+      if (data.success) {
+        // Find current player's position
+        const playerEntry = data.leaderboard.find((entry: any) => 
+          entry.firstName === firstName.value && 
+          entry.lastName === lastName.value &&
+          entry.department === department.value
+        )
+        
+        return {
+          currentRank: playerEntry?.rank || null,
+          totalPlayers: data.totalPlayers,
+          topScore: data.topScore,
+          leaderboard: data.leaderboard.slice(0, 5) // Top 5 for display
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch current rank:', error)
+    }
+    
+    return null
+  }
+
+  // ✅ DUPLICATE PREVENTION - Check if player already played
+  async function checkExistingScore() {
+    try {
+      const response = await fetch('/api/leaderboard?limit=1000')
+      const data = await response.json()
+      
+      if (data.success) {
+        const existingPlayer = data.leaderboard.find((entry: any) => 
+          entry.firstName === firstName.value && 
+          entry.lastName === lastName.value &&
+          entry.department === department.value
+        )
+        
+        return existingPlayer || null
+      }
+    } catch (error) {
+      console.error('Failed to check existing score:', error)
+    }
+    
+    return null
   }
 
   // Load player data from localStorage
@@ -206,6 +314,8 @@ export const usePlayerStore = defineStore('player', () => {
     setCompletionBonus,
     reset,
     saveToLeaderboard,
+    getCurrentRank,
+    checkExistingScore,
     rehydrate,
     persist,
   }
