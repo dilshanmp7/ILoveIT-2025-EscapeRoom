@@ -5,7 +5,7 @@ A competitive escape room tournament game designed for 1000+ DHL employees world
 ## 🎮 Tournament Features
 
 - **🏁 Competitive Scoring**: 1-minute perfect run system with penalties
-- **📱 Mobile & Desktop**: Responsive design for QR codes and direct URLs  
+- **📱 Mobile & Desktop**: Responsive design for QR codes and direct URLs
 - **🏆 Real-time Leaderboard**: Live tournament tracking
 - **👑 Winner Determination**: Automatic top 3 identification
 - **📊 Admin Dashboard**: Complete tournament management
@@ -38,7 +38,7 @@ npm run preview
 ## 🎯 Tournament URLs
 
 - **Game**: `/` - Main tournament game
-- **Leaderboard**: `/leaderboard` - Live rankings  
+- **Leaderboard**: `/leaderboard` - Live rankings
 - **Admin**: `/admin.html` - Tournament management
 - **API**: `/api/submit-score` - Score submission
 
@@ -51,7 +51,7 @@ npm run preview
 ## 📊 Tournament Scoring
 
 - **100 points**: Perfect run (≤60 seconds, 0 wrong answers)
-- **-10 points**: Each extra minute over 60 seconds  
+- **-10 points**: Each extra minute over 60 seconds
 - **-5 points**: Each wrong answer
 - **-2 points**: Each hint used
 
@@ -65,8 +65,9 @@ npm run preview
 ## 🎪 Tournament Ready!
 
 This system is ready for professional corporate tournaments with:
+
 - ✅ 1000+ simultaneous players
-- ✅ Automatic winner determination  
+- ✅ Automatic winner determination
 - ✅ Mobile QR code scanning
 - ✅ Real-time leaderboards
 - ✅ Complete admin dashboard

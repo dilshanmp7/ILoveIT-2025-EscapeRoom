@@ -6,11 +6,11 @@ import { getAllPlayersForAdmin } from '../../lib/database.js'
 export default async function handler(req, res) {
   // ✅ ADMIN DASHBOARD - Secure access
   const { password } = req.query
-  
+
   if (password !== 'DHL2025Admin!') {
-    return res.status(401).json({ 
-      success: false, 
-      error: 'Unauthorized access. Admin password required.' 
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized access. Admin password required.',
     })
   }
 
@@ -35,15 +35,15 @@ export default async function handler(req, res) {
           data_export: {
             csv_ready: true,
             excel_ready: true,
-            total_records: tournamentData.players.length
-          }
+            total_records: tournamentData.players.length,
+          },
         },
         admin_tools: {
           winner_announcement_ready: tournamentData.players.length >= 3,
           data_backup_status: 'Current',
-          analytics_ready: true
+          analytics_ready: true,
         },
-        generated_at: new Date().toISOString()
+        generated_at: new Date().toISOString(),
       }
 
       // Add CSV export capability
@@ -55,31 +55,34 @@ export default async function handler(req, res) {
       }
 
       res.json(response)
-
     } catch (error) {
       console.error('Admin dashboard error:', error)
-      res.status(500).json({ 
-        success: false, 
+      res.status(500).json({
+        success: false,
         error: 'Failed to fetch tournament data',
         players: [],
-        statistics: {}
+        statistics: {},
       })
     }
   } else {
-    res.status(405).json({ 
-      success: false, 
-      error: 'Method not allowed. Use GET to fetch tournament data.' 
+    res.status(405).json({
+      success: false,
+      error: 'Method not allowed. Use GET to fetch tournament data.',
     })
   }
 }
 
 // Helper: Generate CSV for easy winner analysis
 function generateCSV(players) {
-  const headers = 'Rank,First Name,Last Name,Department,Work Time,Score,Time Spent,Wrong Answers,Hints Used,Submitted At'
-  
-  const rows = players.map(player => 
-    `${player.rank},"${player.firstName}","${player.lastName}","${player.department}","${player.workTime}",${player.score},"${player.timeTaken}",${player.wrongAnswers},${player.hintsUsed},"${player.submittedAt}"`
-  ).join('\n')
-  
+  const headers =
+    'Rank,First Name,Last Name,Department,Work Time,Score,Time Spent,Wrong Answers,Hints Used,Submitted At'
+
+  const rows = players
+    .map(
+      (player) =>
+        `${player.rank},"${player.firstName}","${player.lastName}","${player.department}","${player.workTime}",${player.score},"${player.timeTaken}",${player.wrongAnswers},${player.hintsUsed},"${player.submittedAt}"`
+    )
+    .join('\n')
+
   return headers + '\n' + rows
 }

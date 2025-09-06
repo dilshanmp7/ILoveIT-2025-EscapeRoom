@@ -8,12 +8,6 @@ import dhlLogo from '@/assets/dhl_logo2.png'
 const gameStore = useGameStore()
 const roomStore = useRoomStore()
 
-// DEBUG: Function to reset everything (remove in production)
-function resetGame() {
-  localStorage.clear()
-  location.reload()
-}
-
 const formattedTime = computed(() => {
   // Only show timer if game is actually playing
   if (gameStore.gameState !== 'playing' || gameStore.elapsedTime === 0) {
@@ -29,9 +23,9 @@ const formattedTime = computed(() => {
 })
 </script>
 <template>
-  <!-- Top UI Bar - Responsive -->
+  <!-- Top UI Bar - Responsive with better mobile spacing -->
   <div
-    class="absolute top-0 left-0 w-full p-2 sm:p-4 bg-black/50 flex justify-between items-center z-10"
+    class="absolute top-0 left-0 w-full p-2 sm:p-4 bg-black/90 border-b border-gray-600 flex justify-between items-center z-20"
   >
     <div class="flex items-center overflow-hidden">
       <!-- Responsive logo -->
@@ -42,16 +36,6 @@ const formattedTime = computed(() => {
     </div>
 
     <div class="flex items-center gap-2 sm:gap-4">
-      <!-- DEBUG: Mobile-optimized reset button -->
-      <button
-        @click="resetGame"
-        class="bg-red-600 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm hover:bg-red-700"
-        title="Reset Game (Debug)"
-      >
-        <span class="hidden sm:inline">🔄 Reset</span>
-        <span class="sm:hidden">🔄</span>
-      </button>
-
       <!-- Mobile-optimized timer -->
       <div
         class="text-2xl sm:text-4xl font-mono font-bold text-dhl-red bg-black px-2 sm:px-4 py-1 rounded"
@@ -61,29 +45,77 @@ const formattedTime = computed(() => {
     </div>
   </div>
 
-  <!-- Bottom Hints Panel - Mobile Responsive -->
-  <div class="absolute bottom-0 left-0 w-full p-2 sm:p-4 bg-black/70 z-10">
+  <!-- Bottom Hints Panel - Progressive horizontal display -->
+  <div class="absolute bottom-0 left-0 w-full p-2 sm:p-4 bg-black/95 border-t border-gray-600 z-20">
     <div class="max-w-4xl mx-auto text-center">
-      <h3 class="text-base sm:text-lg font-bold text-dhl-yellow mb-2">Collected Hints</h3>
+      <h3 class="text-sm sm:text-lg font-bold text-dhl-yellow mb-2">Security Override Hints</h3>
 
       <div
         v-if="roomStore.collectedHints.length === 0"
-        class="text-gray-500 italic text-sm sm:text-base"
+        class="text-gray-400 italic text-xs sm:text-base"
       >
-        No hints collected yet.
+        Solve puzzles to collect hints for the final code
       </div>
 
-      <!-- Mobile: Stack hints vertically, Desktop: Horizontal -->
+      <!-- Progressive horizontal hints display -->
       <div
-        class="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 font-mono text-lg sm:text-2xl"
+        class="flex flex-row justify-center items-center gap-2 sm:gap-4 font-mono text-sm sm:text-xl"
       >
-        <div
-          v-for="(hint, index) in roomStore.collectedHints"
-          :key="index"
-          class="bg-gray-900 text-dhl-yellow px-3 sm:px-4 py-1 sm:py-2 rounded border border-dhl-yellow w-full sm:w-auto text-center break-words"
-        >
-          {{ hint }}
+        <!-- Hint 1 Slot -->
+        <div class="flex flex-col items-center">
+          <div class="text-xs text-gray-400 mb-1">Hint 1</div>
+          <div
+            v-if="roomStore.collectedHints[0]"
+            class="bg-dhl-yellow text-black px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-dhl-yellow font-bold text-center min-w-[100px] sm:min-w-[150px] animate-pulse"
+          >
+            {{ roomStore.collectedHints[0] }}
+          </div>
+          <div
+            v-else
+            class="bg-gray-800 text-gray-500 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-600 text-center min-w-[100px] sm:min-w-[150px]"
+          >
+            ???
+          </div>
         </div>
+
+        <!-- Hint 2 Slot -->
+        <div class="flex flex-col items-center">
+          <div class="text-xs text-gray-400 mb-1">Hint 2</div>
+          <div
+            v-if="roomStore.collectedHints[1]"
+            class="bg-dhl-yellow text-black px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-dhl-yellow font-bold text-center min-w-[100px] sm:min-w-[150px] animate-pulse"
+          >
+            {{ roomStore.collectedHints[1] }}
+          </div>
+          <div
+            v-else
+            class="bg-gray-800 text-gray-500 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-600 text-center min-w-[100px] sm:min-w-[150px]"
+          >
+            ???
+          </div>
+        </div>
+
+        <!-- Hint 3 Slot -->
+        <div class="flex flex-col items-center">
+          <div class="text-xs text-gray-400 mb-1">Hint 3</div>
+          <div
+            v-if="roomStore.collectedHints[2]"
+            class="bg-dhl-yellow text-black px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-dhl-yellow font-bold text-center min-w-[100px] sm:min-w-[150px] animate-pulse"
+          >
+            {{ roomStore.collectedHints[2] }}
+          </div>
+          <div
+            v-else
+            class="bg-gray-800 text-gray-500 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-600 text-center min-w-[100px] sm:min-w-[150px]"
+          >
+            ???
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress indicator -->
+      <div class="mt-2 text-xs sm:text-sm text-gray-400">
+        {{ roomStore.collectedHints.length }}/3 hints collected
       </div>
     </div>
   </div>

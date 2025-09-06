@@ -23,7 +23,7 @@ const lastUpdated = ref('')
 const tournamentStats = ref({
   totalPlayers: 0,
   topScore: 0,
-  averageScore: 0
+  averageScore: 0,
 })
 
 let refreshInterval: ReturnType<typeof setInterval> | null = null
@@ -35,23 +35,30 @@ async function loadLeaderboard() {
     error.value = ''
 
     const response = await fetch('/api/leaderboard?limit=50')
-    const data = await response.json()
+    const responseText = await response.text()
+
+    let data
+    try {
+      data = JSON.parse(responseText)
+    } catch (parseError) {
+      throw new Error(`API returned non-JSON response: ${responseText.substring(0, 100)}...`)
+    }
 
     if (data.success) {
       leaderboardData.value = data.leaderboard
       tournamentStats.value = {
         totalPlayers: data.totalPlayers,
         topScore: data.topScore,
-        averageScore: data.averageScore
+        averageScore: data.averageScore,
       }
       lastUpdated.value = new Date().toLocaleTimeString()
     } else {
       throw new Error(data.error || 'Failed to load leaderboard')
     }
   } catch (fetchError) {
-    console.error('Backend leaderboard failed, trying localStorage:', fetchError)
+    console.error('❌ Backend leaderboard failed, trying localStorage:', fetchError)
     error.value = 'Live leaderboard unavailable, showing local data'
-    
+
     // ✅ BACKUP STRATEGY - Fallback to localStorage
     const data = localStorage.getItem('leaderboard')
     if (data) {
@@ -61,32 +68,61 @@ async function loadLeaderboard() {
         .map((entry: LeaderboardEntry, index: number) => ({
           ...entry,
           rank: index + 1,
-          playerId: `${entry.firstName}-${entry.lastName}`
+          playerId: `${entry.firstName}-${entry.lastName}`,
         }))
-      
+
       leaderboardData.value = localData
       tournamentStats.value = {
         totalPlayers: localData.length,
         topScore: localData[0]?.score || 0,
-        averageScore: localData.length > 0 
-          ? Math.round(localData.reduce((sum: number, entry: any) => sum + entry.score, 0) / localData.length)
-          : 0
+        averageScore:
+          localData.length > 0
+            ? Math.round(
+                localData.reduce((sum: number, entry: any) => sum + entry.score, 0) /
+                  localData.length
+              )
+            : 0,
       }
       lastUpdated.value = 'Local data - ' + new Date().toLocaleTimeString()
+    } else {
+      // 🚧 DEVELOPMENT MODE - Create demo leaderboard when no data exists
+      const demoData = [
+        {
+          firstName: 'Demo',
+          lastName: 'Player',
+          department: 'Development',
+          workTime: 'Morning',
+          score: 95,
+          timeSpent: '01:45',
+          timestamp: Date.now(),
+          rank: 1,
+          playerId: 'demo-player',
+        },
+      ]
+      leaderboardData.value = demoData
+      tournamentStats.value = {
+        totalPlayers: 1,
+        topScore: 95,
+        averageScore: 95,
+      }
+      lastUpdated.value = 'Demo data - ' + new Date().toLocaleTimeString()
+      error.value = 'Development mode - API endpoints need Vercel deployment'
     }
   } finally {
     isLoading.value = false
   }
 }
 
-// ✅ LIVE TOURNAMENT TRACKING - Auto-refresh every 30 seconds
+// ✅ LIVE TOURNAMENT TRACKING - Auto-refresh every 30 seconds (disabled in dev mode)
 onMounted(() => {
+  console.log('🏆 LeaderboardView mounted!')
   loadLeaderboard()
-  
+
+  // Only enable auto-refresh in production (when API works)
   // Set up auto-refresh for live tournament tracking
-  refreshInterval = setInterval(() => {
-    loadLeaderboard()
-  }, 30000) // Refresh every 30 seconds
+  // refreshInterval = setInterval(() => {
+  //   loadLeaderboard()
+  // }, 30000) // Refresh every 30 seconds
 })
 
 onUnmounted(() => {
@@ -136,7 +172,7 @@ function goBack() {
           Tournament Leaderboard
         </h1>
         <h2 class="text-xl sm:text-2xl text-gray-300 mb-4">🏆 "The IT Lockdown" Champions</h2>
-        
+
         <!-- ✅ REAL-TIME STATUS -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
           <div class="flex items-center gap-2">
@@ -145,7 +181,7 @@ function goBack() {
               {{ error ? 'Offline Mode' : 'Live Updates' }} • Last: {{ lastUpdated }}
             </span>
           </div>
-          
+
           <button
             @click="refreshLeaderboard"
             :disabled="isLoading"
@@ -156,7 +192,10 @@ function goBack() {
         </div>
 
         <!-- Error notification -->
-        <div v-if="error" class="bg-orange-900/50 border border-orange-500 rounded-lg p-3 mb-6 text-orange-200 text-sm">
+        <div
+          v-if="error"
+          class="bg-orange-900/50 border border-orange-500 rounded-lg p-3 mb-6 text-orange-200 text-sm"
+        >
           ⚠️ {{ error }}
         </div>
 

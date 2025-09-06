@@ -91,7 +91,7 @@
                 >({{ elapsedSeconds }}s ≤ 60s - Perfect Time!)</span
               >
               <span v-else class="block sm:inline text-xs sm:text-sm"
-                >({{ Math.ceil((elapsedSeconds - 60) / 60) }} extra minutes)</span
+                >({{ ((elapsedSeconds - 60) / 60).toFixed(1) }} extra minutes beyond 60s)</span
               >
             </span>
             <span
@@ -189,23 +189,23 @@ const elapsedSeconds = computed(() => {
 // Use the time penalty from the store (which uses the new algorithm)
 const timePenalty = computed(() => playerStore.timePenalty)
 
-// Performance badge based on final score
+// Performance badge based on final score (100-point scale)
 const performanceBadge = computed(() => {
   const score = playerStore.finalScore
-  if (score >= 90) return 'EXCEPTIONAL'
-  if (score >= 80) return 'EXCELLENT'
-  if (score >= 70) return 'VERY GOOD'
-  if (score >= 60) return 'GOOD'
-  if (score >= 50) return 'SATISFACTORY'
-  return 'NEEDS IMPROVEMENT'
+  if (score >= 95) return 'EXCEPTIONAL' // Near perfect (95-100)
+  if (score >= 85) return 'EXCELLENT' // Very good (85-94)
+  if (score >= 75) return 'VERY GOOD' // Good performance (75-84)
+  if (score >= 65) return 'GOOD' // Decent (65-74)
+  if (score >= 50) return 'SATISFACTORY' // Acceptable (50-64)
+  return 'NEEDS IMPROVEMENT' // Below 50
 })
 
 const performanceBadgeClass = computed(() => {
   const score = playerStore.finalScore
-  if (score >= 90) return 'bg-gradient-to-r from-yellow-400 to-orange-400 text-black'
-  if (score >= 80) return 'bg-gradient-to-r from-green-400 to-emerald-400 text-black'
-  if (score >= 70) return 'bg-gradient-to-r from-blue-400 to-cyan-400 text-black'
-  if (score >= 60) return 'bg-gradient-to-r from-purple-400 to-pink-400 text-black'
+  if (score >= 95) return 'bg-gradient-to-r from-yellow-400 to-orange-400 text-black animate-pulse'
+  if (score >= 85) return 'bg-gradient-to-r from-green-400 to-emerald-400 text-black'
+  if (score >= 75) return 'bg-gradient-to-r from-blue-400 to-cyan-400 text-black'
+  if (score >= 65) return 'bg-gradient-to-r from-purple-400 to-pink-400 text-black'
   if (score >= 50) return 'bg-gradient-to-r from-gray-400 to-gray-500 text-black'
   return 'bg-gradient-to-r from-red-400 to-red-500 text-white'
 })

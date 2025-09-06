@@ -1,7 +1,7 @@
 // API endpoint for score submission
 // Handles centralized data collection with duplicate prevention
 
-import { savePlayerScore } from '../../lib/database.js'
+import { savePlayerScore } from '../lib/database.js'
 
 export default async function handler(req, res) {
   // ✅ PUBLIC HOSTING READY - Enable CORS for all domains
@@ -16,30 +16,30 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     try {
-      const { 
-        firstName, 
-        lastName, 
-        department, 
-        workTime, 
-        score, 
-        timeSpent, 
+      const {
+        firstName,
+        lastName,
+        department,
+        workTime,
+        score,
+        timeSpent,
         wrongAnswers,
         hintsUsed,
-        completionTime 
+        completionTime,
       } = req.body
 
       // ✅ VALIDATION for data integrity
       if (!firstName || !lastName || !department || score === undefined) {
-        return res.status(400).json({ 
-          success: false, 
-          error: 'Missing required fields: firstName, lastName, department, score' 
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required fields: firstName, lastName, department, score',
         })
       }
 
       if (typeof score !== 'number' || score < 0 || score > 100) {
-        return res.status(400).json({ 
-          success: false, 
-          error: 'Score must be a number between 0 and 100' 
+        return res.status(400).json({
+          success: false,
+          error: 'Score must be a number between 0 and 100',
         })
       }
 
@@ -53,26 +53,25 @@ export default async function handler(req, res) {
         timeSpent: timeSpent?.trim(),
         wrongAnswers: Number(wrongAnswers || 0),
         hintsUsed: Number(hintsUsed || 0),
-        completionTime: completionTime || new Date().toISOString()
+        completionTime: completionTime || new Date().toISOString(),
       })
 
       // Return success with rank information
       res.json({
         ...result,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
-
     } catch (error) {
       console.error('Score submission error:', error)
-      res.status(500).json({ 
-        success: false, 
-        error: 'Failed to submit score. Please try again.' 
+      res.status(500).json({
+        success: false,
+        error: 'Failed to submit score. Please try again.',
       })
     }
   } else {
-    res.status(405).json({ 
-      success: false, 
-      error: 'Method not allowed. Use POST to submit scores.' 
+    res.status(405).json({
+      success: false,
+      error: 'Method not allowed. Use POST to submit scores.',
     })
   }
 }

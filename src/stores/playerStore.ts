@@ -16,7 +16,7 @@ export const usePlayerStore = defineStore('player', () => {
   const startTime = ref<number>(0)
   const endTime = ref<number>(0)
 
-  // Enhanced scoring logic (0-100 points) - IMPROVED SPECIFICATION
+  // Enhanced scoring logic (0-100 points) - NEW SPECIFICATION
   const finalScore = computed(() => {
     const maxScore = 100
     let score = maxScore
@@ -26,35 +26,39 @@ export const usePlayerStore = defineStore('player', () => {
 
     // Case 1: Perfect run bonus - Finished within 1 minute without mistakes
     if (elapsedSeconds <= 60 && wrongAnswersCount === 0) {
-      return maxScore
+      return maxScore // 100 points
     }
 
-    // Time penalty if > 1 minute
+    // Case 2: Apply time penalty if > 1 minute (scaled, not whole minutes)
     if (elapsedSeconds > 60) {
-      const extraMinutes = Math.ceil((elapsedSeconds - 60) / 60)
-      const TIME_PENALTY_VALUE = 10
+      const extraMinutes = (elapsedSeconds - 60) / 60 // fractional minutes
+      const TIME_PENALTY_VALUE = 2 // adjust difficulty here
       score -= extraMinutes * TIME_PENALTY_VALUE
     }
 
-    // Wrong answers penalty
-    const WRONG_ANSWER_PENALTY = 5
+    // Case 3: Apply penalty for wrong answers
+    const WRONG_ANSWER_PENALTY = 5 // 5 points per wrong answer
     score -= wrongAnswersCount * WRONG_ANSWER_PENALTY
 
-    // Hints penalty (optional if required)
-    const HINT_PENALTY = 2
+    // Case 4: Apply hints penalty
+    const HINT_PENALTY = 2 // 2 points per hint
     score -= hintsUsed.value * HINT_PENALTY
 
-    // Completion bonus
+    // Case 5: Apply completion bonus
     score += completionBonus.value
 
-    // Boundaries
-    if (score > maxScore) score = maxScore
-    if (score < 0) score = 0
+    // Case 6: Ensure score boundaries (0 – 100)
+    if (score > maxScore) {
+      score = maxScore
+    }
+    if (score < 0) {
+      score = 0
+    }
 
-    return Math.round(score)
+    return Math.round(score) // Return whole number
   })
 
-  // Computed time penalty for display purposes
+  // Computed time penalty for display purposes - NEW SPECIFICATION
   const timePenalty = computed(() => {
     const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
 
@@ -62,14 +66,14 @@ export const usePlayerStore = defineStore('player', () => {
       return 0 // No penalty for 1 minute or less
     }
 
-    const extraMinutes = Math.ceil((elapsedSeconds - 60) / 60)
-    const TIME_PENALTY_VALUE = 10
-    return extraMinutes * TIME_PENALTY_VALUE
+    const extraMinutes = (elapsedSeconds - 60) / 60 // fractional minutes
+    const TIME_PENALTY_VALUE = 2 // 2 points per minute (fractional)
+    return Math.round(extraMinutes * TIME_PENALTY_VALUE * 10) / 10 // Round to 1 decimal
   })
 
   // Computed hints penalty for display purposes
   const hintsPenalty = computed(() => {
-    const HINT_PENALTY = 2
+    const HINT_PENALTY = 2 // 2 points per hint
     return hintsUsed.value * HINT_PENALTY
   })
 
@@ -147,14 +151,17 @@ export const usePlayerStore = defineStore('player', () => {
     // 1. ✅ BACKUP STRATEGY - Always save to localStorage first
     try {
       const existingResults = JSON.parse(localStorage.getItem('leaderboard') || '[]')
-      
+
       // Remove any previous entry by same player to prevent duplicates
-      const filteredResults = existingResults.filter((result: any) => 
-        !(result.firstName === playerResult.firstName && 
-          result.lastName === playerResult.lastName && 
-          result.department === playerResult.department)
+      const filteredResults = existingResults.filter(
+        (result: any) =>
+          !(
+            result.firstName === playerResult.firstName &&
+            result.lastName === playerResult.lastName &&
+            result.department === playerResult.department
+          )
       )
-      
+
       filteredResults.push(playerResult)
       localStorage.setItem('leaderboard', JSON.stringify(filteredResults))
       console.log('✅ Score saved to local backup')
@@ -169,37 +176,37 @@ export const usePlayerStore = defineStore('player', () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(playerResult)
+        body: JSON.stringify(playerResult),
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         console.log(`🏆 Score submitted to tournament! Your rank: #${result.rank}`)
-        
+
         // Show success message to player
-        const message = result.message + (result.rank ? ` You're currently ranked #${result.rank}!` : '')
-        
+        const message =
+          result.message + (result.rank ? ` You're currently ranked #${result.rank}!` : '')
+
         return {
           success: true,
           message,
           rank: result.rank,
-          submittedToCentral: true
+          submittedToCentral: true,
         }
       } else {
         throw new Error(result.error || 'Backend submission failed')
       }
-
     } catch (backendError) {
       console.error('⚠️ Backend submission failed:', backendError)
       console.log('📱 Score saved locally only - will sync when online')
-      
+
       return {
         success: true,
         message: 'Score saved locally. Will sync to tournament when connection is available.',
         rank: null,
         submittedToCentral: false,
-        error: backendError instanceof Error ? backendError.message : 'Unknown error'
+        error: backendError instanceof Error ? backendError.message : 'Unknown error',
       }
     }
   }
@@ -209,26 +216,27 @@ export const usePlayerStore = defineStore('player', () => {
     try {
       const response = await fetch('/api/leaderboard?limit=10')
       const data = await response.json()
-      
+
       if (data.success) {
         // Find current player's position
-        const playerEntry = data.leaderboard.find((entry: any) => 
-          entry.firstName === firstName.value && 
-          entry.lastName === lastName.value &&
-          entry.department === department.value
+        const playerEntry = data.leaderboard.find(
+          (entry: any) =>
+            entry.firstName === firstName.value &&
+            entry.lastName === lastName.value &&
+            entry.department === department.value
         )
-        
+
         return {
           currentRank: playerEntry?.rank || null,
           totalPlayers: data.totalPlayers,
           topScore: data.topScore,
-          leaderboard: data.leaderboard.slice(0, 5) // Top 5 for display
+          leaderboard: data.leaderboard.slice(0, 5), // Top 5 for display
         }
       }
     } catch (error) {
       console.error('Failed to fetch current rank:', error)
     }
-    
+
     return null
   }
 
@@ -237,20 +245,21 @@ export const usePlayerStore = defineStore('player', () => {
     try {
       const response = await fetch('/api/leaderboard?limit=1000')
       const data = await response.json()
-      
+
       if (data.success) {
-        const existingPlayer = data.leaderboard.find((entry: any) => 
-          entry.firstName === firstName.value && 
-          entry.lastName === lastName.value &&
-          entry.department === department.value
+        const existingPlayer = data.leaderboard.find(
+          (entry: any) =>
+            entry.firstName === firstName.value &&
+            entry.lastName === lastName.value &&
+            entry.department === department.value
         )
-        
+
         return existingPlayer || null
       }
     } catch (error) {
       console.error('Failed to check existing score:', error)
     }
-    
+
     return null
   }
 

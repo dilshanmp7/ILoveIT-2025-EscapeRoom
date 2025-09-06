@@ -1,7 +1,7 @@
 // API endpoint for real-time leaderboard
 // Provides live tournament tracking for public viewing
 
-import { getLeaderboard } from '../../lib/database.js'
+import { getLeaderboard } from '../lib/database.js'
 
 export default async function handler(req, res) {
   // ✅ PUBLIC HOSTING READY - Enable CORS
@@ -26,22 +26,21 @@ export default async function handler(req, res) {
         success: true,
         ...leaderboardData,
         requestedAt: new Date().toISOString(),
-        nextUpdate: 'Real-time - refresh anytime'
+        nextUpdate: 'Real-time - refresh anytime',
       })
-
     } catch (error) {
       console.error('Leaderboard fetch error:', error)
-      res.status(500).json({ 
-        success: false, 
+      res.status(500).json({
+        success: false,
         error: 'Failed to fetch leaderboard data',
         leaderboard: [],
-        totalPlayers: 0
+        totalPlayers: 0,
       })
     }
   } else {
-    res.status(405).json({ 
-      success: false, 
-      error: 'Method not allowed. Use GET to fetch leaderboard.' 
+    res.status(405).json({
+      success: false,
+      error: 'Method not allowed. Use GET to fetch leaderboard.',
     })
   }
 }
