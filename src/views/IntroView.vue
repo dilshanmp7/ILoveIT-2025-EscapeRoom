@@ -23,7 +23,7 @@ const errorMessage = ref('')
 
 const departments = [
   'IT',
-  'CCPU', 
+  'CCPU',
   'HR',
   'Operation',
   'Security',
@@ -55,7 +55,7 @@ const departments = [
   'CPH - Project Manager_MAA',
   'REGULARTORY AND PUBLIC AFFAIRS',
   'ProcessEngineering',
-  'Program Management'
+  'Program Management',
 ]
 const workTimes = ['AM Shift', 'PM Shift', 'Day Time']
 
