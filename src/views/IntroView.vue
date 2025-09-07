@@ -21,7 +21,42 @@ const finalResult = ref<{ name: string; score: number; timeSpent: string; rank?:
 const isCheckingPlayer = ref(false)
 const errorMessage = ref('')
 
-const departments = ['CPU', 'HR', 'Security', 'Operations', 'Finance', 'IT']
+const departments = [
+  'IT',
+  'CCPU', 
+  'HR',
+  'Operation',
+  'Security',
+  'NCG',
+  'ACS',
+  'Engineering',
+  'Facility & Support',
+  'Finance',
+  'Applications',
+  'Management',
+  'Network Support Group',
+  'RAMP',
+  'Greenfield Project',
+  'EAT',
+  'Regional Station',
+  'Sort (TDI)',
+  'Ramp Neutral',
+  'Sort Neutral (TDI)',
+  'CPH Nordic Training',
+  'Processes',
+  'Reception',
+  'Sort Control',
+  'Sort (DDI)',
+  'Operation Support',
+  'Sort Neutral (DDI)',
+  'Sort Maintenance',
+  'CPH- REGULARTORY AND PUBLIC AFFAIRS',
+  'CPH - PMO_MAA',
+  'CPH - Project Manager_MAA',
+  'REGULARTORY AND PUBLIC AFFAIRS',
+  'ProcessEngineering',
+  'Program Management'
+]
 const workTimes = ['AM Shift', 'PM Shift', 'Day Time']
 
 // NEW: Computed property to check if form is complete
