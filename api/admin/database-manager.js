@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       switch (action) {
         case 'stats':
           // Get tournament statistics
-          const stats = await kv.get('tournament:stats') || {}
+          const stats = (await kv.get('tournament:stats')) || {}
           const leaderboardSize = await kv.zcard('leaderboard')
           return res.json({
             success: true,
