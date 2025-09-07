@@ -195,6 +195,18 @@ export const usePlayerStore = defineStore('player', () => {
           submittedToCentral: true,
         }
       } else {
+        // Handle tournament restriction (already participated)
+        if (result.alreadyParticipated) {
+          console.log('🚫 Player already participated in tournament')
+          return {
+            success: false,
+            message: result.message,
+            alreadyParticipated: true,
+            previousScore: result.previousScore,
+            previousRank: result.previousRank,
+            submittedToCentral: false,
+          }
+        }
         throw new Error(result.error || 'Backend submission failed')
       }
     } catch (backendError) {

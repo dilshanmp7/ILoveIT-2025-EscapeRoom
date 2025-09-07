@@ -13,9 +13,11 @@ const lastName = ref('')
 const department = ref('')
 const workTime = ref('')
 
-// NEW: State to handle replay prevention
+// NEW: State to handle replay prevention and server validation
 const hasAlreadyPlayed = ref(false)
-const finalResult = ref<{ name: string; score: number } | null>(null)
+const finalResult = ref<{ name: string; score: number; timeSpent: string; rank?: number } | null>(null)
+const isCheckingPlayer = ref(false)
+const errorMessage = ref('')
 
 const departments = ['CPU', 'HR', 'Security', 'Operations', 'Finance', 'IT']
 const workTimes = ['AM Shift', 'PM Shift', 'Day Time']
@@ -30,30 +32,98 @@ const isFormValid = computed(() => {
   )
 })
 
-// NEW: Function to handle starting the mission
-function handleStartMission() {
-  console.log('handleStartMission called')
-  console.log('Form is valid:', isFormValid.value)
-  console.log('Current game state:', gameStore.gameState)
+// ✅ TOURNAMENT INTEGRITY - Check if player already participated
+  const checkExistingPlayer = async () => {
+    try {
+      const response = await fetch('/api/check-participation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: firstName.value,
+          lastName: lastName.value,
+          department: department.value,
+        }),
+      })
 
-  if (isFormValid.value) {
-    console.log('Setting player info...')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const result = await response.json()
+      
+      if (result.success && result.hasParticipated) {
+        return {
+          exists: true,
+          playerData: result.playerData,
+        }
+      }
+      
+      return { exists: false }
+    } catch (error) {
+      console.error('Error checking existing player:', error)
+      // If server check fails, allow registration but show warning
+      return { exists: false, serverError: true }
+    }
+  }
+
+// NEW: Enhanced function to handle starting the mission with server validation
+async function handleStartMission() {
+  if (!isFormValid.value) {
+    errorMessage.value = 'Please fill in all required fields.'
+    return
+  }
+
+  console.log('🎮 Starting tournament registration validation...')
+  isCheckingPlayer.value = true
+  errorMessage.value = ''
+
+  try {
+    // Check server for existing player
+    const playerCheck = await checkExistingPlayer()
+    
+    if (playerCheck.exists) {
+      console.log('🚫 Player already participated in tournament')
+      hasAlreadyPlayed.value = true
+      finalResult.value = {
+        name: `${playerCheck.playerData.firstName} ${playerCheck.playerData.lastName}`,
+        score: playerCheck.playerData.score,
+        timeSpent: playerCheck.playerData.timeSpent || '00:00',
+        rank: playerCheck.playerData.rank
+      }
+      isCheckingPlayer.value = false
+      return // Stop here - show existing results
+    }
+
+    if (playerCheck.serverError) {
+      console.warn('⚠️ Server validation failed, allowing local validation only')
+      // Continue with local checks as fallback
+    }
+
+    // Player is new, proceed with game
+    console.log('✅ New player validated, starting game...')
     playerStore.setPlayerInfo({
-      firstName: firstName.value,
-      lastName: lastName.value,
+      firstName: firstName.value.trim(),
+      lastName: lastName.value.trim(),
       department: department.value,
       workTime: workTime.value,
     })
-    console.log('Calling startGame...')
+    
     gameStore.startGame()
-    console.log('startGame called, new state:', gameStore.gameState)
-  } else {
-    console.log('Form is not valid!')
+    console.log('🎯 Game started successfully!')
+    
+  } catch (error) {
+    console.error('❌ Error during player validation:', error)
+    errorMessage.value = 'Unable to validate player. Please try again.'
+  } finally {
+    isCheckingPlayer.value = false
   }
 }
 
-// NEW: Check for a completed game on component mount
-onMounted(() => {
+// NEW: Check for completed game on component mount (both local and server)
+onMounted(async () => {
+  // First check localStorage for quick feedback
   const completedGame = localStorage.getItem('dhl-it-lockdown-completed-game')
   if (completedGame) {
     hasAlreadyPlayed.value = true
@@ -61,6 +131,8 @@ onMounted(() => {
     finalResult.value = {
       name: `${data.firstName} ${data.lastName}`,
       score: data.score,
+      timeSpent: data.timeSpent || '00:00',
+      rank: data.rank
     }
   }
 })
@@ -82,16 +154,47 @@ onMounted(() => {
 
       <!-- NEW: Conditional rendering based on play status -->
       <div v-if="hasAlreadyPlayed && finalResult" class="text-center w-full px-4">
-        <p class="text-lg sm:text-2xl max-w-3xl text-center mb-4 sm:mb-6">
-          Thank you for participating, {{ finalResult.name }}!
-        </p>
-        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-2xl">
-          <h2 class="text-xl sm:text-2xl font-bold mb-2">Your Final Score</h2>
-          <p class="text-4xl sm:text-5xl font-black text-dhl-red">
-            {{ finalResult.score.toLocaleString() }}
-          </p>
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-2xl max-w-md mx-auto">
+          <div class="mb-4">
+            <div class="w-16 h-16 bg-dhl-red rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Tournament Complete!</h2>
+            <p class="text-gray-600 mb-4">{{ finalResult.name }}</p>
+          </div>
+          
+          <div class="space-y-3">
+            <div class="flex justify-between items-center py-2 border-b border-gray-200">
+              <span class="text-gray-600">Final Score:</span>
+              <span class="text-2xl font-bold text-dhl-red">{{ finalResult.score }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-200">
+              <span class="text-gray-600">Time Taken:</span>
+              <span class="font-semibold">{{ finalResult.timeSpent }}</span>
+            </div>
+            <div v-if="finalResult.rank" class="flex justify-between items-center py-2">
+              <span class="text-gray-600">Tournament Rank:</span>
+              <span class="font-bold text-dhl-yellow bg-gray-800 px-3 py-1 rounded">#{{ finalResult.rank }}</span>
+            </div>
+          </div>
+          
+          <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-dhl-yellow rounded">
+            <p class="text-sm text-gray-700">
+              <strong>🏆 Tournament Rules:</strong> Each player can participate only once to ensure fair competition for all DHL employees.
+            </p>
+          </div>
         </div>
-        <p class="mt-4 text-gray-700 text-sm sm:text-base">You can now close this window.</p>
+        
+        <div class="mt-6">
+          <button 
+            @click="$router.push('/leaderboard')"
+            class="bg-dhl-yellow text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors"
+          >
+            View Tournament Leaderboard
+          </button>
+        </div>
       </div>
 
       <div v-else class="w-full flex flex-col items-center">
@@ -165,14 +268,27 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- Mobile-optimized button -->
+          <!-- Error message display -->
+          <div v-if="errorMessage" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {{ errorMessage }}
+          </div>
+
+          <!-- Mobile-optimized button with loading state -->
           <button
             @click="handleStartMission"
-            :disabled="!isFormValid"
-            class="w-full bg-dhl-red text-white font-bold py-4 sm:py-3 px-8 rounded-lg text-lg sm:text-xl mt-6 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-red-700 touch-manipulation"
+            :disabled="!isFormValid || isCheckingPlayer"
+            class="w-full bg-dhl-red text-white font-bold py-4 sm:py-3 px-8 rounded-lg text-lg sm:text-xl mt-6 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-red-700 touch-manipulation flex items-center justify-center"
           >
-            Begin Mission
+            <svg v-if="isCheckingPlayer" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isCheckingPlayer ? 'Checking Tournament Status...' : 'Begin Mission' }}
           </button>
+          
+          <p class="text-xs text-gray-600 mt-3 text-center">
+            ⚠️ Each player can participate in the tournament only once
+          </p>
         </div>
       </div>
     </div>
