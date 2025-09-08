@@ -9,13 +9,17 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
+  console.log('🔍 Submit score API called:', { method: req.method, hasBody: !!req.body })
+
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('🔍 OPTIONS request - returning CORS headers')
     return res.status(200).end()
   }
 
   if (req.method === 'POST') {
     try {
+      console.log('🔍 Processing POST request with body:', req.body)
       const {
         firstName,
         lastName,
@@ -30,6 +34,7 @@ export default async function handler(req, res) {
 
       // ✅ VALIDATION for data integrity
       if (!firstName || !lastName || !department || score === undefined) {
+        console.log('❌ Validation failed - missing required fields')
         return res.status(400).json({
           success: false,
           error: 'Missing required fields: firstName, lastName, department, score',
@@ -37,12 +42,14 @@ export default async function handler(req, res) {
       }
 
       if (typeof score !== 'number' || score < 0 || score > 100) {
+        console.log('❌ Validation failed - invalid score:', score)
         return res.status(400).json({
           success: false,
           error: 'Score must be a number between 0 and 100',
         })
       }
 
+      console.log('✅ Validation passed - calling savePlayerScore...')
       // ✅ CENTRALIZED DATA COLLECTION + DUPLICATE PREVENTION
       const result = await savePlayerScore({
         firstName: firstName.trim(),
@@ -56,19 +63,27 @@ export default async function handler(req, res) {
         completionTime: completionTime || new Date().toISOString(),
       })
 
+      console.log('✅ savePlayerScore returned:', result)
       // Return success with rank information
       res.json({
         ...result,
         timestamp: new Date().toISOString(),
       })
     } catch (error) {
-      console.error('Score submission error:', error)
+      console.error('❌ Score submission error:', error)
+      console.error('❌ Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      })
       res.status(500).json({
         success: false,
         error: 'Failed to submit score. Please try again.',
+        errorDetails: process.env.NODE_ENV === 'development' ? error.message : undefined
       })
     }
   } else {
+    console.log(`❌ Method ${req.method} not allowed`)
     res.status(405).json({
       success: false,
       error: 'Method not allowed. Use POST to submit scores.',

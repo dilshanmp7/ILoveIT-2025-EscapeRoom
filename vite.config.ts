@@ -13,33 +13,31 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // Proxy API calls to the local API server for development
+      // Proxy API calls to production for unified database access
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'https://dhllockdowngame.vercel.app',
         changeOrigin: true,
-        secure: false,
-        timeout: 5000, // 5 second timeout for local server
+        secure: true,
+        timeout: 10000, // 10 second timeout for production API
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
-            console.log('🚨 Local API error:', err.message)
-            // Send a proper error response instead of letting it hang
+            console.log('🚨 Production API error:', err.message)
             if (!res.headersSent) {
               res.writeHead(503, { 'Content-Type': 'application/json' })
               res.end(
                 JSON.stringify({
                   success: false,
-                  error:
-                    'Local tournament API is not running. Please start it with: npm run api:local',
+                  error: 'Production tournament API is not available. Please try again later.',
                   offline: true,
                 })
               )
             }
           })
           proxy.on('proxyReq', (proxyReq, req, res) => {
-            console.log('📡 Local API request:', req.url)
+            console.log('📡 Production API request:', req.url)
           })
           proxy.on('proxyRes', (proxyRes, req, res) => {
-            console.log('✅ Local API response:', proxyRes.statusCode)
+            console.log('✅ Production API response:', proxyRes.statusCode)
           })
         },
       },
