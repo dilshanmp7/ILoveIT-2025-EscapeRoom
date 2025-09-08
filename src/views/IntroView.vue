@@ -3,6 +3,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { usePlayerStore } from '@/stores/playerStore'
 import dhlLogo from '@/assets/dhl_logo2.png'
+import dhlLoveIt2025Background from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
+import iLoveItLogo from '@/assets/IloveIT.png'
 
 const gameStore = useGameStore()
 const playerStore = usePlayerStore()
@@ -175,18 +177,34 @@ onMounted(async () => {
 </script>
 <template>
   <div
-    class="w-full min-h-screen flex items-center justify-center bg-dhl-yellow text-gray-900 p-4 sm:p-8"
+    class="w-full min-h-screen flex items-center justify-center text-white p-4 sm:p-8"
+    :style="{
+      backgroundImage: `url('${dhlLoveIt2025Background}')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }"
   >
-    <div class="flex flex-col items-center justify-center max-w-2xl w-full">
-      <!-- Responsive logo -->
-      <img :src="dhlLogo" alt="DHL Logo" class="w-48 sm:w-64 mb-4 sm:mb-6" />
+    <!-- Dark overlay for better text readability -->
+    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
 
-      <!-- Responsive title -->
+    <div class="relative z-10 flex flex-col items-center justify-center max-w-2xl w-full">
+      <!-- DHL Logo -->
+      <img :src="dhlLogo" alt="DHL Logo" class="w-32 sm:w-40 mb-4 sm:mb-6" />
+
+      <!-- Game Title -->
       <h1
-        class="text-3xl sm:text-4xl lg:text-5xl font-bold font-delivery text-dhl-red mb-6 sm:mb-8 text-center"
+        class="text-3xl sm:text-4xl lg:text-5xl font-bold font-delivery text-dhl-yellow mb-6 sm:mb-8 text-center drop-shadow-lg"
       >
         The IT Lockdown
       </h1>
+
+      <!-- Subtitle with I Love IT Logo -->
+      <div class="flex items-center justify-center gap-3 mb-8">
+        <span class="text-lg sm:text-xl drop-shadow-md">🎯</span>
+        <img :src="iLoveItLogo" alt="I Love IT" class="w-16 sm:w-20 lg:w-24" />
+        <span class="text-lg sm:text-xl drop-shadow-md">2025 - Escape Room Challenge</span>
+      </div>
 
       <!-- NEW: Conditional rendering based on play status -->
       <div v-if="hasAlreadyPlayed && finalResult" class="text-center w-full px-4">
@@ -242,7 +260,7 @@ onMounted(async () => {
         <!-- Responsive intro text -->
         <p class="text-base sm:text-lg lg:text-xl max-w-3xl text-center mb-6 sm:mb-8 px-4">
           Enter your details to begin your mission. You have 60 minutes to escape the IT lockdown.
-          Good luck, agent!
+          Good luck!
         </p>
 
         <!-- NEW: Mobile-optimized registration form -->

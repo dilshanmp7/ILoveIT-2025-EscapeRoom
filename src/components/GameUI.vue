@@ -2,8 +2,9 @@
 import { computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { useRoomStore } from '@/stores/roomStore'
-// NEW: Import the local logo image
+// NEW: Import the local logo images
 import dhlLogo from '@/assets/dhl_logo2.png'
+import iLoveItLogo from '@/assets/IloveIT.png'
 
 const gameStore = useGameStore()
 const roomStore = useRoomStore()
@@ -27,14 +28,29 @@ const formattedTime = computed(() => {
   <div
     class="absolute top-0 left-0 w-full p-2 sm:p-4 bg-black/90 border-b border-gray-600 flex justify-between items-center z-20"
   >
+    <!-- Left side: Logos (mobile and desktop) -->
     <div class="flex items-center overflow-hidden">
-      <!-- Responsive logo -->
-      <img :src="dhlLogo" alt="DHL Logo" class="h-6 sm:h-8 mr-2 sm:mr-4 flex-shrink-0" />
-      <h1 class="text-lg sm:text-2xl font-bold text-dhl-yellow truncate">
+      <!-- Combined logos -->
+      <div class="flex items-center gap-1 sm:gap-2 mr-2 sm:mr-4 flex-shrink-0">
+        <img :src="dhlLogo" alt="DHL Logo" class="h-6 sm:h-8" />
+        <img :src="iLoveItLogo" alt="I Love IT" class="h-5 sm:h-7" />
+      </div>
+      <!-- Room name for mobile only -->
+      <h1 class="text-lg font-bold text-dhl-yellow truncate sm:hidden">
         {{ gameStore.currentRoom.name }}
       </h1>
     </div>
 
+    <!-- Center: Room name for desktop only -->
+    <div class="hidden sm:flex absolute left-1/2 transform -translate-x-1/2">
+      <h1
+        class="text-3xl lg:text-4xl xl:text-5xl font-bold text-dhl-yellow text-center whitespace-nowrap"
+      >
+        {{ gameStore.currentRoom.name }}
+      </h1>
+    </div>
+
+    <!-- Right side: Timer -->
     <div class="flex items-center gap-2 sm:gap-4">
       <!-- Mobile-optimized timer -->
       <div

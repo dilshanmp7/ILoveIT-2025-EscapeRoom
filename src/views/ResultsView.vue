@@ -1,8 +1,61 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white flex items-center justify-center p-4"
+    class="min-h-screen text-white flex items-center justify-center p-4 relative overflow-hidden"
+    :style="{
+      backgroundImage: `url('${dhlLoveIt2025Background}')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }"
   >
-    <div class="max-w-4xl w-full">
+    <!-- Dark overlay for better text readability -->
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+
+    <!-- Branding Images Around the View -->
+    <!-- Top Left - I Love IT -->
+    <div class="absolute top-4 left-4 z-10 hidden lg:block">
+      <img
+        :src="iLoveItImage"
+        alt="I Love IT"
+        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+      />
+    </div>
+
+    <!-- Top Right - Win -->
+    <div class="absolute top-4 right-4 z-10 hidden lg:block">
+      <img
+        :src="winImage"
+        alt="Win"
+        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+      />
+    </div>
+
+    <!-- Bottom Left - Team -->
+    <div class="absolute bottom-4 left-4 z-10 hidden lg:block">
+      <img
+        :src="teamImage"
+        alt="Team"
+        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+      />
+    </div>
+
+    <!-- Bottom Right - Additional I Love IT -->
+    <div class="absolute bottom-4 right-4 z-10 hidden lg:block">
+      <img
+        :src="iLoveItImage"
+        alt="I Love IT"
+        class="w-12 xl:w-16 opacity-70 hover:opacity-100 transition-opacity"
+      />
+    </div>
+
+    <!-- Mobile Branding Row (visible only on mobile) -->
+    <div class="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 flex lg:hidden gap-3">
+      <img :src="iLoveItImage" alt="I Love IT" class="w-8 opacity-70" />
+      <img :src="winImage" alt="Win" class="w-8 opacity-70" />
+      <img :src="teamImage" alt="Team" class="w-8 opacity-70" />
+    </div>
+
+    <div class="max-w-4xl w-full relative z-20">
       <!-- Header - Mobile Responsive -->
       <div class="text-center mb-8 sm:mb-12">
         <img
@@ -176,6 +229,10 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/playerStore'
+import dhlLoveIt2025Background from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
+import winImage from '@/assets/win.png'
+import teamImage from '@/assets/team.png'
+import iLoveItImage from '@/assets/IloveIT.png'
 
 const router = useRouter()
 const playerStore = usePlayerStore()

@@ -5,6 +5,7 @@ import { useRoomStore } from '@/stores/roomStore'
 import Room from '@/components/Room.vue'
 import GameUI from '@/components/GameUI.vue'
 import DoorLockPuzzle from '@/components/puzzles/DoorLockPuzzle.vue'
+import dhlLoveIt2025Background from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
 
 const gameStore = useGameStore()
 const roomStore = useRoomStore()
@@ -49,12 +50,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full relative overflow-hidden">
+  <div
+    class="w-full h-full relative overflow-hidden"
+    :style="{
+      backgroundImage: `url('${dhlLoveIt2025Background}')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }"
+  >
+    <!-- Light overlay for better readability while keeping background visible -->
+    <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+
     <!-- Main game room -->
-    <Room :room-data="currentRoomData" @all-levels-solved="onAllLevelsSolved" class="h-full" />
+    <Room
+      :room-data="currentRoomData"
+      @all-levels-solved="onAllLevelsSolved"
+      class="h-full relative z-10"
+    />
 
     <!-- Game UI overlay -->
-    <GameUI class="absolute top-0 left-0 right-0" />
+    <GameUI class="absolute top-0 left-0 right-0 z-20" />
 
     <!-- Door puzzle modal -->
     <DoorLockPuzzle
@@ -62,6 +78,7 @@ onMounted(() => {
       :puzzle-data="currentRoomData.finalPuzzle"
       @unlocked="onDoorUnlocked"
       @close="isDoorPuzzleVisible = false"
+      class="z-30"
     />
   </div>
 </template>

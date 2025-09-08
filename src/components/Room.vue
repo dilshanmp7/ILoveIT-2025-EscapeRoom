@@ -45,10 +45,7 @@ watch(
 )
 </script>
 <template>
-  <div
-    class="w-full h-full bg-cover bg-center relative flex flex-col"
-    :style="{ backgroundImage: `url(${roomData.backgroundImage})` }"
-  >
+  <div class="w-full h-full relative flex flex-col">
     <!-- Desktop: Show all levels horizontally -->
     <div class="hidden sm:flex sm:flex-row justify-around items-stretch p-8 lg:p-24 gap-8 h-full">
       <QuizLevelBox

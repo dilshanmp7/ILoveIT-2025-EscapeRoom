@@ -1,5 +1,10 @@
 import type { Room } from '@/types'
 
+// Import DHL I Love IT 2025 branding images
+import dhlLoveIt2025Intro1 from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
+import wowImage from '@/assets/wow.png'
+import iLoveItImage from '@/assets/IloveIT.png'
+
 // New data structure for randomized hints and solutions
 export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgroundImage'>> = {
   'it-security': {
@@ -717,7 +722,7 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
   },
 }
 
-// This part remains, but now references the more complex PUZZLE_DATA
+// This part remains, but now references the more complex PUZZLE_DATA with DHL I Love IT 2025 branding
 export const ROOM_DATA: Room[] = [
   {
     id: 'it-security',
