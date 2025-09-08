@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Test - DHL Tournament</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .result {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+      }
+      .info {
+        background-color: #d1ecf1;
+        border: 1px solid #bee5eb;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        font-size: 16px;
+      }
+      pre {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🏆 DHL Tournament API Test</h1>
+
+    <div>
+      <button onclick="testLeaderboard()">Test Leaderboard API</button>
+      <button onclick="testSubmitScore()">Test Submit Score API</button>
+      <button onclick="testCheckParticipation()">Test Check Participation API</button>
+      <button onclick="clearResults()">Clear Results</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+      let resultCounter = 0
+
+      function addResult(type, title, content) {
+        resultCounter++
+        const resultsDiv = document.getElementById('results')
+        const resultDiv = document.createElement('div')
+        resultDiv.className = `result ${type}`
+        resultDiv.innerHTML = `
+                <h3>${resultCounter}. ${title}</h3>
+                <pre>${content}</pre>
+            `
+        resultsDiv.appendChild(resultDiv)
+      }
+
+      function clearResults() {
+        document.getElementById('results').innerHTML = ''
+        resultCounter = 0
+      }
+
+      async function testLeaderboard() {
+        try {
+          addResult('info', 'Testing Leaderboard API', 'Fetching leaderboard...')
+
+          const response = await fetch('/api/leaderboard?limit=10')
+          const data = await response.json()
+
+          if (response.ok) {
+            addResult('success', 'Leaderboard API Success', JSON.stringify(data, null, 2))
+          } else {
+            addResult('error', 'Leaderboard API Error', JSON.stringify(data, null, 2))
+          }
+        } catch (error) {
+          addResult('error', 'Leaderboard API Network Error', error.message)
+        }
+      }
+
+      async function testSubmitScore() {
+        const testData = {
+          firstName: 'Test',
+          lastName: 'Player',
+          department: 'IT',
+          workTime: '9:00 AM',
+          score: 95,
+          timeSpent: '02:30:15',
+          wrongAnswers: 1,
+          hintsUsed: 2,
+          completionTime: new Date().toISOString(),
+        }
+
+        try {
+          addResult(
+            'info',
+            'Testing Submit Score API',
+            'Submitting test score...\n' + JSON.stringify(testData, null, 2)
+          )
+
+          const response = await fetch('/api/submit-score', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(testData),
+          })
+
+          const data = await response.json()
+
+          if (response.ok) {
+            addResult('success', 'Submit Score API Success', JSON.stringify(data, null, 2))
+          } else {
+            addResult('error', 'Submit Score API Error', JSON.stringify(data, null, 2))
+          }
+        } catch (error) {
+          addResult('error', 'Submit Score API Network Error', error.message)
+        }
+      }
+
+      async function testCheckParticipation() {
+        const testData = {
+          firstName: 'Test',
+          lastName: 'Player',
+          department: 'IT',
+        }
+
+        try {
+          addResult(
+            'info',
+            'Testing Check Participation API',
+            'Checking participation...\n' + JSON.stringify(testData, null, 2)
+          )
+
+          const response = await fetch('/api/check-participation', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(testData),
+          })
+
+          const data = await response.json()
+
+          if (response.ok) {
+            addResult('success', 'Check Participation API Success', JSON.stringify(data, null, 2))
+          } else {
+            addResult('error', 'Check Participation API Error', JSON.stringify(data, null, 2))
+          }
+        } catch (error) {
+          addResult('error', 'Check Participation API Network Error', error.message)
+        }
+      }
+    </script>
+  </body>
+</html>

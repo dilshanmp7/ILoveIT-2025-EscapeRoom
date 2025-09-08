@@ -79,7 +79,20 @@ export const useGameStore = defineStore('game', () => {
 
     // Save to leaderboard if successful
     if (success) {
-      playerStore.saveToLeaderboard()
+      console.log('🎯 Game completed successfully! Submitting score to tournament...')
+      playerStore
+        .saveToLeaderboard()
+        .then((result) => {
+          console.log('📊 Score submission result:', result)
+          if (result.submittedToCentral) {
+            console.log('✅ Successfully submitted to central tournament database')
+          } else {
+            console.log('📱 Score saved locally, tournament sync pending')
+          }
+        })
+        .catch((error) => {
+          console.error('❌ Score submission failed:', error)
+        })
     }
 
     gameState.value = success ? 'finished' : 'intro'
@@ -92,7 +105,16 @@ export const useGameStore = defineStore('game', () => {
     // End timing and save result
     playerStore.endTiming()
     playerStore.setCompletionBonus(0) // No bonus for timeout
-    playerStore.saveToLeaderboard()
+
+    console.log('⏰ Time up! Submitting partial score to tournament...')
+    playerStore
+      .saveToLeaderboard()
+      .then((result) => {
+        console.log('📊 Timeout score submission result:', result)
+      })
+      .catch((error) => {
+        console.error('❌ Timeout score submission failed:', error)
+      })
 
     localStorage.removeItem('dhl-it-lockdown-state') // Clean up in-progress game
 

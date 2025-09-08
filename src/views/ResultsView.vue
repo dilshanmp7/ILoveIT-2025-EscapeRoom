@@ -192,17 +192,36 @@
       </div>
 
       <!-- Tournament Message - Mobile Optimized -->
+      <!-- Tournament Message - Mobile Optimized -->
       <div
         class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 border border-dhl-yellow rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 text-center"
       >
         <h3 class="text-xl sm:text-2xl font-bold text-dhl-yellow mb-2 sm:mb-3">
           🏆 Tournament Results
         </h3>
-        <p class="text-gray-300 text-base sm:text-lg">
-          Your score has been recorded for the tournament leaderboard.
+        <p class="text-gray-200 text-sm sm:text-base mb-3 sm:mb-4">
+          You've completed the I Love IT 2025 Escape Room Challenge!
         </p>
-        <p class="text-gray-400 text-sm sm:text-base mt-2">
-          The top 3 scores will win amazing prizes!
+
+        <!-- Score Submission Status -->
+        <div
+          class="bg-black/40 border rounded-lg p-3 mb-4"
+          :class="submissionStatus.submitted ? 'border-green-500' : 'border-yellow-500'"
+        >
+          <p
+            class="text-sm sm:text-base font-medium"
+            :class="submissionStatus.submitted ? 'text-green-400' : 'text-yellow-400'"
+          >
+            {{ submissionStatus.message }}
+          </p>
+          <p v-if="submissionStatus.rank" class="text-xs sm:text-sm text-gray-300 mt-1">
+            Total Tournament Participants: {{ submissionStatus.rank }}+
+          </p>
+        </div>
+
+        <!-- Encouraging Message -->
+        <p class="text-gray-300 text-sm sm:text-base">
+          🎯 Thanks for participating in the I Love IT 2025 tournament!
         </p>
       </div>
 
@@ -226,7 +245,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/playerStore'
 import dhlLoveIt2025Background from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
@@ -236,6 +255,49 @@ import iLoveItImage from '@/assets/IloveIT.png'
 
 const router = useRouter()
 const playerStore = usePlayerStore()
+
+// Score submission status
+const submissionStatus = ref<{
+  submitted: boolean
+  message: string
+  rank: number | null
+  error?: string
+}>({
+  submitted: false,
+  message: '',
+  rank: null,
+})
+
+// Check score submission status on mount
+onMounted(async () => {
+  // Give a moment for any pending score submission to complete
+  setTimeout(async () => {
+    // Check if score has been submitted to the central system
+    try {
+      const rank = await playerStore.getCurrentRank()
+      if (rank?.currentRank) {
+        submissionStatus.value = {
+          submitted: true,
+          message: `🏆 Score submitted to tournament! Rank: #${rank.currentRank}`,
+          rank: rank.currentRank,
+        }
+      } else {
+        submissionStatus.value = {
+          submitted: false,
+          message: '📱 Score saved locally. Tournament sync pending.',
+          rank: null,
+        }
+      }
+    } catch (error) {
+      submissionStatus.value = {
+        submitted: false,
+        message: '📱 Score saved locally. Tournament server unavailable.',
+        rank: null,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }
+    }
+  }, 2000)
+})
 
 // Calculate derived values for display
 const elapsedSeconds = computed(() => {

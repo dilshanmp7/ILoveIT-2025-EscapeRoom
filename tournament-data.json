@@ -1,0 +1,51 @@
+{
+  "players": [],
+  "leaderboard": [
+    {
+      "rank": 1,
+      "firstName": "Malinda",
+      "lastName": "Lakmal",
+      "department": "HR",
+      "score": 100,
+      "workTime": "10:30 AM",
+      "timeSpent": "02:30:15",
+      "timestamp": 1757327484043,
+      "playerId": "malinda-lakmal-hr"
+    },
+    {
+      "rank": 2,
+      "firstName": "Dilshan",
+      "lastName": "Makavitage",
+      "department": "IT",
+      "score": 100,
+      "workTime": "11:15 AM",
+      "timeSpent": "02:35:22",
+      "timestamp": 1757328084043,
+      "playerId": "dilshan-makavitage-it"
+    },
+    {
+      "playerId": "test-player-it",
+      "firstName": "Test",
+      "lastName": "Player",
+      "department": "IT",
+      "score": 95,
+      "workTime": "9:00 AM",
+      "timeSpent": "02:30:15",
+      "wrongAnswers": 1,
+      "hintsUsed": 2,
+      "timestamp": 1757331115817,
+      "submittedAt": "2025-09-08T11:31:55.817Z"
+    },
+    {
+      "rank": 3,
+      "firstName": "Kamal",
+      "lastName": "Perera",
+      "department": "IT",
+      "score": 90,
+      "workTime": "12:00 PM",
+      "timeSpent": "02:45:18",
+      "timestamp": 1757329284043,
+      "playerId": "kamal-perera-it"
+    }
+  ]
+}

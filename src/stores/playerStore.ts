@@ -169,15 +169,24 @@ export const usePlayerStore = defineStore('player', () => {
       console.error('⚠️ Local storage backup failed:', localError)
     }
 
-    // 2. ✅ CENTRALIZED DATA COLLECTION - Submit to backend
+    // 2. ✅ CENTRALIZED DATA COLLECTION - Submit to backend with timeout
     try {
+      console.log('🚀 Submitting score to tournament API...')
+
+      // Create AbortController for timeout handling
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 8000) // 8 second timeout
+
       const response = await fetch('/api/submit-score', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(playerResult),
+        signal: controller.signal,
       })
+
+      clearTimeout(timeoutId)
 
       const result = await response.json()
 
@@ -211,6 +220,20 @@ export const usePlayerStore = defineStore('player', () => {
       }
     } catch (backendError) {
       console.error('⚠️ Backend submission failed:', backendError)
+
+      // Check if it's a timeout/abort error
+      if (backendError instanceof Error && backendError.name === 'AbortError') {
+        console.log('⏱️ Tournament API timeout - score saved locally')
+        return {
+          success: true,
+          message:
+            'Tournament server is busy. Your score is saved locally and will sync when the server is available.',
+          rank: null,
+          submittedToCentral: false,
+          error: 'Tournament API timeout',
+        }
+      }
+
       console.log('📱 Score saved locally only - will sync when online')
 
       return {
