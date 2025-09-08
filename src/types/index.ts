@@ -5,6 +5,12 @@ export interface Question {
   correctOptionId: string
 }
 
+export interface QuestionPools {
+  easy: Question[]
+  medium: Question[]
+  complex: Question[]
+}
+
 export type LevelId = 'level1' | 'level2' | 'level3'
 
 export type LevelStatus = 'locked' | 'unlocked' | 'solved'
@@ -17,7 +23,8 @@ export interface RoomLevel {
   id: LevelId
   title: string
   hintOptions: Record<string, HintOption[]>
-  questions: Question[]
+  questions?: Question[]
+  questionPools?: QuestionPools
 }
 
 export interface RoomFinalPuzzle {

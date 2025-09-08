@@ -18,48 +18,121 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
             { text: `The first letter in "Known Threats"` },
           ],
         },
-        questions: [
-          {
-            id: 'sec1-1',
-            question: 'Which of these is a sign of a phishing email?',
-            options: [
-              { id: 'a', text: 'An offer that seems too good to be true' },
-              { id: 'b', text: 'A generic greeting like "Dear Customer"' },
-              { id: 'c', text: 'Both A and B' },
-            ],
-            correctOptionId: 'c',
-          },
-          {
-            id: 'sec1-2',
-            question: 'What should you do if you receive a suspicious email with a link?',
-            options: [
-              { id: 'a', text: 'Click the link to see where it goes' },
-              { id: 'b', text: 'Delete it and report it as phishing' },
-              { id: 'c', text: 'Forward it to your colleagues' },
-            ],
-            correctOptionId: 'b',
-          },
-          {
-            id: 'sec1-3',
-            question: 'Hovering your mouse over a link in an email can show you...',
-            options: [
-              { id: 'a', text: 'The actual web address it links to' },
-              { id: 'b', text: 'If the sender is trustworthy' },
-              { id: 'c', text: 'If your antivirus is on' },
-            ],
-            correctOptionId: 'a',
-          },
-          {
-            id: 'sec1-4',
-            question: 'Phishing attacks can lead to...',
-            options: [
-              { id: 'a', text: 'Identity theft' },
-              { id: 'b', text: 'Malware infection' },
-              { id: 'c', text: 'All of the above' },
-            ],
-            correctOptionId: 'c',
-          },
-        ],
+        questionPools: {
+          easy: [
+            {
+              id: 'sec1-easy-1',
+              question: 'What is phishing?',
+              options: [
+                { id: 'a', text: 'A method to catch fish' },
+                { id: 'b', text: 'A fraudulent attempt to obtain sensitive information' },
+                { id: 'c', text: 'A type of email marketing' },
+                { id: 'd', text: 'A social media trend' },
+              ],
+              correctOptionId: 'b',
+            },
+            {
+              id: 'sec1-easy-2',
+              question: 'Which of the following is a common sign of a phishing email?',
+              options: [
+                { id: 'a', text: 'A personalized greeting' },
+                { id: 'b', text: 'A sense of urgency in the message' },
+                { id: 'c', text: 'A professional logo' },
+                { id: 'd', text: 'A clear subject line' },
+              ],
+              correctOptionId: 'b',
+            },
+            {
+              id: 'sec1-easy-3',
+              question: 'What type of information do phishing emails typically seek to obtain?',
+              options: [
+                { id: 'a', text: 'Favorite hobbies' },
+                { id: 'b', text: 'Personal information like passwords and credit card numbers' },
+                { id: 'c', text: 'Work-related projects' },
+                { id: 'd', text: 'Company policies' },
+              ],
+              correctOptionId: 'b',
+            },
+          ],
+          medium: [
+            {
+              id: 'sec1-medium-1',
+              question:
+                'What should you do if you receive an email from an unknown sender requesting personal information?',
+              options: [
+                { id: 'a', text: 'Reply with the information they requested' },
+                { id: 'b', text: 'Ignore the email' },
+                { id: 'c', text: 'Forward the email to your IT department or security team' },
+                { id: 'd', text: 'Click on the links to check their validity' },
+              ],
+              correctOptionId: 'c',
+            },
+            {
+              id: 'sec1-medium-2',
+              question: 'Which of the following is NOT a typical feature of a phishing email?',
+              options: [
+                { id: 'a', text: 'Poor grammar and spelling' },
+                { id: 'b', text: 'A legitimate company email address' },
+                { id: 'c', text: 'Suspicious attachments or links' },
+                { id: 'd', text: 'Requests for urgent action' },
+              ],
+              correctOptionId: 'b',
+            },
+            {
+              id: 'sec1-medium-3',
+              question: 'What is a common method used by phishing emails to appear legitimate?',
+              options: [
+                { id: 'a', text: 'Using generic email addresses' },
+                { id: 'b', text: 'Spoofing the email address of a trusted source' },
+                { id: 'c', text: 'Sending from a personal email account' },
+                { id: 'd', text: 'Including a signature with no contact information' },
+              ],
+              correctOptionId: 'b',
+            },
+          ],
+          complex: [
+            {
+              id: 'sec1-complex-1',
+              question: 'How can you verify the legitimacy of a suspicious email?',
+              options: [
+                { id: 'a', text: "Check the sender's email address carefully" },
+                { id: 'b', text: 'Click on the links to see where they lead' },
+                {
+                  id: 'c',
+                  text: 'Contact the company directly using official contact information',
+                },
+                { id: 'd', text: 'Both A and C' },
+              ],
+              correctOptionId: 'd',
+            },
+            {
+              id: 'sec1-complex-2',
+              question: 'What is spear phishing?',
+              options: [
+                { id: 'a', text: 'Phishing that targets a large number of people' },
+                {
+                  id: 'b',
+                  text: 'A targeted attempt to steal sensitive information from a specific individual',
+                },
+                { id: 'c', text: 'Phishing that uses social media as a platform' },
+                { id: 'd', text: 'A type of phishing that involves fake websites' },
+              ],
+              correctOptionId: 'b',
+            },
+            {
+              id: 'sec1-complex-3',
+              question:
+                'If you accidentally clicked on a link in a phishing email, what should you do immediately?',
+              options: [
+                { id: 'a', text: 'Ignore it and continue with your work' },
+                { id: 'b', text: 'Disconnect from the internet and run a security scan' },
+                { id: 'c', text: 'Forward the email to your friends' },
+                { id: 'd', text: 'Change your email password later' },
+              ],
+              correctOptionId: 'b',
+            },
+          ],
+        },
       },
       level2: {
         id: 'level2',
@@ -77,49 +150,108 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
         questions: [
           {
             id: 'sec2-1',
-            question: 'What is the most secure password?',
+            question: 'What is a password?',
             options: [
-              { id: 'a', text: 'Password123' },
-              { id: 'b', text: 'Tr0ub4dor&3' },
-              { id: 'c', text: 'dhlpassword' },
+              { id: 'a', text: 'A type of software' },
+              { id: 'b', text: 'A secret word or phrase used for authentication' },
+              { id: 'c', text: 'A hardware component' },
+              { id: 'd', text: 'A network protocol' },
             ],
             correctOptionId: 'b',
           },
           {
             id: 'sec2-2',
-            question: 'What is Two-Factor Authentication (2FA)?',
+            question: 'Why is it important to have a strong password?',
             options: [
-              { id: 'a', text: 'Using two different passwords' },
-              { id: 'b', text: 'A second verification step after your password' },
-              { id: 'c', text: 'A password that is twice as long' },
+              { id: 'a', text: 'It makes logging in faster' },
+              { id: 'b', text: 'It is easier to remember' },
+              { id: 'c', text: 'It looks good on paper' },
+              { id: 'd', text: 'It protects your accounts from unauthorized access' },
             ],
-            correctOptionId: 'b',
+            correctOptionId: 'd',
           },
           {
             id: 'sec2-3',
-            question: 'How often should you change your main work password?',
+            question: 'Which of the following is a characteristic of a strong password?',
             options: [
-              { id: 'a', text: 'Every day' },
-              { id: 'b', text: 'Never' },
-              { id: 'c', text: 'According to company policy (e.g., every 90 days)' },
+              { id: 'a', text: 'It contains only letters' },
+              { id: 'b', text: 'It is at least 8 characters long' },
+              { id: 'c', text: 'It includes a mix of letters, numbers, and symbols' },
+              { id: 'd', text: 'It is the same as your username' },
             ],
             correctOptionId: 'c',
           },
           {
             id: 'sec2-4',
-            question: 'What is a strong password characteristic?',
+            question: 'How often should passwords be changed?',
             options: [
-              { id: 'a', text: 'Contains personal information' },
-              { id: 'b', text: 'Uses a mix of letters, numbers, and symbols' },
-              { id: 'c', text: 'Is easy to remember and share' },
+              { id: 'a', text: 'Every 3 to 6 months' },
+              { id: 'b', text: 'Never' },
+              { id: 'c', text: 'Every month' },
+              { id: 'd', text: 'Only when forgotten' },
+            ],
+            correctOptionId: 'a',
+          },
+          {
+            id: 'sec2-5',
+            question: 'What is multi-factor authentication (MFA)?',
+            options: [
+              { id: 'a', text: 'A method to remember passwords' },
+              { id: 'b', text: 'A type of password' },
+              { id: 'c', text: 'A software that generates passwords' },
+              { id: 'd', text: 'A security measure requiring multiple forms of verification' },
+            ],
+            correctOptionId: 'd',
+          },
+          {
+            id: 'sec2-6',
+            question: 'What is a risk of using the same password across multiple accounts?',
+            options: [
+              { id: 'a', text: 'It makes it easier to remember' },
+              { id: 'b', text: 'It increases the risk of all accounts being compromised' },
+              { id: 'c', text: 'It does not affect security' },
+              { id: 'd', text: 'It speeds up the login process' },
             ],
             correctOptionId: 'b',
+          },
+          {
+            id: 'sec2-7',
+            question: 'What is the purpose of a password manager?',
+            options: [
+              { id: 'a', text: 'To create weak passwords' },
+              { id: 'b', text: 'To change passwords automatically' },
+              { id: 'c', text: 'To send passwords via email' },
+              { id: 'd', text: 'To store and manage passwords securely' },
+            ],
+            correctOptionId: 'd',
+          },
+          {
+            id: 'sec2-8',
+            question: 'How can users identify phishing attempts?',
+            options: [
+              { id: 'a', text: 'By checking for suspicious email addresses' },
+              { id: 'b', text: 'By trusting all emails from known senders' },
+              { id: 'c', text: 'By ignoring emails about account security' },
+              { id: 'd', text: 'By clicking on all links provided' },
+            ],
+            correctOptionId: 'a',
+          },
+          {
+            id: 'sec2-9',
+            question: 'What is password hashing?',
+            options: [
+              { id: 'a', text: 'A way to remember passwords' },
+              { id: 'b', text: 'A technique to generate passwords' },
+              { id: 'c', text: 'A method of encrypting passwords for storage' },
+              { id: 'd', text: 'A type of password' },
+            ],
+            correctOptionId: 'c',
           },
         ],
       },
       level3: {
         id: 'level3',
-        title: 'General Security Principles',
+        title: 'Data Classification',
         hintOptions: {
           S: [
             { text: `Last letter of the word "ACCESS"` },
@@ -130,48 +262,127 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
             { text: `First letter of "TWO-FACTOR"` },
           ],
         },
-        questions: [
-          {
-            id: 'sec3-1',
-            question: 'What is the purpose of a VPN (Virtual Private Network)?',
-            options: [
-              { id: 'a', text: 'To make your internet faster' },
-              { id: 'b', text: 'To encrypt your internet traffic and hide your IP' },
-              { id: 'c', text: 'To get free Wi-Fi' },
-            ],
-            correctOptionId: 'b',
-          },
-          {
-            id: 'sec3-2',
-            question: 'What is "social engineering" in the context of cybersecurity?',
-            options: [
-              { id: 'a', text: 'Designing secure software for social media' },
-              { id: 'b', text: 'Manipulating people into giving up confidential info' },
-              { id: 'c', text: 'An IT social event' },
-            ],
-            correctOptionId: 'b',
-          },
-          {
-            id: 'sec3-3',
-            question: 'You receive a USB drive from an unknown source. What should you do?',
-            options: [
-              { id: 'a', text: "Plug it in to see what's on it" },
-              { id: 'b', text: 'Give it to IT security to be safely analyzed' },
-              { id: 'c', text: 'Throw it away in a public bin' },
-            ],
-            correctOptionId: 'b',
-          },
-          {
-            id: 'sec3-4',
-            question: 'What is the principle of "least privilege"?',
-            options: [
-              { id: 'a', text: 'Give users maximum access rights' },
-              { id: 'b', text: 'Give users only the minimum access they need' },
-              { id: 'c', text: 'Give everyone admin privileges' },
-            ],
-            correctOptionId: 'b',
-          },
-        ],
+        questionPools: {
+          easy: [
+            {
+              id: 'sec3-easy-1',
+              question: 'What does "For Internal Use Only" mean in data classification?',
+              options: [
+                { id: 'a', text: 'Data that can be shared with the public' },
+                { id: 'b', text: 'Data that is intended for use within the organization only' },
+                { id: 'c', text: 'Data that is archived' },
+                { id: 'd', text: 'Data that is automatically deleted' },
+              ],
+              correctOptionId: 'b',
+            },
+            {
+              id: 'sec3-easy-2',
+              question: 'Which of the following is an example of confidential data?',
+              options: [
+                { id: 'a', text: 'Company policies' },
+                { id: 'b', text: 'Marketing brochures' },
+                { id: 'c', text: 'Employee Social Security numbers' },
+                { id: 'd', text: 'Public press releases' },
+              ],
+              correctOptionId: 'c',
+            },
+            {
+              id: 'sec3-easy-3',
+              question: 'What is restricted data?',
+              options: [
+                { id: 'a', text: 'Data that can be freely shared with anyone' },
+                { id: 'b', text: 'Data that is irrelevant to the organization' },
+                { id: 'c', text: 'Data that is stored in the cloud' },
+                { id: 'd', text: 'Data that is accessible only to authorized personnel' },
+              ],
+              correctOptionId: 'd',
+            },
+          ],
+          medium: [
+            {
+              id: 'sec3-medium-1',
+              question:
+                'What is the primary purpose of classifying data as "For Internal Use Only"?',
+              options: [
+                { id: 'a', text: 'To allow unrestricted access' },
+                {
+                  id: 'b',
+                  text: 'To protect sensitive information and limit access to authorized users',
+                },
+                { id: 'c', text: 'To promote data sharing across departments' },
+                { id: 'd', text: 'To simplify data storage' },
+              ],
+              correctOptionId: 'b',
+            },
+            {
+              id: 'sec3-medium-2',
+              question:
+                'Which of the following actions is appropriate for handling confidential data?',
+              options: [
+                { id: 'a', text: 'Sharing it via personal email' },
+                { id: 'b', text: 'Storing it on unsecured devices' },
+                { id: 'c', text: 'Encrypting it and limiting access to authorized personnel' },
+                { id: 'd', text: 'Publicly discussing it in meetings' },
+              ],
+              correctOptionId: 'c',
+            },
+            {
+              id: 'sec3-medium-3',
+              question: 'What could be a consequence of improperly handling restricted data?',
+              options: [
+                { id: 'a', text: 'Data breaches and potential legal repercussions' },
+                { id: 'b', text: 'Improved collaboration among teams' },
+                { id: 'c', text: 'Increased data visibility' },
+                { id: 'd', text: 'Enhanced data quality' },
+              ],
+              correctOptionId: 'a',
+            },
+          ],
+          complex: [
+            {
+              id: 'sec3-complex-1',
+              question:
+                'How should an organization manage "For Internal Use Only" data to ensure compliance?',
+              options: [
+                { id: 'a', text: 'By allowing all employees to access it without restrictions' },
+                { id: 'b', text: 'By ignoring it after initial classification' },
+                { id: 'c', text: 'By storing it on shared drives accessible to everyone' },
+                { id: 'd', text: 'By implementing access controls and regular audits' },
+              ],
+              correctOptionId: 'd',
+            },
+            {
+              id: 'sec3-complex-2',
+              question:
+                'What is a best practice for handling confidential data in an organization?',
+              options: [
+                {
+                  id: 'a',
+                  text: 'Using strong passwords and two-factor authentication for access',
+                },
+                { id: 'b', text: 'Sharing it openly in team meetings' },
+                { id: 'c', text: 'Storing it in unencrypted formats' },
+                { id: 'd', text: 'Posting it on public forums for feedback' },
+              ],
+              correctOptionId: 'a',
+            },
+            {
+              id: 'sec3-complex-3',
+              question:
+                'Why is it important to train employees on the handling of restricted and confidential data?',
+              options: [
+                { id: 'a', text: 'To promote data sharing' },
+                {
+                  id: 'b',
+                  text: 'To ensure they understand the risks and comply with data protection policies',
+                },
+                { id: 'c', text: 'To increase the amount of data collected' },
+                { id: 'd', text: 'To eliminate the need for data classification' },
+              ],
+              correctOptionId: 'b',
+            },
+          ],
+        },
       },
     },
     finalPuzzle: {

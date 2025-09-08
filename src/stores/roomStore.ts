@@ -81,8 +81,22 @@ export const useRoomStore = defineStore('room', () => {
     const roomQuestions = PUZZLE_DATA[roomId]
     Object.keys(roomQuestions.levels).forEach((levelId) => {
       const levelKey = levelId as LevelId
-      const allQuestions = roomQuestions.levels[levelKey].questions
-      questionsForLevels.value[levelKey] = shuffle([...allQuestions]).slice(0, 3)
+      const levelData = roomQuestions.levels[levelKey]
+
+      // Handle new questionPools structure (e.g., for Phishing Analysis)
+      if (levelData.questionPools) {
+        const selectedQuestions = []
+        // Select one question from each difficulty level
+        selectedQuestions.push(pickRandom(levelData.questionPools.easy))
+        selectedQuestions.push(pickRandom(levelData.questionPools.medium))
+        selectedQuestions.push(pickRandom(levelData.questionPools.complex))
+        questionsForLevels.value[levelKey] = shuffle(selectedQuestions)
+      }
+      // Handle legacy questions structure (for other levels)
+      else if (levelData.questions) {
+        const allQuestions = levelData.questions
+        questionsForLevels.value[levelKey] = shuffle([...allQuestions]).slice(0, 3)
+      }
     })
     finalPuzzle.value = roomPuzzleData.finalPuzzle // ADDED: Set the final puzzle
   }
