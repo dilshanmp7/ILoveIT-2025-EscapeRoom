@@ -50,12 +50,12 @@ export default async function handler(req, res) {
       console.error('❌ Error details:', {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       })
       res.status(500).json({
         success: false,
         error: 'Failed to check participation status. Please try again.',
-        errorDetails: process.env.NODE_ENV === 'development' ? error.message : undefined
+        errorDetails: process.env.NODE_ENV === 'development' ? error.message : undefined,
       })
     }
   } else {

@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     try {
       const { limit = '50' } = req.query
       const limitNum = Math.min(parseInt(limit) || 50, 100) // Max 100 for performance
-      
+
       console.log(`🔍 Processing GET request with limit: ${limitNum}`)
 
       // ✅ REAL-TIME LEADERBOARD - Live tournament tracking
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       const leaderboardData = await getLeaderboard(limitNum)
       console.log('✅ getLeaderboard returned data:', {
         leaderboardCount: leaderboardData.leaderboard?.length,
-        totalPlayers: leaderboardData.totalPlayers
+        totalPlayers: leaderboardData.totalPlayers,
       })
 
       const response = {
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         requestedAt: new Date().toISOString(),
         nextUpdate: 'Real-time - refresh anytime',
       }
-      
+
       console.log('✅ Sending successful response')
       res.json(response)
     } catch (error) {
@@ -46,22 +46,22 @@ export default async function handler(req, res) {
       console.error('❌ Error details:', {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       })
-      
+
       res.status(500).json({
         success: false,
         error: 'Failed to fetch leaderboard data',
         leaderboard: [],
         totalPlayers: 0,
-        errorDetails: process.env.NODE_ENV === 'development' ? error.message : undefined
+        errorDetails: process.env.NODE_ENV === 'development' ? error.message : undefined,
       })
     }
   } else {
     console.log(`❌ Method ${req.method} not allowed`)
-    res.status(405).json({ 
-      success: false, 
-      error: `Method ${req.method} not allowed. Use GET to fetch leaderboard.` 
+    res.status(405).json({
+      success: false,
+      error: `Method ${req.method} not allowed. Use GET to fetch leaderboard.`,
     })
   }
 }
