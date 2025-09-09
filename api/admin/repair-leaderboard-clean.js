@@ -1,15 +1,11 @@
 // Admin endpoint to repair leaderboard by rebuilding from existing player data
-// This will fix the issue where player data exists but leaderboard sorted set is empty
+// Completely dynamic - no hardcoded player IDs
 
 import { kv } from '@vercel/kv'
 
 export default async function handler(req, res) {
-  // Security: Only allow this in development or with a secret key
-  const isAdmin =
-    req.headers.authorization === 'Bearer admin-repair-key' ||
-    process.env.NODE_ENV === 'development'
-
-  if (!isAdmin && req.query.secret !== 'repair-leaderboard-2025') {
+  // Security: Only allow this with secret key
+  if (req.query.secret !== 'repair-leaderboard-2025') {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
@@ -52,37 +48,13 @@ export default async function handler(req, res) {
         playersFound: 0,
       })
     }
-            if (data) {
-              existingKeys.push(key)
-            }
-          } catch (err) {
-            console.log(`Key ${key} not found`)
-          }
-        }
-        allKeys = existingKeys
-      }
-    } catch (error) {
-      console.error('Error getting keys:', error)
-      allKeys = []
-    }
 
-    console.log(`📊 Found ${allKeys.length} player keys:`, allKeys)
-
-    if (!allKeys.length) {
-      return res.json({
-        success: false,
-        message: 'No player data found to repair',
-        playersFound: 0,
-        debug: 'Could not find any player:* keys in database',
-      })
-    }
-
-    // Clear existing leaderboard (if corrupted)
+    // Clear existing leaderboard
     try {
       await kv.del('leaderboard')
       console.log('🗑️ Cleared existing leaderboard')
     } catch (error) {
-      console.log('🗑️ Could not clear leaderboard (may not exist):', error.message)
+      console.log('⚠️ Could not clear leaderboard:', error.message)
     }
 
     let processedCount = 0
@@ -105,7 +77,6 @@ export default async function handler(req, res) {
           console.log(`✅ Added ${playerKey} to leaderboard with score ${playerData.score}`)
         } catch (zaddError) {
           console.log(`⚠️ Could not add ${playerKey} to sorted set:`, zaddError.message)
-          // Continue processing other players
         }
 
         totalScores += playerData.score
@@ -128,8 +99,8 @@ export default async function handler(req, res) {
       totalPlayers: playerCount,
       totalScores: totalScores,
       averageScore: playerCount > 0 ? Math.round(totalScores / playerCount) : 0,
-      highestScore: Math.max(...playersSummary.map((p) => p.score)),
-      lowestScore: Math.min(...playersSummary.map((p) => p.score)),
+      highestScore: Math.max(...playersSummary.map(p => p.score)),
+      lowestScore: Math.min(...playersSummary.map(p => p.score)),
       lastUpdated: new Date().toISOString(),
     }
 
@@ -142,7 +113,7 @@ export default async function handler(req, res) {
       testLeaderboard = await kv.zrevrange('leaderboard', 0, 4)
       console.log('🧪 Test leaderboard top 5:', testLeaderboard)
     } catch (error) {
-      console.log('🧪 Could not test leaderboard:', error.message)
+      console.log('⚠️ Could not test leaderboard:', error.message)
       testLeaderboard = ['Could not retrieve leaderboard for testing']
     }
 
@@ -162,17 +133,18 @@ export default async function handler(req, res) {
         highestScore: stats.highestScore,
         lowestScore: stats.lowestScore,
       },
-      playersReprocessed: playersSummary.slice(0, 10), // Top 10 for verification
+      playersReprocessed: playersSummary.slice(0, 10),
       testLeaderboard,
+      allPlayerKeys: allKeys, // Show all discovered keys for verification
     })
+
   } catch (error) {
     console.error('❌ Leaderboard repair failed:', error)
-
+    
     return res.status(500).json({
       success: false,
       error: 'Leaderboard repair failed',
       message: error.message,
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     })
   }
 }

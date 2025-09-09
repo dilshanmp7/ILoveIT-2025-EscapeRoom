@@ -67,11 +67,12 @@ async function fixLeaderboard() {
     for (const key of testLeaderboard) {
       const score = await kv.zscore('leaderboard', key)
       const playerData = await kv.get(key)
-      console.log(`🔍 ${key}: score=${score}, name=${playerData?.firstName} ${playerData?.lastName}`)
+      console.log(
+        `🔍 ${key}: score=${score}, name=${playerData?.firstName} ${playerData?.lastName}`
+      )
     }
 
     console.log(`✅ Leaderboard repair completed! Processed ${processedCount} players.`)
-
   } catch (error) {
     console.error('❌ Leaderboard repair failed:', error)
     console.error('Error details:', {
