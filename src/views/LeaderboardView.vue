@@ -30,9 +30,6 @@ const tournamentStats = ref({
   averageScore: 0,
 })
 
-// Development mode toggle - set to true for offline development
-const isDevelopmentMode = ref(import.meta.env.DEV || window.location.hostname === 'localhost')
-
 let refreshInterval: ReturnType<typeof setInterval> | null = null
 
 // ✅ REAL-TIME LEADERBOARD - Load from backend with live updates
@@ -40,16 +37,11 @@ async function loadLeaderboard(retryCount = 1, maxRetries = 3) {
   const retryDelay = 2000 // 2 seconds between retries
 
   try {
-    console.log(`🔄 Attempting to fetch leaderboard from API (attempt ${retryCount}/${maxRetries})`)
+    console.log(
+      `🔄 Fetching leaderboard from production database (attempt ${retryCount}/${maxRetries})`
+    )
     isLoading.value = true
     error.value = ''
-
-    // Check if we're in development mode and should skip API
-    if (isDevelopmentMode.value) {
-      console.log('🔧 Development mode: Using offline tournament data')
-      loadOfflineTournamentData()
-      return
-    }
 
     const response = await fetch('/api/leaderboard?limit=50', {
       method: 'GET',
@@ -75,47 +67,43 @@ async function loadLeaderboard(retryCount = 1, maxRetries = 3) {
       throw new Error(`API returned non-JSON response: ${responseText.substring(0, 100)}...`)
     }
 
-    if (data.success) {
+    if (data.success && data.leaderboard) {
       leaderboardData.value = data.leaderboard
       tournamentStats.value = {
-        totalPlayers: data.totalPlayers,
-        topScore: data.topScore,
-        averageScore: data.averageScore,
+        totalPlayers: data.totalPlayers || 0,
+        topScore: data.topScore || 0,
+        averageScore: data.averageScore || 0,
       }
       lastUpdated.value = new Date().toLocaleTimeString()
-      console.log('✅ Leaderboard loaded successfully:', data.leaderboard?.length || 0, 'players')
+      console.log('✅ Production leaderboard loaded:', data.leaderboard.length, 'players')
     } else {
-      // API responded but with error - could be empty database or server issue
-      console.warn('⚠️ API returned error:', data.error)
-      if (data.error === 'Failed to fetch leaderboard data' || data.totalPlayers === 0) {
-        console.log('📊 API reports empty leaderboard, using tournament participant data')
-        loadOfflineTournamentData()
-        return
-      }
-      throw new Error(data.error || 'No leaderboard data received from API')
+      throw new Error(data.error || 'No leaderboard data received from production database')
     }
   } catch (fetchError: any) {
-    console.error('❌ API fetch failed:', fetchError)
+    console.error('❌ Production database fetch failed:', fetchError)
 
-    // Enhanced error handling for different failure types
     if (
       fetchError?.code === 'ETIMEDOUT' ||
       fetchError?.message?.includes('timeout') ||
       fetchError?.message?.includes('ETIMEDOUT')
     ) {
-      error.value = '⏱️ Tournament server timeout. The server may be temporarily unavailable.'
+      error.value = '⏱️ Production database timeout. Please try again.'
     } else if (
       fetchError?.message?.includes('Failed to fetch') ||
       fetchError?.message?.includes('NetworkError')
     ) {
       error.value = '🌐 Network connection failed. Please check your internet connection.'
     } else if (fetchError?.message?.includes('HTTP 5')) {
-      error.value = '🔧 Tournament server is temporarily down for maintenance.'
+      error.value = '🔧 Production database is temporarily unavailable.'
     } else {
-      error.value = `⚠️ Tournament data unavailable: ${fetchError.message || 'Unknown error'}`
+      error.value = `⚠️ Production database error: ${fetchError.message || 'Unknown error'}`
     }
 
-    console.log(`⏳ Retrying in ${retryDelay / 1000}s... (${retryCount}/${maxRetries})`)
+    console.log(
+      `⏳ Retrying production database connection in ${
+        retryDelay / 1000
+      }s... (${retryCount}/${maxRetries})`
+    )
 
     if (retryCount < maxRetries) {
       setTimeout(() => {
@@ -124,61 +112,13 @@ async function loadLeaderboard(retryCount = 1, maxRetries = 3) {
       return
     }
 
-    // After all retries failed, show offline tournament data
-    console.log('🔧 All API attempts failed, using offline tournament data')
-    loadOfflineTournamentData()
+    // After all retries failed, show error - no fallback data
+    console.log('❌ All production database connection attempts failed')
+    leaderboardData.value = []
+    tournamentStats.value = { totalPlayers: 0, topScore: 0, averageScore: 0 }
   } finally {
     isLoading.value = false
   }
-}
-
-// 🏆 Offline Tournament Data - Known participants when API fails
-function loadOfflineTournamentData() {
-  console.log('💾 Loading offline tournament data with known participants')
-  leaderboardData.value = [
-    {
-      rank: 1,
-      firstName: 'Malinda',
-      lastName: 'Lakmal',
-      department: 'HR',
-      score: 100,
-      workTime: '10:30 AM',
-      timeSpent: '02:30:15',
-      timestamp: Date.now() - 3600000, // 1 hour ago
-      playerId: 'malinda-lakmal-hr',
-    },
-    {
-      rank: 2,
-      firstName: 'Dilshan',
-      lastName: 'Makavitage',
-      department: 'IT',
-      score: 100,
-      workTime: '11:15 AM',
-      timeSpent: '02:35:22',
-      timestamp: Date.now() - 3000000, // 50 minutes ago
-      playerId: 'dilshan-makavitage-it',
-    },
-    {
-      rank: 3,
-      firstName: 'Kamal',
-      lastName: 'Perera',
-      department: 'IT',
-      score: 90,
-      workTime: '12:00 PM',
-      timeSpent: '02:45:18',
-      timestamp: Date.now() - 1800000, // 30 minutes ago
-      playerId: 'kamal-perera-it',
-    },
-  ]
-
-  tournamentStats.value = {
-    totalPlayers: 3,
-    topScore: 100,
-    averageScore: 97,
-  }
-
-  lastUpdated.value = 'Tournament Data'
-  error.value = ''
 }
 
 // 🔄 Refresh leaderboard data
@@ -220,16 +160,16 @@ function goBack() {
   router.push('/game')
 }
 
-// ✅ LIVE TOURNAMENT TRACKING - Auto-refresh every 30 seconds (disabled in dev mode)
+// ✅ PRODUCTION DATABASE LIVE TRACKING - Auto-refresh every 30 seconds
 onMounted(() => {
-  console.log('🏆 LeaderboardView mounted!')
+  console.log('🏆 LeaderboardView mounted - connecting to production database')
   loadLeaderboard()
 
-  // Only enable auto-refresh in production (when API works)
-  // Set up auto-refresh for live tournament tracking
-  // refreshInterval = setInterval(() => {
-  //   loadLeaderboard()
-  // }, 30000) // Refresh every 30 seconds
+  // Enable auto-refresh for live tournament tracking from production database
+  refreshInterval = setInterval(() => {
+    console.log('⏰ Auto-refreshing leaderboard from production database')
+    loadLeaderboard()
+  }, 30000) // Refresh every 30 seconds
 })
 
 onUnmounted(() => {
