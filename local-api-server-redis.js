@@ -11,10 +11,10 @@ const PORT = 3001
 app.use(cors())
 app.use(express.json())
 
-// ✅ REAL DATABASE CONNECTION - Upstash Redis KV
+// ✅ REAL DATABASE CONNECTION - New Upstash Redis KV
 // Using REST API approach (no additional dependencies needed)
-const UPSTASH_REST_URL = 'https://renewing-sailfish-13452.upstash.io'
-const UPSTASH_TOKEN = 'ATSMAAIncDEzNTIxMzFmYmIxMGM0MjExOWYzYTY0YWE3NmQzNmIwZnAxMTM0NTI'
+const UPSTASH_REST_URL = 'https://probable-starling-62985.upstash.io'
+const UPSTASH_TOKEN = 'AfYJAAIncDE1NmU1M2ZkNzcxY2Y0ZmI0YmMzZmRiNDRkNzI1MjY1NHAxNjI5ODU'
 
 // Upstash REST API helper
 async function upstashCommand(command) {
