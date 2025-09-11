@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/gameStore'
 import { usePlayerStore } from '@/stores/playerStore'
 import dhlLogo from '@/assets/dhl_logo2.png'
 import dhlLoveIt2025Background from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
 import iLoveItLogo from '@/assets/IloveIT.png'
 
+const router = useRouter()
 const gameStore = useGameStore()
 const playerStore = usePlayerStore()
 
@@ -58,6 +60,7 @@ const departments = [
   'REGULARTORY AND PUBLIC AFFAIRS',
   'ProcessEngineering',
   'Program Management',
+  'Other',
 ]
 const workTimes = ['AM Shift', 'PM Shift', 'Day Time']
 
@@ -151,6 +154,9 @@ async function handleStartMission() {
 
     gameStore.startGame()
     console.log('🎯 Game started successfully!')
+
+    // Navigate to the game view
+    router.push('/game')
   } catch (error) {
     console.error('❌ Error during player validation:', error)
     errorMessage.value = 'Unable to validate player. Please try again.'

@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGameStore } from '@/stores/gameStore'
 import GameView from '@/views/GameView.vue'
+import WelcomeView from '@/views/WelcomeView.vue'
 import IntroView from '@/views/IntroView.vue'
 import ResultsView from '@/views/ResultsView.vue'
 import LeaderboardView from '@/views/LeaderboardView.vue'
@@ -17,14 +18,16 @@ const isSpecialRoute = computed(() => {
     route.path.startsWith('/admin') ||
     route.path === '/about' ||
     route.path === '/results' ||
-    route.path === '/leaderboard'
+    route.path === '/leaderboard' ||
+    route.path === '/' ||
+    route.path === '/intro'
   )
 })
 </script>
 
 <template>
   <main class="w-full h-full bg-black">
-    <!-- Show router view for special routes (admin, about, results, leaderboard) -->
+    <!-- Show router view for special routes (admin, about, results, leaderboard, welcome, intro) -->
     <router-view v-if="isSpecialRoute" />
 
     <!-- Show game views based on game state for main game -->
