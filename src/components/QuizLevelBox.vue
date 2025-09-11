@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { LevelId, Room } from '@/types'
 import { useRoomStore } from '@/stores/roomStore'
 import { usePlayerStore } from '@/stores/playerStore'
@@ -32,7 +32,66 @@ const selectedOption = ref<string | null>(null)
 const feedback = ref('')
 const resetMessage = ref('')
 
+// Hint system - track hint usage per question in this level
+const hintUsedForQuestions = ref<Set<number>>(new Set())
+const visibleOptions = ref<string[]>([])
+
 const currentQuestion = computed(() => questions.value[currentQuestionIndex.value])
+
+// Check if hint is available for current question
+const isHintAvailable = computed(() => {
+  return currentQuestion.value && !hintUsedForQuestions.value.has(currentQuestionIndex.value)
+})
+
+// Initialize visible options when question changes
+const initializeVisibleOptions = () => {
+  if (currentQuestion.value) {
+    visibleOptions.value = currentQuestion.value.options.map((opt: any) => opt.id)
+  }
+}
+
+// Use hint function
+function useHint() {
+  if (!currentQuestion.value || !isHintAvailable.value) return
+
+  const currentQuestionIdx = currentQuestionIndex.value
+  hintUsedForQuestions.value.add(currentQuestionIdx)
+
+  // Deduct 3 points from score
+  playerStore.deductHintPenalty()
+
+  // Calculate how many options to hide (50%)
+  const totalOptions = currentQuestion.value.options.length
+  const optionsToHide = Math.floor(totalOptions / 2)
+
+  if (optionsToHide > 0) {
+    // Get incorrect options (exclude the correct answer)
+    const incorrectOptions = currentQuestion.value.options
+      .filter((opt: any) => opt.id !== currentQuestion.value.correctOptionId)
+      .map((opt: any) => opt.id)
+
+    // Randomly select options to hide from incorrect ones
+    const optionsToHideIds = incorrectOptions
+      .sort(() => Math.random() - 0.5)
+      .slice(0, Math.min(optionsToHide, incorrectOptions.length))
+
+    // Update visible options
+    visibleOptions.value = currentQuestion.value.options
+      .map((opt: any) => opt.id)
+      .filter((id: any) => !optionsToHideIds.includes(id))
+  }
+
+  feedback.value = `Hint used! ${optionsToHide} option(s) removed. -3 points`
+}
+
+// Watch for question changes to initialize visible options
+watch(
+  currentQuestion,
+  () => {
+    initializeVisibleOptions()
+  },
+  { immediate: true }
+)
 
 function submitAnswer() {
   if (selectedOption.value === null) return
@@ -56,6 +115,7 @@ function submitAnswer() {
     resetMessage.value = '' // Clear reset message when moving to next question
     if (currentQuestionIndex.value < questions.value.length - 1) {
       currentQuestionIndex.value++
+      // Reset will happen automatically via watch
     } else {
       console.log(`Level ${props.levelId} completed check:`, {
         correctAnswers: correctAnswers.value,
@@ -70,6 +130,8 @@ function submitAnswer() {
           `Level ${props.levelId} failed - resetting. Expected: ${questions.value.length}, Got: ${correctAnswers.value}`
         )
         currentQuestionIndex.value = 0
+        // Reset hint usage for this level
+        hintUsedForQuestions.value.clear()
         roomStore.resetCorrectAnswers(props.levelId)
         roomStore.saveState() // Save state after reset
 
@@ -94,7 +156,7 @@ function submitAnswer() {
     :style="{
       height: 'calc(100% - 90px)',
       maxHeight: 'calc(100% - 90px)',
-      minHeight: '0',
+      minHeight: '400px',
       overflow: 'hidden',
       boxSizing: 'border-box',
       margin: '0',
@@ -155,11 +217,31 @@ function submitAnswer() {
       class="flex flex-col flex-1 overflow-hidden space-y-1 laptop:space-y-1 large:space-y-2"
     >
       <!-- Question counter with laptop-optimized spacing -->
-      <p
-        class="text-center mb-1 mobile:mb-2 sm:mb-2 laptop:mb-1 large:mb-2 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl flex-shrink-0 leading-normal font-medium text-gray-300"
+      <div
+        class="flex items-center justify-between mb-1 mobile:mb-2 sm:mb-2 laptop:mb-1 large:mb-2"
       >
-        Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
-      </p>
+        <p
+          class="text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl flex-shrink-0 leading-normal font-medium text-gray-300"
+        >
+          Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+        </p>
+
+        <!-- Hint Icon -->
+        <button
+          v-if="isHintAvailable"
+          @click="useHint"
+          class="ml-2 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs mobile:text-sm laptop:text-base rounded-lg font-bold transition-all hover:shadow-lg"
+          title="Use hint (-3 points)"
+        >
+          💡 Hint
+        </button>
+        <div
+          v-else
+          class="ml-2 px-2 py-1 bg-gray-500 text-gray-400 text-xs mobile:text-sm laptop:text-base rounded-lg font-bold"
+        >
+          💡 Used
+        </div>
+      </div>
 
       <div
         v-if="currentQuestion"
@@ -172,11 +254,20 @@ function submitAnswer() {
           {{ currentQuestion.question }}
         </p>
 
-        <!-- Options container with laptop-optimized spacing -->
+        <!-- Options container with dynamic spacing based on hint usage -->
         <div
-          class="space-y-1 mobile:space-y-2 sm:space-y-2 laptop:space-y-2 large:space-y-3 overflow-y-auto mb-4 mobile:mb-5 sm:mb-5 laptop:mb-4 large:mb-6 min-h-0 flex-shrink-0"
+          class="space-y-1 mobile:space-y-2 sm:space-y-2 laptop:space-y-2 large:space-y-3 overflow-y-auto min-h-0 flex-shrink-0 transition-all"
+          :class="{
+            'mb-4 mobile:mb-5 sm:mb-5 laptop:mb-4 large:mb-6':
+              !hintUsedForQuestions.has(currentQuestionIndex),
+            'mb-2 mobile:mb-3 sm:mb-3 laptop:mb-3 large:mb-4':
+              hintUsedForQuestions.has(currentQuestionIndex),
+          }"
         >
-          <div v-for="option in currentQuestion.options" :key="option.id">
+          <div
+            v-for="option in currentQuestion.options.filter((opt: any) => visibleOptions.includes(opt.id))"
+            :key="option.id"
+          >
             <label
               class="block w-full px-2 py-2 mobile:px-3 mobile:py-2 sm:px-3 sm:py-3 laptop:px-3 laptop:py-2 large:px-5 large:py-4 rounded-lg border-2 cursor-pointer text-sm mobile:text-base sm:text-lg laptop:text-base large:text-xl transition-all touch-manipulation leading-relaxed font-medium hover:shadow-lg"
               :class="{
@@ -192,9 +283,15 @@ function submitAnswer() {
           </div>
         </div>
 
-        <!-- Submit area with laptop-optimized spacing -->
+        <!-- Submit area with dynamic spacing based on hint usage -->
         <div
-          class="flex-shrink-0 space-y-1 laptop:space-y-1 large:space-y-2 pt-[30px] mobile:pt-5 sm:pt-5 laptop:pt-[30px] large:pt-[30px]"
+          class="flex-shrink-0 space-y-1 laptop:space-y-1 large:space-y-2 transition-all"
+          :class="{
+            'pt-3 mobile:pt-4 sm:pt-5 laptop:pt-[30px] large:pt-[30px]':
+              !hintUsedForQuestions.has(currentQuestionIndex),
+            'pt-2 mobile:pt-3 sm:pt-4 laptop:pt-5 large:pt-6':
+              hintUsedForQuestions.has(currentQuestionIndex),
+          }"
         >
           <button
             @click="submitAnswer"

@@ -225,7 +225,7 @@
           <div class="flex justify-between items-center py-1 mobile:py-2 border-b border-gray-700">
             <span
               class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
-              >Hints Penalty ({{ playerStore.hintsUsed }} × 2)</span
+              >Hints Penalty ({{ playerStore.hintsUsed }} × 3)</span
             >
             <span
               class="font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl"

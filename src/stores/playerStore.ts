@@ -41,7 +41,7 @@ export const usePlayerStore = defineStore('player', () => {
     score -= wrongAnswersCount * WRONG_ANSWER_PENALTY
 
     // Case 4: Apply hints penalty
-    const HINT_PENALTY = 2 // 2 points per hint
+    const HINT_PENALTY = 3 // 3 points per hint
     score -= hintsUsed.value * HINT_PENALTY
 
     // Case 5: Apply completion bonus
@@ -73,7 +73,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   // Computed hints penalty for display purposes
   const hintsPenalty = computed(() => {
-    const HINT_PENALTY = 2 // 2 points per hint
+    const HINT_PENALTY = 3 // 3 points per hint
     return hintsUsed.value * HINT_PENALTY
   })
 
@@ -107,6 +107,10 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function useHint() {
+    hintsUsed.value++
+  }
+
+  function deductHintPenalty() {
     hintsUsed.value++
   }
 
@@ -354,6 +358,7 @@ export const usePlayerStore = defineStore('player', () => {
     startTiming,
     endTiming,
     useHint,
+    deductHintPenalty,
     applyIncorrectAnswerPenalty,
     setCompletionBonus,
     reset,
