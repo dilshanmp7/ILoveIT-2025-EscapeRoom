@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       return res.status(500).json({
         success: false,
         error: 'Cannot scan for player keys',
-        message: 'The kv.keys() method is not available'
+        message: 'The kv.keys() method is not available',
       })
     }
 

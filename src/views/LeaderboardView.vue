@@ -186,7 +186,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
 
 <template>
   <div
-    class="min-h-screen text-white p-4 relative overflow-hidden"
+    class="min-h-screen text-white p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
     :style="{
       backgroundImage: `url('${dhlLoveIt2025Background}')`,
       backgroundSize: 'cover',
@@ -197,66 +197,88 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
     <!-- Dark overlay for better text readability -->
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
 
-    <!-- Branding Images Around the View -->
+    <!-- Branding Images Around the View - Responsive positioning -->
     <!-- Top Left - I Love IT -->
-    <div class="absolute top-4 left-4 z-10 hidden lg:block">
+    <div
+      class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
+    >
       <img
         :src="iLoveItImage"
         alt="I Love IT"
-        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+        class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
 
     <!-- Top Right - Win -->
-    <div class="absolute top-4 right-4 z-10 hidden lg:block">
+    <div
+      class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
+    >
       <img
         :src="winImage"
         alt="Win"
-        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+        class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
 
     <!-- Bottom Left - Team -->
-    <div class="absolute bottom-4 left-4 z-10 hidden lg:block">
+    <div
+      class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
+    >
       <img
         :src="teamImage"
         alt="Team"
-        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+        class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
 
     <!-- Bottom Right - Additional I Love IT -->
-    <div class="absolute bottom-4 right-4 z-10 hidden lg:block">
+    <div
+      class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
+    >
       <img
         :src="iLoveItImage"
         alt="I Love IT"
-        class="w-12 xl:w-16 opacity-70 hover:opacity-100 transition-opacity"
+        class="w-8 mobile:w-10 laptop:w-12 large:w-16 opacity-70 hover:opacity-100 transition-opacity"
       />
     </div>
 
     <!-- Mobile Branding Row (visible only on mobile) -->
-    <div class="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 flex lg:hidden gap-3">
-      <img :src="iLoveItImage" alt="I Love IT" class="w-8 opacity-70" />
-      <img :src="winImage" alt="Win" class="w-8 opacity-70" />
-      <img :src="teamImage" alt="Team" class="w-8 opacity-70" />
+    <div
+      class="absolute top-1 mobile:top-2 left-1/2 transform -translate-x-1/2 z-10 flex lg:hidden gap-2 mobile:gap-3"
+    >
+      <img :src="iLoveItImage" alt="I Love IT" class="w-6 mobile:w-8 opacity-70" />
+      <img :src="winImage" alt="Win" class="w-6 mobile:w-8 opacity-70" />
+      <img :src="teamImage" alt="Team" class="w-6 mobile:w-8 opacity-70" />
     </div>
 
-    <div class="max-w-6xl mx-auto relative z-20">
-      <!-- Header with Live Updates -->
-      <div class="text-center mb-8">
-        <img :src="dhlLogo" alt="DHL Logo" class="h-12 sm:h-16 mx-auto mb-4 sm:mb-6" />
+    <div
+      class="max-w-3xl mobile:max-w-4xl sm:max-w-5xl laptop:max-w-6xl large:max-w-7xl mx-auto relative z-20"
+    >
+      <!-- Header with Live Updates - Responsive -->
+      <div class="text-center mb-6 mobile:mb-8 laptop:mb-10">
+        <img
+          :src="dhlLogo"
+          alt="DHL Logo"
+          class="h-8 mobile:h-10 sm:h-12 laptop:h-16 large:h-20 mx-auto mb-3 mobile:mb-4 sm:mb-6 laptop:mb-8"
+        />
         <h1
-          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-dhl-yellow to-dhl-red mb-4"
+          class="text-2xl mobile:text-3xl sm:text-4xl laptop:text-5xl large:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-dhl-yellow to-dhl-red mb-3 mobile:mb-4 laptop:mb-5"
         >
           Tournament Leaderboard
         </h1>
-        <h2 class="text-xl sm:text-2xl text-gray-300 mb-4">🏆 "The IT Lockdown" Champions</h2>
+        <h2
+          class="text-lg mobile:text-xl sm:text-2xl laptop:text-3xl large:text-4xl text-gray-300 mb-3 mobile:mb-4 laptop:mb-5"
+        >
+          🏆 "The IT Lockdown" Champions
+        </h2>
 
-        <!-- ✅ REAL-TIME STATUS -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+        <!-- Real-time status - Responsive -->
+        <div
+          class="flex flex-col sm:flex-row items-center justify-center gap-2 mobile:gap-3 laptop:gap-4 mb-4 mobile:mb-6"
+        >
           <div class="flex items-center gap-2">
             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span class="text-sm text-gray-400">
+            <span class="text-xs mobile:text-sm laptop:text-base text-gray-400">
               {{ error ? 'Offline Mode' : 'Live Updates' }} • Last: {{ lastUpdated }}
             </span>
           </div>
@@ -264,75 +286,143 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
           <button
             @click="refreshLeaderboard"
             :disabled="isLoading"
-            class="bg-dhl-yellow text-black px-4 py-2 rounded-lg font-bold text-sm hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            class="bg-dhl-yellow text-black px-3 mobile:px-4 laptop:px-5 py-2 mobile:py-2 laptop:py-3 rounded-lg font-bold text-xs mobile:text-sm laptop:text-base hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation min-h-[44px] mobile:min-h-[48px]"
           >
             {{ isLoading ? '⏳ Updating...' : '🔄 Refresh Now' }}
           </button>
         </div>
 
-        <!-- Error notification -->
+        <!-- Error notification - Responsive -->
         <div
           v-if="error"
-          class="bg-orange-900/50 border border-orange-500 rounded-lg p-3 mb-6 text-orange-200 text-sm"
+          class="bg-orange-900/50 border border-orange-500 rounded-lg p-2 mobile:p-3 laptop:p-4 mb-4 mobile:mb-6 text-orange-200 text-xs mobile:text-sm laptop:text-base"
         >
           ⚠️ {{ error }}
         </div>
 
-        <!-- Statistics -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          <div class="bg-black/60 border border-dhl-yellow rounded-lg p-4">
-            <div class="text-2xl sm:text-3xl font-bold text-dhl-yellow">{{ topScore }}</div>
-            <div class="text-gray-300 text-sm sm:text-base">Top Score</div>
+        <!-- Statistics - Responsive grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mobile:gap-4 sm:gap-6">
+          <div class="bg-black/60 border border-dhl-yellow rounded-lg p-3 mobile:p-4 laptop:p-5">
+            <div
+              class="text-xl mobile:text-2xl sm:text-3xl laptop:text-4xl large:text-5xl font-bold text-dhl-yellow"
+            >
+              {{ topScore }}
+            </div>
+            <div class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg">
+              Top Score
+            </div>
           </div>
-          <div class="bg-black/60 border border-dhl-red rounded-lg p-4">
-            <div class="text-2xl sm:text-3xl font-bold text-dhl-red">{{ averageScore }}</div>
-            <div class="text-gray-300 text-sm sm:text-base">Average Score</div>
+          <div class="bg-black/60 border border-dhl-red rounded-lg p-3 mobile:p-4 laptop:p-5">
+            <div
+              class="text-xl mobile:text-2xl sm:text-3xl laptop:text-4xl large:text-5xl font-bold text-dhl-red"
+            >
+              {{ averageScore }}
+            </div>
+            <div class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg">
+              Average Score
+            </div>
           </div>
-          <div class="bg-black/60 border border-gray-600 rounded-lg p-4">
-            <div class="text-2xl sm:text-3xl font-bold text-blue-400">{{ totalPlayers }}</div>
-            <div class="text-gray-300 text-sm sm:text-base">Total Players</div>
+          <div class="bg-black/60 border border-gray-600 rounded-lg p-3 mobile:p-4 laptop:p-5">
+            <div
+              class="text-xl mobile:text-2xl sm:text-3xl laptop:text-4xl large:text-5xl font-bold text-blue-400"
+            >
+              {{ totalPlayers }}
+            </div>
+            <div class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg">
+              Total Players
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- No data message -->
-      <div v-if="leaderboardData.length === 0" class="text-center py-12">
-        <div class="text-6xl mb-4">🏆</div>
-        <h3 class="text-2xl font-bold text-gray-400 mb-2">No Results Yet</h3>
-        <p class="text-gray-500">Be the first to complete the IT Lockdown challenge!</p>
+      <!-- No data message - Responsive -->
+      <div v-if="leaderboardData.length === 0" class="text-center py-8 mobile:py-12 laptop:py-16">
+        <div class="text-4xl mobile:text-5xl laptop:text-6xl large:text-7xl mb-3 mobile:mb-4">
+          🏆
+        </div>
+        <h3
+          class="text-xl mobile:text-2xl laptop:text-3xl large:text-4xl font-bold text-gray-400 mb-1 mobile:mb-2"
+        >
+          No Results Yet
+        </h3>
+        <p class="text-sm mobile:text-base laptop:text-lg large:text-xl text-gray-500">
+          Be the first to complete the IT Lockdown challenge!
+        </p>
       </div>
 
-      <!-- Leaderboard Table -->
+      <!-- Leaderboard Table - Responsive -->
       <div v-else class="bg-black/60 border border-gray-600 rounded-xl overflow-hidden">
-        <!-- Top 3 Spotlight -->
-        <div class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 p-6 border-b border-gray-600">
-          <h3 class="text-2xl font-bold text-dhl-yellow text-center mb-6">🏆 Prize Winners 🏆</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Top 3 Spotlight - Responsive -->
+        <div
+          class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 p-3 mobile:p-4 sm:p-6 laptop:p-8 border-b border-gray-600"
+        >
+          <h3
+            class="text-lg mobile:text-xl sm:text-2xl laptop:text-3xl large:text-4xl font-bold text-dhl-yellow text-center mb-4 mobile:mb-6 laptop:mb-8"
+          >
+            🏆 Prize Winners 🏆
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mobile:gap-3 sm:gap-4 laptop:gap-6">
             <div
               v-for="(entry, index) in leaderboardData.slice(0, 3)"
               :key="index"
-              class="bg-black/60 border border-gray-500 rounded-lg p-4 text-center"
+              class="bg-black/60 border border-gray-500 rounded-lg p-3 mobile:p-4 laptop:p-5 text-center"
             >
-              <div class="text-3xl mb-2">{{ getRankBadge(index) }}</div>
-              <div class="font-bold text-lg">{{ entry.firstName }} {{ entry.lastName }}</div>
-              <div class="text-gray-400 text-sm">{{ entry.department }}</div>
-              <div class="text-2xl font-bold text-dhl-yellow mt-2">{{ entry.score }}</div>
-              <div class="text-gray-400 text-sm">{{ entry.timeSpent }}</div>
+              <div class="text-2xl mobile:text-3xl laptop:text-4xl large:text-5xl mb-1 mobile:mb-2">
+                {{ getRankBadge(index) }}
+              </div>
+              <div class="font-bold text-sm mobile:text-base sm:text-lg laptop:text-xl">
+                {{ entry.firstName }} {{ entry.lastName }}
+              </div>
+              <div class="text-gray-400 text-xs mobile:text-sm laptop:text-base">
+                {{ entry.department }}
+              </div>
+              <div
+                class="text-xl mobile:text-2xl laptop:text-3xl large:text-4xl font-bold text-dhl-yellow mt-1 mobile:mt-2"
+              >
+                {{ entry.score }}
+              </div>
+              <div class="text-gray-400 text-xs mobile:text-sm laptop:text-base">
+                {{ entry.timeSpent }}
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Full Leaderboard -->
+        <!-- Full Leaderboard Table - Mobile responsive -->
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead class="bg-gray-800 border-b border-gray-600">
               <tr class="text-left">
-                <th class="p-4 font-bold text-dhl-yellow">Rank</th>
-                <th class="p-4 font-bold text-dhl-yellow">Player</th>
-                <th class="p-4 font-bold text-dhl-yellow">Department</th>
-                <th class="p-4 font-bold text-dhl-yellow text-center">Score</th>
-                <th class="p-4 font-bold text-dhl-yellow text-center">Time</th>
-                <th class="p-4 font-bold text-dhl-yellow text-center">Completed</th>
+                <th
+                  class="p-2 mobile:p-3 sm:p-4 font-bold text-dhl-yellow text-xs mobile:text-sm laptop:text-base"
+                >
+                  Rank
+                </th>
+                <th
+                  class="p-2 mobile:p-3 sm:p-4 font-bold text-dhl-yellow text-xs mobile:text-sm laptop:text-base"
+                >
+                  Player
+                </th>
+                <th
+                  class="p-2 mobile:p-3 sm:p-4 font-bold text-dhl-yellow text-xs mobile:text-sm laptop:text-base hidden sm:table-cell"
+                >
+                  Department
+                </th>
+                <th
+                  class="p-2 mobile:p-3 sm:p-4 font-bold text-dhl-yellow text-center text-xs mobile:text-sm laptop:text-base"
+                >
+                  Score
+                </th>
+                <th
+                  class="p-2 mobile:p-3 sm:p-4 font-bold text-dhl-yellow text-center text-xs mobile:text-sm laptop:text-base"
+                >
+                  Time
+                </th>
+                <th
+                  class="p-2 mobile:p-3 sm:p-4 font-bold text-dhl-yellow text-center text-xs mobile:text-sm laptop:text-base hidden sm:table-cell"
+                >
+                  Completed
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -341,25 +431,44 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
                 :key="index"
                 class="border-b border-gray-700 hover:bg-gray-800/50 transition-colors"
               >
-                <td class="p-4">
+                <td class="p-2 mobile:p-3 sm:p-4">
                   <span
-                    class="inline-block px-3 py-1 rounded-full text-sm font-bold"
+                    class="inline-block px-2 mobile:px-3 py-1 rounded-full text-xs mobile:text-sm font-bold"
                     :class="getRankClass(index)"
                   >
                     {{ getRankBadge(index) }}
                   </span>
                 </td>
-                <td class="p-4">
-                  <div class="font-semibold">{{ entry.firstName }} {{ entry.lastName }}</div>
-                  <div class="text-sm text-gray-400">{{ entry.workTime }}</div>
+                <td class="p-2 mobile:p-3 sm:p-4">
+                  <div class="font-semibold text-xs mobile:text-sm laptop:text-base">
+                    {{ entry.firstName }} {{ entry.lastName }}
+                  </div>
+                  <div class="text-xs mobile:text-xs laptop:text-sm text-gray-400">
+                    {{ entry.workTime }}
+                  </div>
+                  <div class="text-xs mobile:text-xs laptop:text-sm text-gray-400 sm:hidden">
+                    {{ entry.department }}
+                  </div>
                 </td>
-                <td class="p-4 text-gray-300">{{ entry.department }}</td>
-                <td class="p-4 text-center">
-                  <div class="text-xl font-bold text-dhl-yellow">{{ entry.score }}</div>
+                <td
+                  class="p-2 mobile:p-3 sm:p-4 text-gray-300 text-xs mobile:text-sm laptop:text-base hidden sm:table-cell"
+                >
+                  {{ entry.department }}
                 </td>
-                <td class="p-4 text-center text-blue-400 font-mono">{{ entry.timeSpent }}</td>
-                <td class="p-4 text-center">
-                  <div class="text-sm text-gray-400">
+                <td class="p-2 mobile:p-3 sm:p-4 text-center">
+                  <div
+                    class="text-lg mobile:text-xl laptop:text-2xl large:text-3xl font-bold text-dhl-yellow"
+                  >
+                    {{ entry.score }}
+                  </div>
+                </td>
+                <td
+                  class="p-2 mobile:p-3 sm:p-4 text-center text-blue-400 font-mono text-xs mobile:text-sm laptop:text-base"
+                >
+                  {{ entry.timeSpent }}
+                </td>
+                <td class="p-2 mobile:p-3 sm:p-4 text-center hidden sm:table-cell">
+                  <div class="text-xs mobile:text-sm laptop:text-base text-gray-400">
                     {{ new Date(entry.timestamp).toLocaleDateString() }}
                   </div>
                 </td>
@@ -369,11 +478,11 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         </div>
       </div>
 
-      <!-- Action Button -->
-      <div class="text-center mt-8">
+      <!-- Action Button - Responsive -->
+      <div class="text-center mt-6 mobile:mt-8 laptop:mt-10">
         <button
           @click="goBack"
-          class="bg-dhl-red text-white px-8 py-3 rounded-lg font-bold text-lg hover:bg-red-600 transition-colors"
+          class="bg-dhl-red text-white px-6 mobile:px-8 laptop:px-10 py-2 mobile:py-3 laptop:py-4 rounded-lg font-bold text-sm mobile:text-base laptop:text-lg hover:bg-red-600 transition-colors touch-manipulation min-h-[44px] mobile:min-h-[48px]"
         >
           Back to Home
         </button>

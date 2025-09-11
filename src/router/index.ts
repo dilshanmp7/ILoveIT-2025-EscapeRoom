@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import LeaderboardView from '../views/LeaderboardView.vue'
+import ResultsView from '../views/ResultsView.vue'
+import AdminLeaderboardView from '../views/AdminLeaderboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,17 +23,17 @@ const router = createRouter({
     {
       path: '/results',
       name: 'results',
-      component: () => import('../views/ResultsView.vue'),
+      component: ResultsView,
     },
     {
       path: '/leaderboard',
       name: 'leaderboard',
-      component: () => import('../views/LeaderboardView.vue'),
+      component: LeaderboardView,
     },
     {
       path: '/admin/leaderboard',
       name: 'admin-leaderboard',
-      component: () => import('../views/AdminLeaderboardView.vue'),
+      component: AdminLeaderboardView,
     },
   ],
 })

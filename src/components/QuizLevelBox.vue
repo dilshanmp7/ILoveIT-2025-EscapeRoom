@@ -85,59 +85,105 @@ function submitAnswer() {
 </script>
 <template>
   <div
-    class="w-full sm:w-1/4 h-full sm:h-3/4 mb-8 sm:mb-0 p-3 sm:p-6 rounded-lg border-4 transition-all duration-500 flex flex-col"
+    class="w-full sm:w-1/4 laptop:w-[30%] large:w-[28%] p-1 mobile:p-1 sm:p-1 laptop:p-2 large:p-2 rounded-lg border-4 transition-all duration-500 flex flex-col"
     :class="{
       'border-dhl-yellow bg-black/50': status === 'unlocked',
       'border-gray-600 bg-black/30 text-gray-600': status === 'locked',
       'border-green-500 bg-green-900/70': status === 'solved',
     }"
+    :style="{
+      height: 'calc(100% - 90px)',
+      maxHeight: 'calc(100% - 90px)',
+      minHeight: '0',
+      overflow: 'hidden',
+      boxSizing: 'border-box',
+      margin: '0',
+    }"
   >
+    <!-- Enhanced title with better spacing for readability -->
     <h2
-      class="text-base sm:text-2xl font-bold mb-2 sm:mb-4 text-center"
+      class="text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl font-bold mb-1 mobile:mb-2 sm:mb-2 laptop:mb-3 large:mb-3 text-center leading-normal"
       :class="{ 'text-dhl-yellow': status !== 'locked', 'text-green-400': status === 'solved' }"
     >
       {{ levelData.title }}
     </h2>
 
+    <!-- Locked state - better proportions and spacing -->
     <div
       v-if="status === 'locked'"
-      class="flex flex-col items-center justify-center flex-1 min-h-[80px]"
+      class="flex flex-col items-center justify-center flex-1 min-h-[60px] mobile:min-h-[80px] laptop:min-h-[100px] large:min-h-[120px] space-y-2"
     >
-      <p class="text-2xl sm:text-5xl">🔒</p>
-      <p class="mt-1 text-base sm:text-xl">LOCKED</p>
+      <p class="text-xl mobile:text-2xl sm:text-3xl laptop:text-4xl large:text-5xl">🔒</p>
+      <p
+        class="text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl font-semibold tracking-wide"
+      >
+        LOCKED
+      </p>
     </div>
 
+    <!-- Solved state - enhanced with better spacing -->
     <div
       v-if="status === 'solved'"
-      class="flex flex-col items-center justify-center flex-1 text-center min-h-[80px]"
+      class="flex flex-col items-center justify-center flex-1 text-center min-h-[60px] mobile:min-h-[80px] laptop:min-h-[100px] large:min-h-[120px] space-y-2"
     >
-      <p class="text-2xl sm:text-5xl">✅</p>
-      <p class="mt-1 text-base sm:text-xl font-bold text-green-300">LEVEL COMPLETE</p>
-      <div v-if="assignedHint" class="mt-2 sm:mt-4 w-full">
-        <p class="text-xs sm:text-base">Hint Awarded:</p>
+      <p class="text-xl mobile:text-2xl sm:text-3xl laptop:text-4xl large:text-5xl">✅</p>
+      <p
+        class="text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl font-bold text-green-300 tracking-wide"
+      >
+        LEVEL COMPLETE
+      </p>
+      <div
+        v-if="assignedHint"
+        class="mt-3 mobile:mt-4 sm:mt-4 laptop:mt-5 large:mt-6 w-full space-y-2"
+      >
         <p
-          class="text-xs sm:text-lg font-mono bg-black p-1 sm:p-2 rounded border border-green-500 text-center mt-1 break-words"
+          class="text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl font-semibold text-gray-300"
+        >
+          Hint Awarded:
+        </p>
+        <p
+          class="text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl font-mono bg-black px-2 py-2 mobile:px-3 mobile:py-2 sm:px-3 sm:py-3 laptop:px-4 laptop:py-3 large:px-5 large:py-4 rounded-lg border border-green-500 text-center leading-relaxed break-words"
         >
           "{{ assignedHint.text }}"
         </p>
       </div>
     </div>
 
-    <div v-if="status === 'unlocked'" class="flex flex-col flex-1 overflow-hidden">
-      <p class="text-center mb-2 sm:mb-4 text-xs sm:text-lg">
+    <!-- Active quiz state - optimized spacing for laptop visibility -->
+    <div
+      v-if="status === 'unlocked'"
+      class="flex flex-col flex-1 overflow-hidden space-y-1 laptop:space-y-1 large:space-y-2"
+    >
+      <!-- Question counter with laptop-optimized spacing -->
+      <p
+        class="text-center mb-1 mobile:mb-2 sm:mb-2 laptop:mb-1 large:mb-2 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl flex-shrink-0 leading-normal font-medium text-gray-300"
+      >
         Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
       </p>
-      <div v-if="currentQuestion" class="flex-1 flex flex-col overflow-hidden">
-        <p class="mb-2 sm:mb-4 text-sm sm:text-xl leading-tight">{{ currentQuestion.question }}</p>
 
-        <!-- Scrollable options container for mobile with better spacing -->
-        <div class="space-y-1 sm:space-y-3 flex-1 overflow-y-auto sm:overflow-y-visible mb-2">
+      <div
+        v-if="currentQuestion"
+        class="flex-1 flex flex-col overflow-hidden space-y-1 laptop:space-y-1 large:space-y-2"
+      >
+        <!-- Question text with laptop-optimized spacing -->
+        <p
+          class="mb-2 mobile:mb-3 sm:mb-3 laptop:mb-2 large:mb-3 text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl leading-relaxed flex-shrink-0 font-medium text-white px-1"
+        >
+          {{ currentQuestion.question }}
+        </p>
+
+        <!-- Options container with laptop-optimized spacing -->
+        <div
+          class="space-y-1 mobile:space-y-2 sm:space-y-2 laptop:space-y-2 large:space-y-3 overflow-y-auto mb-4 mobile:mb-5 sm:mb-5 laptop:mb-4 large:mb-6 min-h-0 flex-shrink-0"
+        >
           <div v-for="option in currentQuestion.options" :key="option.id">
             <label
-              class="block w-full p-2 sm:p-3 rounded border-2 cursor-pointer text-xs sm:text-base transition-colors touch-manipulation leading-tight"
+              class="block w-full px-2 py-2 mobile:px-3 mobile:py-2 sm:px-3 sm:py-3 laptop:px-3 laptop:py-2 large:px-5 large:py-4 rounded-lg border-2 cursor-pointer text-sm mobile:text-base sm:text-lg laptop:text-base large:text-xl transition-all touch-manipulation leading-relaxed font-medium hover:shadow-lg"
               :class="{
-                'border-gray-500 hover:bg-gray-700': selectedOption !== option.id,
-                'bg-dhl-yellow text-black border-dhl-yellow': selectedOption === option.id,
+                'border-gray-500 hover:bg-gray-700 hover:border-gray-400':
+                  selectedOption !== option.id,
+                'bg-dhl-yellow text-black border-dhl-yellow shadow-lg':
+                  selectedOption === option.id,
               }"
             >
               <input type="radio" :value="option.id" v-model="selectedOption" class="hidden" />
@@ -146,22 +192,29 @@ function submitAnswer() {
           </div>
         </div>
 
-        <div class="mt-auto pb-4">
+        <!-- Submit area with laptop-optimized spacing -->
+        <div
+          class="flex-shrink-0 space-y-1 laptop:space-y-1 large:space-y-2 pt-[30px] mobile:pt-5 sm:pt-5 laptop:pt-[30px] large:pt-[30px]"
+        >
           <button
             @click="submitAnswer"
             :disabled="selectedOption === null"
-            class="w-full bg-dhl-red text-white p-2 sm:p-3 rounded font-bold disabled:bg-gray-500 text-xs sm:text-base touch-manipulation min-h-[44px]"
+            class="w-full bg-dhl-red hover:bg-red-600 disabled:bg-gray-500 disabled:hover:bg-gray-500 text-white px-3 py-2 mobile:px-4 mobile:py-3 sm:px-4 sm:py-3 laptop:px-4 laptop:py-3 large:px-6 large:py-5 rounded-lg font-bold text-sm mobile:text-base sm:text-lg laptop:text-base large:text-xl touch-manipulation min-h-[40px] mobile:min-h-[44px] laptop:min-h-[40px] large:min-h-[48px] transition-all hover:shadow-lg"
           >
             Submit Answer
           </button>
-          <p class="text-center h-4 sm:h-6 mt-1 sm:mt-2 text-sm sm:text-xl font-bold">
+
+          <!-- Feedback with laptop-optimized height -->
+          <p
+            class="text-center h-4 mobile:h-5 sm:h-6 laptop:h-5 large:h-7 text-sm mobile:text-base sm:text-lg laptop:text-base large:text-xl font-bold leading-normal"
+          >
             {{ feedback }}
           </p>
 
-          <!-- Mobile-friendly reset notification -->
+          <!-- Reset notification with laptop-optimized spacing -->
           <div
             v-if="resetMessage"
-            class="mt-2 p-2 bg-red-600 text-white text-center text-xs sm:text-sm rounded border-2 border-red-400 animate-pulse"
+            class="mt-1 mobile:mt-2 laptop:mt-1 large:mt-3 px-3 py-2 mobile:px-4 mobile:py-3 laptop:px-4 laptop:py-2 large:px-6 large:py-4 bg-red-600 text-white text-center text-sm mobile:text-base sm:text-lg laptop:text-base large:text-xl rounded-lg border-2 border-red-400 animate-pulse leading-normal font-medium"
           >
             {{ resetMessage }}
           </div>

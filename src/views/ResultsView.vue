@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen text-white flex items-center justify-center p-4 relative overflow-hidden"
+    class="min-h-screen text-white flex items-center justify-center p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
     :style="{
       backgroundImage: `url('${dhlLoveIt2025Background}')`,
       backgroundSize: 'cover',
@@ -11,231 +11,309 @@
     <!-- Dark overlay for better text readability -->
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
 
-    <!-- Branding Images Around the View -->
+    <!-- Branding Images Around the View - Responsive positioning -->
     <!-- Top Left - I Love IT -->
-    <div class="absolute top-4 left-4 z-10 hidden lg:block">
+    <div
+      class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
+    >
       <img
         :src="iLoveItImage"
         alt="I Love IT"
-        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+        class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
 
     <!-- Top Right - Win -->
-    <div class="absolute top-4 right-4 z-10 hidden lg:block">
+    <div
+      class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
+    >
       <img
         :src="winImage"
         alt="Win"
-        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+        class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
 
     <!-- Bottom Left - Team -->
-    <div class="absolute bottom-4 left-4 z-10 hidden lg:block">
+    <div
+      class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
+    >
       <img
         :src="teamImage"
         alt="Team"
-        class="w-16 xl:w-20 opacity-80 hover:opacity-100 transition-opacity"
+        class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
 
     <!-- Bottom Right - Additional I Love IT -->
-    <div class="absolute bottom-4 right-4 z-10 hidden lg:block">
+    <div
+      class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
+    >
       <img
         :src="iLoveItImage"
         alt="I Love IT"
-        class="w-12 xl:w-16 opacity-70 hover:opacity-100 transition-opacity"
+        class="w-8 mobile:w-10 laptop:w-12 large:w-16 opacity-70 hover:opacity-100 transition-opacity"
       />
     </div>
 
     <!-- Mobile Branding Row (visible only on mobile) -->
-    <div class="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 flex lg:hidden gap-3">
-      <img :src="iLoveItImage" alt="I Love IT" class="w-8 opacity-70" />
-      <img :src="winImage" alt="Win" class="w-8 opacity-70" />
-      <img :src="teamImage" alt="Team" class="w-8 opacity-70" />
+    <div
+      class="absolute top-1 mobile:top-2 left-1/2 transform -translate-x-1/2 z-10 flex lg:hidden gap-2 mobile:gap-3"
+    >
+      <img :src="iLoveItImage" alt="I Love IT" class="w-6 mobile:w-8 opacity-70" />
+      <img :src="winImage" alt="Win" class="w-6 mobile:w-8 opacity-70" />
+      <img :src="teamImage" alt="Team" class="w-6 mobile:w-8 opacity-70" />
     </div>
 
-    <div class="max-w-4xl w-full relative z-20">
-      <!-- Header - Mobile Responsive -->
-      <div class="text-center mb-8 sm:mb-12">
+    <div
+      class="max-w-2xl mobile:max-w-3xl sm:max-w-4xl laptop:max-w-5xl large:max-w-6xl w-full relative z-20"
+    >
+      <!-- Header - Fully responsive -->
+      <div class="text-center mb-6 mobile:mb-8 sm:mb-10 laptop:mb-12 large:mb-16">
         <img
           src="@/assets/dhl_logo2.png"
           alt="DHL Logo"
-          class="h-12 sm:h-16 mx-auto mb-4 sm:mb-6"
+          class="h-8 mobile:h-10 sm:h-12 laptop:h-16 large:h-20 mx-auto mb-3 mobile:mb-4 sm:mb-6 laptop:mb-8"
         />
         <h1
-          class="text-3xl sm:text-4xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-dhl-yellow to-dhl-red mb-3 sm:mb-4"
+          class="text-2xl mobile:text-3xl sm:text-4xl laptop:text-5xl large:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-dhl-yellow to-dhl-red mb-2 mobile:mb-3 sm:mb-4 laptop:mb-5"
         >
           CONGRATULATIONS!
         </h1>
-        <h2 class="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-300 mb-2">
+        <h2
+          class="text-lg mobile:text-xl sm:text-2xl laptop:text-3xl large:text-4xl font-semibold text-gray-300 mb-1 mobile:mb-2"
+        >
           You escaped "The IT Lockdown"
         </h2>
-        <div class="text-lg sm:text-xl text-gray-400">
+        <div class="text-base mobile:text-lg laptop:text-xl large:text-2xl text-gray-400">
           {{ playerStore.firstName }} {{ playerStore.lastName }}
         </div>
-        <div class="text-base sm:text-lg text-gray-500">
+        <div class="text-sm mobile:text-base laptop:text-lg large:text-xl text-gray-500">
           {{ playerStore.department }} • {{ playerStore.workTime }}
         </div>
       </div>
 
-      <!-- Main Score Card - Mobile Optimized -->
+      <!-- Main Score Card - Fully responsive -->
       <div
-        class="bg-gradient-to-r from-dhl-red/20 via-black to-dhl-yellow/20 border-2 border-dhl-yellow rounded-xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 text-center shadow-2xl"
+        class="bg-gradient-to-r from-dhl-red/20 via-black to-dhl-yellow/20 border-2 border-dhl-yellow rounded-xl p-3 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 mb-4 mobile:mb-6 sm:mb-8 laptop:mb-10 text-center shadow-2xl"
       >
-        <div class="text-5xl sm:text-6xl lg:text-7xl font-bold text-dhl-yellow mb-3 sm:mb-4">
+        <div
+          class="text-4xl mobile:text-5xl sm:text-6xl laptop:text-7xl large:text-8xl font-bold text-dhl-yellow mb-2 mobile:mb-3 sm:mb-4 laptop:mb-5"
+        >
           {{ playerStore.finalScore }}
         </div>
-        <div class="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-4 sm:mb-6">
+        <div
+          class="text-base mobile:text-lg sm:text-xl laptop:text-2xl large:text-3xl text-gray-300 mb-3 mobile:mb-4 sm:mb-6 laptop:mb-8"
+        >
           Final Score (out of 100)
         </div>
 
-        <!-- Performance Badge -->
-        <div class="mb-4 sm:mb-6">
+        <!-- Performance Badge - Responsive sizing -->
+        <div class="mb-3 mobile:mb-4 sm:mb-6 laptop:mb-8">
           <div
-            class="inline-block px-4 sm:px-6 py-2 sm:py-3 rounded-full text-lg sm:text-xl font-bold"
+            class="inline-block px-3 mobile:px-4 sm:px-6 laptop:px-8 large:px-10 py-2 mobile:py-2 sm:py-3 laptop:py-4 large:py-5 rounded-full text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl font-bold"
             :class="performanceBadgeClass"
           >
             {{ performanceBadge }}
           </div>
         </div>
 
-        <!-- Game Statistics - Mobile Stack -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8">
-          <div class="bg-black/50 rounded-lg p-3 sm:p-4 border border-gray-600">
-            <div class="text-2xl sm:text-3xl font-bold text-blue-400">
+        <!-- Game Statistics - Responsive grid -->
+        <div
+          class="grid grid-cols-1 sm:grid-cols-3 gap-2 mobile:gap-3 sm:gap-4 laptop:gap-6 large:gap-8 mt-4 mobile:mt-6 sm:mt-8 laptop:mt-10"
+        >
+          <div
+            class="bg-black/50 rounded-lg p-2 mobile:p-3 sm:p-4 laptop:p-5 large:p-6 border border-gray-600"
+          >
+            <div
+              class="text-xl mobile:text-2xl sm:text-3xl laptop:text-4xl large:text-5xl font-bold text-blue-400"
+            >
               {{ playerStore.timeSpent }}
             </div>
-            <div class="text-gray-300 text-sm sm:text-base">Time Taken</div>
+            <div
+              class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
+            >
+              Time Taken
+            </div>
           </div>
-          <div class="bg-black/50 rounded-lg p-3 sm:p-4 border border-gray-600">
-            <div class="text-2xl sm:text-3xl font-bold text-red-400">
+          <div
+            class="bg-black/50 rounded-lg p-2 mobile:p-3 sm:p-4 laptop:p-5 large:p-6 border border-gray-600"
+          >
+            <div
+              class="text-xl mobile:text-2xl sm:text-3xl laptop:text-4xl large:text-5xl font-bold text-red-400"
+            >
               {{ playerStore.wrongAnswerPenalties }}
             </div>
-            <div class="text-gray-300 text-sm sm:text-base">Wrong Answers</div>
+            <div
+              class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
+            >
+              Wrong Answers
+            </div>
           </div>
-          <div class="bg-black/50 rounded-lg p-3 sm:p-4 border border-gray-600">
-            <div class="text-2xl sm:text-3xl font-bold text-purple-400">
+          <div
+            class="bg-black/50 rounded-lg p-2 mobile:p-3 sm:p-4 laptop:p-5 large:p-6 border border-gray-600"
+          >
+            <div
+              class="text-xl mobile:text-2xl sm:text-3xl laptop:text-4xl large:text-5xl font-bold text-purple-400"
+            >
               {{ playerStore.hintsUsed }}
             </div>
-            <div class="text-gray-300 text-sm sm:text-base">Hints Used</div>
+            <div
+              class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
+            >
+              Hints Used
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Detailed Breakdown - Mobile Optimized -->
-      <div class="bg-black/60 border border-gray-600 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8">
-        <h3 class="text-xl sm:text-2xl font-bold text-dhl-yellow mb-3 sm:mb-4 text-center">
+      <!-- Detailed Breakdown - Responsive table -->
+      <div
+        class="bg-black/60 border border-gray-600 rounded-xl p-3 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 mb-4 mobile:mb-6 sm:mb-8 laptop:mb-10"
+      >
+        <h3
+          class="text-lg mobile:text-xl sm:text-2xl laptop:text-3xl large:text-4xl font-bold text-dhl-yellow mb-2 mobile:mb-3 sm:mb-4 laptop:mb-5 text-center"
+        >
           Score Breakdown
         </h3>
-        <div class="space-y-2 sm:space-y-3">
-          <div class="flex justify-between items-center py-2 border-b border-gray-700">
-            <span class="text-gray-300 text-sm sm:text-base">Starting Score</span>
-            <span class="text-green-400 font-mono text-base sm:text-lg">100</span>
+        <div class="space-y-1 mobile:space-y-2 sm:space-y-3 laptop:space-y-4">
+          <div class="flex justify-between items-center py-1 mobile:py-2 border-b border-gray-700">
+            <span
+              class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
+              >Starting Score</span
+            >
+            <span
+              class="text-green-400 font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl"
+              >100</span
+            >
           </div>
           <div
-            class="flex justify-between items-start sm:items-center py-2 border-b border-gray-700"
+            class="flex justify-between items-start sm:items-center py-1 mobile:py-2 border-b border-gray-700"
           >
-            <span class="text-gray-300 text-sm sm:text-base flex-1 pr-2">
+            <span
+              class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl flex-1 pr-2"
+            >
               Time Penalty
               <span
                 v-if="elapsedSeconds <= 60"
-                class="text-green-400 block sm:inline text-xs sm:text-sm"
+                class="text-green-400 block sm:inline text-xs mobile:text-xs sm:text-sm laptop:text-base large:text-lg"
                 >({{ elapsedSeconds }}s ≤ 60s - Perfect Time!)</span
               >
-              <span v-else class="block sm:inline text-xs sm:text-sm"
+              <span
+                v-else
+                class="block sm:inline text-xs mobile:text-xs sm:text-sm laptop:text-base large:text-lg"
                 >({{ ((elapsedSeconds - 60) / 60).toFixed(1) }} extra minutes beyond 60s)</span
               >
             </span>
             <span
-              class="font-mono text-base sm:text-lg flex-shrink-0"
+              class="font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl flex-shrink-0"
               :class="timePenalty > 0 ? 'text-red-400' : 'text-green-400'"
             >
               {{ timePenalty > 0 ? '-' : '+' }}{{ timePenalty }}
             </span>
           </div>
-          <div class="flex justify-between items-center py-2 border-b border-gray-700">
-            <span class="text-gray-300 text-sm sm:text-base"
+          <div class="flex justify-between items-center py-1 mobile:py-2 border-b border-gray-700">
+            <span
+              class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
               >Wrong Answer Penalty ({{ playerStore.wrongAnswerPenalties }} × 5)</span
             >
-            <span class="text-red-400 font-mono text-base sm:text-lg"
+            <span
+              class="text-red-400 font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl"
               >-{{ playerStore.wrongAnswerPenalties * 5 }}</span
             >
           </div>
-          <div class="flex justify-between items-center py-2 border-b border-gray-700">
-            <span class="text-gray-300 text-sm sm:text-base"
+          <div class="flex justify-between items-center py-1 mobile:py-2 border-b border-gray-700">
+            <span
+              class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
               >Hints Penalty ({{ playerStore.hintsUsed }} × 2)</span
             >
             <span
-              class="font-mono text-base sm:text-lg"
+              class="font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl"
               :class="playerStore.hintsPenalty > 0 ? 'text-red-400' : 'text-gray-400'"
             >
               {{ playerStore.hintsPenalty > 0 ? '-' : '' }}{{ playerStore.hintsPenalty }}
             </span>
           </div>
-          <div class="flex justify-between items-center py-2 border-b border-gray-700">
-            <span class="text-gray-300 text-sm sm:text-base">Completion Bonus</span>
+          <div class="flex justify-between items-center py-1 mobile:py-2 border-b border-gray-700">
             <span
-              class="font-mono text-base sm:text-lg"
+              class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
+              >Completion Bonus</span
+            >
+            <span
+              class="font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl"
               :class="playerStore.completionBonus > 0 ? 'text-green-400' : 'text-gray-400'"
             >
               {{ playerStore.completionBonus > 0 ? '+' : '' }}{{ playerStore.completionBonus }}
             </span>
           </div>
-          <div class="flex justify-between items-center py-3 border-t-2 border-dhl-yellow mt-4">
-            <span class="text-lg sm:text-xl font-bold text-dhl-yellow">Final Score</span>
-            <span class="text-lg sm:text-xl font-bold text-dhl-yellow font-mono">{{
-              playerStore.finalScore
-            }}</span>
+          <div
+            class="flex justify-between items-center py-2 mobile:py-3 border-t-2 border-dhl-yellow mt-3 mobile:mt-4"
+          >
+            <span
+              class="text-base mobile:text-lg sm:text-xl laptop:text-2xl large:text-3xl font-bold text-dhl-yellow"
+              >Final Score</span
+            >
+            <span
+              class="text-base mobile:text-lg sm:text-xl laptop:text-2xl large:text-3xl font-bold text-dhl-yellow font-mono"
+              >{{ playerStore.finalScore }}</span
+            >
           </div>
         </div>
       </div>
 
-      <!-- Tournament Message - Mobile Optimized -->
-      <!-- Tournament Message - Mobile Optimized -->
+      <!-- Tournament Message - Responsive container -->
       <div
-        class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 border border-dhl-yellow rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 text-center"
+        class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 border border-dhl-yellow rounded-lg p-3 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 mb-4 mobile:mb-6 sm:mb-8 laptop:mb-10 text-center"
       >
-        <h3 class="text-xl sm:text-2xl font-bold text-dhl-yellow mb-2 sm:mb-3">
+        <h3
+          class="text-lg mobile:text-xl sm:text-2xl laptop:text-3xl large:text-4xl font-bold text-dhl-yellow mb-1 mobile:mb-2 sm:mb-3 laptop:mb-4"
+        >
           🏆 Tournament Results
         </h3>
-        <p class="text-gray-200 text-sm sm:text-base mb-3 sm:mb-4">
+        <p
+          class="text-gray-200 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl mb-2 mobile:mb-3 sm:mb-4 laptop:mb-5"
+        >
           You've completed the I Love IT 2025 Escape Room Challenge!
         </p>
 
-        <!-- Score Submission Status -->
+        <!-- Score Submission Status - Responsive -->
         <div
-          class="bg-black/40 border rounded-lg p-3 mb-4"
+          class="bg-black/40 border rounded-lg p-2 mobile:p-3 laptop:p-4 large:p-5 mb-3 mobile:mb-4"
           :class="submissionStatus.submitted ? 'border-green-500' : 'border-yellow-500'"
         >
           <p
-            class="text-sm sm:text-base font-medium"
+            class="text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl font-medium"
             :class="submissionStatus.submitted ? 'text-green-400' : 'text-yellow-400'"
           >
             {{ submissionStatus.message }}
           </p>
-          <p v-if="submissionStatus.rank" class="text-xs sm:text-sm text-gray-300 mt-1">
+          <p
+            v-if="submissionStatus.rank"
+            class="text-xs mobile:text-xs sm:text-sm laptop:text-base large:text-lg text-gray-300 mt-1"
+          >
             Total Tournament Participants: {{ submissionStatus.rank }}+
           </p>
         </div>
 
         <!-- Encouraging Message -->
-        <p class="text-gray-300 text-sm sm:text-base">
+        <p class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl">
           🎯 Thanks for participating in the I Love IT 2025 tournament!
         </p>
       </div>
 
-      <!-- Action Buttons - Mobile Stack -->
-      <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+      <!-- Action Buttons - Responsive layout and sizing -->
+      <div
+        class="flex flex-col sm:flex-row justify-center space-y-3 mobile:space-y-4 sm:space-y-0 sm:space-x-4 laptop:space-x-6 large:space-x-8"
+      >
         <button
           @click="viewLeaderboard"
-          class="bg-dhl-yellow text-black px-6 sm:px-8 py-3 rounded-lg font-bold text-base sm:text-lg hover:bg-yellow-400 transition-colors touch-manipulation"
+          class="bg-dhl-yellow text-black px-4 mobile:px-6 sm:px-8 laptop:px-10 large:px-12 py-2 mobile:py-3 laptop:py-4 large:py-5 rounded-lg font-bold text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl hover:bg-yellow-400 transition-colors touch-manipulation min-h-[44px] mobile:min-h-[48px]"
         >
           View Leaderboard
         </button>
         <button
           @click="goHome"
-          class="bg-dhl-red text-white px-6 sm:px-8 py-3 rounded-lg font-bold text-base sm:text-lg hover:bg-red-600 transition-colors touch-manipulation"
+          class="bg-dhl-red text-white px-4 mobile:px-6 sm:px-8 laptop:px-10 large:px-12 py-2 mobile:py-3 laptop:py-4 large:py-5 rounded-lg font-bold text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl hover:bg-red-600 transition-colors touch-manipulation min-h-[44px] mobile:min-h-[48px]"
         >
           Return Home
         </button>

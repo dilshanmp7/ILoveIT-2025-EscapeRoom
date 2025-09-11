@@ -85,12 +85,12 @@ export default async function handler(req, res) {
     }
 
     // Summary statistics
-    const validPlayers = allPlayers.filter(p => p.hasScore)
+    const validPlayers = allPlayers.filter((p) => p.hasScore)
     const summary = {
       totalKeys: allPlayerKeys.length,
       validPlayers: validPlayers.length,
       invalidPlayers: allPlayers.length - validPlayers.length,
-      scores: validPlayers.map(p => ({ key: p.key, score: p.score, name: p.name })),
+      scores: validPlayers.map((p) => ({ key: p.key, score: p.score, name: p.name })),
       sortedSetWorking: !sortedSetError,
     }
 
@@ -107,13 +107,13 @@ export default async function handler(req, res) {
         sortedSetError,
         tournamentStats,
       },
-      recommendations: validPlayers.length === 0 
-        ? ["No valid player data found. Check if players have score property."]
-        : validPlayers.length !== (sortedSetData?.count || 0)
-        ? ["Player count mismatch with sorted set. Consider running repair."]
-        : ["Database looks healthy!"]
+      recommendations:
+        validPlayers.length === 0
+          ? ['No valid player data found. Check if players have score property.']
+          : validPlayers.length !== (sortedSetData?.count || 0)
+          ? ['Player count mismatch with sorted set. Consider running repair.']
+          : ['Database looks healthy!'],
     })
-
   } catch (error) {
     console.error('❌ Database debug failed:', error)
 

@@ -24,71 +24,86 @@ const formattedTime = computed(() => {
 })
 </script>
 <template>
-  <!-- Top UI Bar - Responsive with better mobile spacing -->
+  <!-- Top UI Bar - Ultra-compact design for maximum middle space -->
   <div
-    class="absolute top-0 left-0 w-full p-2 sm:p-4 bg-black/90 border-b border-gray-600 flex justify-between items-center z-20"
+    class="absolute top-0 left-0 w-full px-1 py-1 mobile:px-2 mobile:py-1 sm:px-2 sm:py-1 laptop:px-3 laptop:py-1 large:px-3 large:py-1 bg-black/90 border-b border-gray-600 flex justify-between items-center z-20"
   >
-    <!-- Left side: Logos (mobile and desktop) -->
+    <!-- Left side: Logos (ultra-compact sizing) -->
     <div class="flex items-center overflow-hidden">
-      <!-- Combined logos -->
-      <div class="flex items-center gap-1 sm:gap-2 mr-2 sm:mr-4 flex-shrink-0">
-        <img :src="dhlLogo" alt="DHL Logo" class="h-6 sm:h-8" />
-        <img :src="iLoveItLogo" alt="I Love IT" class="h-5 sm:h-7" />
+      <!-- Combined logos with ultra-compact responsive sizing -->
+      <div
+        class="flex items-center gap-1 mobile:gap-1 sm:gap-1 laptop:gap-2 large:gap-2 mr-1 mobile:mr-1 sm:mr-2 flex-shrink-0"
+      >
+        <img :src="dhlLogo" alt="DHL Logo" class="h-3 mobile:h-4 sm:h-5 laptop:h-6 large:h-7" />
+        <img
+          :src="iLoveItLogo"
+          alt="I Love IT"
+          class="h-2 mobile:h-3 sm:h-4 laptop:h-5 large:h-6"
+        />
       </div>
       <!-- Room name for mobile only -->
-      <h1 class="text-lg font-bold text-dhl-yellow truncate sm:hidden">
+      <h1 class="text-xs mobile:text-xs lg:text-sm font-bold text-dhl-yellow truncate sm:hidden">
         {{ gameStore.currentRoom.name }}
       </h1>
     </div>
 
-    <!-- Center: Room name for desktop only -->
+    <!-- Center: Room name for desktop (ultra-compact typography) -->
     <div class="hidden sm:flex absolute left-1/2 transform -translate-x-1/2">
       <h1
-        class="text-3xl lg:text-4xl xl:text-5xl font-bold text-dhl-yellow text-center whitespace-nowrap"
+        class="text-sm sm:text-lg lg:text-xl laptop:text-2xl large:text-3xl font-bold text-dhl-yellow text-center whitespace-nowrap"
       >
         {{ gameStore.currentRoom.name }}
       </h1>
     </div>
 
-    <!-- Right side: Timer -->
-    <div class="flex items-center gap-2 sm:gap-4">
-      <!-- Mobile-optimized timer -->
+    <!-- Right side: Timer (ultra-compact sizing) -->
+    <div class="flex items-center gap-1 mobile:gap-1 sm:gap-2">
       <div
-        class="text-2xl sm:text-4xl font-mono font-bold text-dhl-red bg-black px-2 sm:px-4 py-1 rounded"
+        class="text-sm mobile:text-lg sm:text-xl laptop:text-2xl large:text-3xl font-mono font-bold text-dhl-red bg-black px-1 mobile:px-2 sm:px-2 laptop:px-3 large:px-4 py-0 laptop:py-1 large:py-1 rounded"
       >
         {{ formattedTime }}
       </div>
     </div>
   </div>
 
-  <!-- Bottom Hints Panel - Progressive horizontal display -->
-  <div class="absolute bottom-0 left-0 w-full p-2 sm:p-4 bg-black/95 border-t border-gray-600 z-20">
-    <div class="max-w-4xl mx-auto text-center">
-      <h3 class="text-sm sm:text-lg font-bold text-dhl-yellow mb-2">Security Override Hints</h3>
+  <!-- Bottom Hints Panel - Ultra-compact with good hint visibility -->
+  <div
+    class="absolute bottom-0 left-0 w-full px-1 py-1 mobile:px-2 mobile:py-1 sm:px-2 sm:py-1 laptop:px-3 laptop:py-1 large:px-3 large:py-1 bg-black/95 border-t border-gray-600 z-20"
+  >
+    <div class="max-w-6xl mx-auto text-center">
+      <h3
+        class="text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base font-bold text-dhl-yellow mb-1"
+      >
+        Security Hints
+      </h3>
 
       <div
         v-if="roomStore.collectedHints.length === 0"
-        class="text-gray-400 italic text-xs sm:text-base"
+        class="text-gray-400 italic text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base"
       >
-        Solve puzzles to collect hints for the final code
+        Solve puzzles to collect hints
       </div>
 
-      <!-- Progressive horizontal hints display -->
+      <!-- Ultra-compact horizontal hints display with good visibility -->
       <div
-        class="flex flex-row justify-center items-center gap-2 sm:gap-4 font-mono text-sm sm:text-xl"
+        class="grid grid-cols-3 gap-1 mobile:gap-1 sm:gap-2 laptop:gap-2 large:gap-3 max-w-3xl mx-auto"
       >
         <!-- Hint 1 Slot -->
         <div class="flex flex-col items-center">
-          <div class="text-xs text-gray-400 mb-1">Hint 1</div>
+          <div
+            class="text-xs mobile:text-xs sm:text-xs laptop:text-xs large:text-sm text-gray-400 mb-1"
+          >
+            Hint 1
+          </div>
           <div
             v-if="roomStore.collectedHints[0]"
-            class="bg-dhl-yellow text-black px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-dhl-yellow font-bold text-center min-w-[100px] sm:min-w-[150px] animate-pulse"
+            class="bg-dhl-yellow text-black px-1 mobile:px-1 sm:px-2 laptop:px-2 large:px-3 py-1 mobile:py-1 sm:py-1 laptop:py-1 large:py-2 rounded-lg border-2 border-dhl-yellow font-bold text-center w-full text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base animate-pulse"
           >
             {{ roomStore.collectedHints[0] }}
           </div>
           <div
             v-else
-            class="bg-gray-800 text-gray-500 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-600 text-center min-w-[100px] sm:min-w-[150px]"
+            class="bg-gray-800 text-gray-500 px-1 mobile:px-1 sm:px-2 laptop:px-2 large:px-3 py-1 mobile:py-1 sm:py-1 laptop:py-1 large:py-2 rounded-lg border-2 border-gray-600 text-center w-full text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base"
           >
             ???
           </div>
@@ -96,16 +111,20 @@ const formattedTime = computed(() => {
 
         <!-- Hint 2 Slot -->
         <div class="flex flex-col items-center">
-          <div class="text-xs text-gray-400 mb-1">Hint 2</div>
+          <div
+            class="text-xs mobile:text-xs sm:text-xs laptop:text-xs large:text-sm text-gray-400 mb-1"
+          >
+            Hint 2
+          </div>
           <div
             v-if="roomStore.collectedHints[1]"
-            class="bg-dhl-yellow text-black px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-dhl-yellow font-bold text-center min-w-[100px] sm:min-w-[150px] animate-pulse"
+            class="bg-dhl-yellow text-black px-1 mobile:px-1 sm:px-2 laptop:px-2 large:px-3 py-1 mobile:py-1 sm:py-1 laptop:py-1 large:py-2 rounded-lg border-2 border-dhl-yellow font-bold text-center w-full text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base animate-pulse"
           >
             {{ roomStore.collectedHints[1] }}
           </div>
           <div
             v-else
-            class="bg-gray-800 text-gray-500 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-600 text-center min-w-[100px] sm:min-w-[150px]"
+            class="bg-gray-800 text-gray-500 px-1 mobile:px-1 sm:px-2 laptop:px-2 large:px-3 py-1 mobile:py-1 sm:py-1 laptop:py-1 large:py-2 rounded-lg border-2 border-gray-600 text-center w-full text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base"
           >
             ???
           </div>
@@ -113,25 +132,31 @@ const formattedTime = computed(() => {
 
         <!-- Hint 3 Slot -->
         <div class="flex flex-col items-center">
-          <div class="text-xs text-gray-400 mb-1">Hint 3</div>
+          <div
+            class="text-xs mobile:text-xs sm:text-xs laptop:text-xs large:text-sm text-gray-400 mb-1"
+          >
+            Hint 3
+          </div>
           <div
             v-if="roomStore.collectedHints[2]"
-            class="bg-dhl-yellow text-black px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-dhl-yellow font-bold text-center min-w-[100px] sm:min-w-[150px] animate-pulse"
+            class="bg-dhl-yellow text-black px-1 mobile:px-1 sm:px-2 laptop:px-2 large:px-3 py-1 mobile:py-1 sm:py-1 laptop:py-1 large:py-2 rounded-lg border-2 border-dhl-yellow font-bold text-center w-full text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base animate-pulse"
           >
             {{ roomStore.collectedHints[2] }}
           </div>
           <div
             v-else
-            class="bg-gray-800 text-gray-500 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-600 text-center min-w-[100px] sm:min-w-[150px]"
+            class="bg-gray-800 text-gray-500 px-1 mobile:px-1 sm:px-2 laptop:px-2 large:px-3 py-1 mobile:py-1 sm:py-1 laptop:py-1 large:py-2 rounded-lg border-2 border-gray-600 text-center w-full text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base"
           >
             ???
           </div>
         </div>
       </div>
 
-      <!-- Progress indicator -->
-      <div class="mt-2 text-xs sm:text-sm text-gray-400">
-        {{ roomStore.collectedHints.length }}/3 hints collected
+      <!-- Progress indicator - Ultra-compact -->
+      <div
+        class="mt-1 mobile:mt-1 laptop:mt-1 text-xs mobile:text-xs sm:text-xs laptop:text-sm large:text-base text-gray-400"
+      >
+        {{ roomStore.collectedHints.length }}/3 collected
       </div>
     </div>
   </div>

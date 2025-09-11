@@ -12,6 +12,14 @@ module.exports = {
         sans: ['"Inter"', 'Aptos', 'Arial', 'sans-serif'],
         delivery: ['"Delivery"', 'Aptos', 'Arial', 'sans-serif'],
       },
+      screens: {
+        // Mobile (iPhone SE): 375 × 667 px
+        mobile: '375px',
+        // Laptop screen: 1528 × 740 px
+        laptop: '1528px',
+        // Large monitor: 1912 × 1074 px
+        large: '1912px',
+      },
     },
   },
   plugins: [],

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Screen Debug</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #1a1a1a;
+        color: white;
+      }
+      .debug-box {
+        padding: 20px;
+        border: 2px solid #ffcc02;
+        margin: 10px 0;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .quiz-demo {
+        width: 30%;
+        min-height: 500px;
+        border: 4px solid #ffcc02;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        display: inline-block;
+        margin: 10px;
+        vertical-align: top;
+      }
+      .title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #ffcc02;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Quick Screen & Layout Debug</h1>
+
+    <div class="debug-box">
+      <h3>Screen Info</h3>
+      <p><strong>Screen Resolution:</strong> <span id="screen-res"></span></p>
+      <p><strong>Window Size:</strong> <span id="window-size"></span></p>
+      <p><strong>Your Target:</strong> 1536x730px</p>
+      <p><strong>Media Query Active:</strong> <span id="media-query"></span></p>
+    </div>
+
+    <div class="debug-box">
+      <h3>Quiz Box Demo (Should be fully visible)</h3>
+      <div class="quiz-demo">
+        <div class="title">Phishing Analysis</div>
+        <p>Question 1 of 3</p>
+        <p>Which of the following is a common indicator of a phishing email?</p>
+        <div style="margin-top: 20px">
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option A
+          </div>
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option B
+          </div>
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option C
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 20px;
+            padding: 10px;
+            background: #d4202a;
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+          "
+        >
+          Submit Answer
+        </div>
+      </div>
+
+      <div class="quiz-demo">
+        <div class="title">Firewall Configuration</div>
+        <p>Question 1 of 3</p>
+        <p>What is the primary purpose of a firewall?</p>
+        <div style="margin-top: 20px">
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option A
+          </div>
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option B
+          </div>
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option C
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 20px;
+            padding: 10px;
+            background: #d4202a;
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+          "
+        >
+          Submit Answer
+        </div>
+      </div>
+
+      <div class="quiz-demo">
+        <div class="title">Code Debug</div>
+        <p>Question 1 of 3</p>
+        <p>Which debugging technique is most effective?</p>
+        <div style="margin-top: 20px">
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option A
+          </div>
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option B
+          </div>
+          <div style="margin: 10px 0; padding: 10px; border: 2px solid #666; border-radius: 4px">
+            Option C
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 20px;
+            padding: 10px;
+            background: #d4202a;
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+          "
+        >
+          Submit Answer
+        </div>
+      </div>
+    </div>
+
+    <div class="debug-box">
+      <h3>Expected Results</h3>
+      <ul>
+        <li>✅ You should see all 3 quiz box titles clearly</li>
+        <li>✅ All borders should be fully visible</li>
+        <li>✅ Content should not be cut off</li>
+        <li>✅ Boxes should fit comfortably in your 1536x730 screen</li>
+      </ul>
+    </div>
+
+    <script>
+      function updateInfo() {
+        document.getElementById('screen-res').textContent = `${screen.width}x${screen.height}`
+        document.getElementById(
+          'window-size'
+        ).textContent = `${window.innerWidth}x${window.innerHeight}`
+
+        const mediaQuery = window.matchMedia(
+          '(min-width: 1024px) and (max-width: 1600px) and (min-height: 700px) and (max-height: 900px)'
+        )
+        document.getElementById('media-query').textContent = mediaQuery.matches
+          ? 'YES (Laptop optimization active)'
+          : 'NO (Using default styles)'
+      }
+
+      updateInfo()
+      window.addEventListener('resize', updateInfo)
+    </script>
+  </body>
+</html>

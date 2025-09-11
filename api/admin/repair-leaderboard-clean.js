@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         success: false,
         error: 'Cannot scan for player keys',
         message: 'The kv.keys() method is not available to dynamically discover players',
-        suggestion: 'Player data may exist but cannot be automatically discovered'
+        suggestion: 'Player data may exist but cannot be automatically discovered',
       })
     }
 
@@ -99,8 +99,8 @@ export default async function handler(req, res) {
       totalPlayers: playerCount,
       totalScores: totalScores,
       averageScore: playerCount > 0 ? Math.round(totalScores / playerCount) : 0,
-      highestScore: Math.max(...playersSummary.map(p => p.score)),
-      lowestScore: Math.min(...playersSummary.map(p => p.score)),
+      highestScore: Math.max(...playersSummary.map((p) => p.score)),
+      lowestScore: Math.min(...playersSummary.map((p) => p.score)),
       lastUpdated: new Date().toISOString(),
     }
 
@@ -137,10 +137,9 @@ export default async function handler(req, res) {
       testLeaderboard,
       allPlayerKeys: allKeys, // Show all discovered keys for verification
     })
-
   } catch (error) {
     console.error('❌ Leaderboard repair failed:', error)
-    
+
     return res.status(500).json({
       success: false,
       error: 'Leaderboard repair failed',

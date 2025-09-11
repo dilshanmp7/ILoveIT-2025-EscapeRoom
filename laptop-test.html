@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Laptop Screen Test - DHL IT Lockdown</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #1a1a1a;
+        color: white;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .test-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #333;
+        border-radius: 8px;
+      }
+      .screen-info {
+        background: #2a2a2a;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .optimization-status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 3px;
+        margin: 5px;
+      }
+      .active {
+        background: #28a745;
+        color: white;
+      }
+      .inactive {
+        background: #6c757d;
+        color: white;
+      }
+      .quiz-box-demo {
+        width: 300px;
+        height: 400px;
+        border: 4px solid #ffcc02;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 8px;
+        margin: 10px;
+        display: inline-block;
+        vertical-align: top;
+      }
+      .quiz-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #ffcc02;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      .quiz-content {
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔧 Laptop Screen Optimization Test</h1>
+
+      <div class="screen-info">
+        <h3>Current Screen Information</h3>
+        <p><strong>Resolution:</strong> <span id="resolution">Detecting...</span></p>
+        <p><strong>Viewport:</strong> <span id="viewport">Detecting...</span></p>
+        <p><strong>Optimization Target:</strong> 1536x730px (Laptop)</p>
+      </div>
+
+      <div class="test-section">
+        <h3>CSS Media Query Status</h3>
+        <div id="media-query-status">
+          <span class="optimization-status" id="laptop-status"
+            >Laptop Optimization: Checking...</span
+          >
+          <span class="optimization-status" id="mobile-status"
+            >Mobile Optimization: Checking...</span
+          >
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h3>Quiz Level Box Demo</h3>
+        <p>These boxes should be properly sized for laptop screens (1536x730px):</p>
+
+        <div class="quiz-box-demo laptop-quiz-optimization">
+          <div class="quiz-title laptop-quiz-title">Phishing Analysis</div>
+          <div class="quiz-content laptop-quiz-content">
+            <p>Question 1 of 3</p>
+            <p>Which of the following is a common indicator of a phishing email?</p>
+            <div style="margin-top: 15px">
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ Urgent request for personal information
+              </label>
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ Professional company logo
+              </label>
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ Correct spelling and grammar
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-box-demo laptop-quiz-optimization">
+          <div class="quiz-title laptop-quiz-title">Firewall Configuration</div>
+          <div class="quiz-content laptop-quiz-content">
+            <p>Question 1 of 3</p>
+            <p>What is the primary purpose of a firewall in network security?</p>
+            <div style="margin-top: 15px">
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ To block all network traffic
+              </label>
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ To filter and control network traffic
+              </label>
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ To increase network speed
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-box-demo laptop-quiz-optimization">
+          <div class="quiz-title laptop-quiz-title">Code Debug</div>
+          <div class="quiz-content laptop-quiz-content">
+            <p>Question 1 of 3</p>
+            <p>Which debugging technique is most effective for finding logic errors?</p>
+            <div style="margin-top: 15px">
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ Print statements
+              </label>
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ Step-through debugging
+              </label>
+              <label
+                style="
+                  display: block;
+                  margin: 8px 0;
+                  padding: 8px;
+                  border: 2px solid #666;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                ☐ Code review
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h3>Test Results</h3>
+        <div id="test-results">
+          <p>✅ <strong>Test Requirements:</strong></p>
+          <ul>
+            <li>Quiz box titles should be clearly visible</li>
+            <li>Top borders should be fully visible</li>
+            <li>Content should not be cut off</li>
+            <li>Mobile view should remain unchanged</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Display screen information
+      function updateScreenInfo() {
+        const resolution = `${screen.width}x${screen.height}`
+        const viewport = `${window.innerWidth}x${window.innerHeight}`
+
+        document.getElementById('resolution').textContent = resolution
+        document.getElementById('viewport').textContent = viewport
+      }
+
+      // Check media query status
+      function checkMediaQueries() {
+        const laptopQuery = window.matchMedia(
+          '(min-width: 1366px) and (max-width: 1600px) and (min-height: 700px) and (max-height: 800px)'
+        )
+        const mobileQuery = window.matchMedia('(max-width: 768px)')
+
+        const laptopStatus = document.getElementById('laptop-status')
+        const mobileStatus = document.getElementById('mobile-status')
+
+        if (laptopQuery.matches) {
+          laptopStatus.textContent = 'Laptop Optimization: ACTIVE'
+          laptopStatus.className = 'optimization-status active'
+        } else {
+          laptopStatus.textContent = 'Laptop Optimization: INACTIVE'
+          laptopStatus.className = 'optimization-status inactive'
+        }
+
+        if (mobileQuery.matches) {
+          mobileStatus.textContent = 'Mobile Optimization: ACTIVE'
+          mobileStatus.className = 'optimization-status active'
+        } else {
+          mobileStatus.textContent = 'Mobile Optimization: INACTIVE'
+          mobileStatus.className = 'optimization-status inactive'
+        }
+      }
+
+      // Update on load and resize
+      updateScreenInfo()
+      checkMediaQueries()
+
+      window.addEventListener('resize', () => {
+        updateScreenInfo()
+        checkMediaQueries()
+      })
+    </script>
+  </body>
+</html>

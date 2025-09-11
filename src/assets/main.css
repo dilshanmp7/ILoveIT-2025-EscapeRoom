@@ -2,50 +2,155 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mobile-first responsive design */
-@media (max-width: 768px) {
+/* =================
+   RESPONSIVE DESIGN FOR SPECIFIC SCREEN SIZES
+   - Mobile (iPhone SE): 375 × 667 px
+   - Laptop: 1528 × 740 px
+   - Large Monitor: 1912 × 1074 px
+   ================= */
+
+/* Mobile-first responsive design - iPhone SE (375x667) */
+@media (max-width: 374px) {
   html {
-    font-size: 14px; /* Smaller base font for mobile */
+    font-size: 12px; /* Extra small font for very small screens */
   }
 }
 
-body {
-  /* CHANGED: Swapped from font-delivery to font-sans for better readability */
-  @apply bg-gray-900 text-white font-sans;
-  /* Prevent zoom on input focus for mobile */
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-}
+@media (min-width: 375px) and (max-width: 767px) {
+  html {
+    font-size: 14px; /* Optimal font size for mobile */
+  }
 
-#app {
-  width: 100vw;
-  height: 100vh;
-  /* Allow scrolling on mobile if needed */
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-/* Mobile touch improvements */
-@media (max-width: 768px) {
+  /* Ensure full viewport usage on mobile with proper spacing for GameUI */
   #app {
-    height: 100dvh; /* Use dynamic viewport height on mobile */
+    height: 100dvh; /* Dynamic viewport height */
+    min-height: 667px;
   }
 
-  /* Ensure buttons are touch-friendly */
+  /* Mobile-specific button sizing */
   button,
   .clickable {
     min-height: 44px;
     min-width: 44px;
+    touch-action: manipulation;
   }
 
-  /* Better text readability on mobile */
-  .text-xs {
+  /* Mobile game area - account for GameUI header (60px) and footer (120px) */
+  .mobile-game-area {
+    height: calc(100vh - 180px);
+    margin-top: 60px;
+    margin-bottom: 120px;
+  }
+
+  /* Better text scaling for mobile */
+  .mobile-text-xs {
     font-size: 0.75rem;
   }
-  .text-sm {
+  .mobile-text-sm {
     font-size: 0.875rem;
   }
-  .text-base {
+  .mobile-text-base {
     font-size: 1rem;
   }
+  .mobile-text-lg {
+    font-size: 1.125rem;
+  }
+}
+
+/* Tablet and small desktop optimization */
+@media (min-width: 768px) and (max-width: 1527px) {
+  html {
+    font-size: 15px;
+  }
+
+  #app {
+    height: 100vh;
+    min-height: 600px;
+  }
+}
+
+/* Laptop screen optimization - 1528x740px */
+@media (min-width: 1528px) and (max-width: 1911px) {
+  html {
+    font-size: 16px; /* Standard font size */
+  }
+
+  #app {
+    height: 100vh;
+    min-height: 740px;
+  }
+
+  /* Optimize game container for laptop screens */
+  .laptop-game-container {
+    padding: 1.5rem !important;
+    gap: 1rem !important;
+    min-height: calc(100vh - 140px); /* Account for header/footer */
+  }
+
+  /* Better space utilization on laptop */
+  .laptop-quiz-content {
+    width: 30% !important;
+    flex-shrink: 0;
+  }
+
+  /* Ensure proper height constraints for quiz boxes */
+  .laptop-quiz-box {
+    height: 100% !important;
+    max-height: calc(100vh - 200px) !important;
+    overflow: hidden;
+  }
+
+  /* Scrollable content areas */
+  .laptop-quiz-scroll {
+    overflow-y: auto !important;
+    max-height: calc(100% - 200px);
+  }
+}
+
+/* Large monitor optimization - 1912x1074px and above */
+@media (min-width: 1912px) {
+  html {
+    font-size: 18px; /* Larger font for big screens */
+  }
+
+  #app {
+    height: 100vh;
+    min-height: 1074px;
+  }
+
+  /* Large screen specific optimizations */
+  .large-game-container {
+    padding: 2rem !important;
+    gap: 1.5rem !important;
+    min-height: calc(100vh - 160px);
+  }
+
+  .large-quiz-box {
+    height: 100% !important;
+    max-height: calc(100vh - 240px) !important;
+    overflow: hidden;
+  }
+
+  .large-quiz-content {
+    width: 28% !important;
+  }
+}
+
+/* Universal base styles */
+body {
+  background-color: #111827; /* bg-gray-900 */
+  color: white;
+  font-family: 'Inter', 'Aptos', 'Arial', sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  width: 100vw;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
