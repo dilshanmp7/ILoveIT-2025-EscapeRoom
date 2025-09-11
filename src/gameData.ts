@@ -368,9 +368,9 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
       },
     },
     finalPuzzle: {
-      title: 'Security Override Protocol',
+      title: 'DHL Security Command Center Override',
       description:
-        'The main security gate is locked. Combine the hints from the three security levels to form the master override code.',
+        'A critical security breach has locked down the DHL IT infrastructure. The automated security system requires a master override code. Combine the security knowledge from all three levels to unlock the system and restore DHL operations.',
       solutions: ['P4S', 'K9T'],
     },
   },
@@ -528,9 +528,9 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
       },
     },
     finalPuzzle: {
-      title: 'Master Ticket Resolution',
+      title: 'DHL Service Desk Emergency Protocol',
       description:
-        'An automated system has locked the Service Desk. Combine the hints from the three levels to find the Master Ticket ID and unlock the system.',
+        'The DHL Service Desk system has crashed during peak hours, affecting shipment tracking worldwide. The emergency recovery system needs a master ticket code. Use your troubleshooting expertise to generate the unlock sequence.',
       solutions: ['T4H', 'H7D'],
     },
   },
@@ -538,7 +538,7 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
     levels: {
       level1: {
         id: 'level1',
-        title: 'Agile & Scrum Basics',
+        title: 'Application Fundamentals',
         hintOptions: {
           D: [{ text: `The first letter of "DEPLOYMENT"` }],
           C: [{ text: `First letter of "CODE"` }],
@@ -546,52 +546,59 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
         questions: [
           {
             id: 'ita1-1',
-            question: 'What is a "sprint" in Scrum?',
+            question: 'What is the primary role of the IT Application team?',
             options: [
-              { id: 'a', text: 'A quick run to get coffee' },
-              { id: 'b', text: 'A short, time-boxed period to complete a set amount of work' },
-              { id: 'c', text: 'The final day before a release' },
+              { id: 'a', text: 'Managing hardware infrastructure' },
+              { id: 'b', text: 'Developing and maintaining software applications' },
+              { id: 'c', text: 'Conducting market research' },
             ],
             correctOptionId: 'b',
           },
           {
             id: 'ita1-2',
-            question: 'What is a "user story"?',
+            question: 'What types of tickets typically come under the Application team?',
             options: [
-              { id: 'a', text: 'A bug report from a user' },
-              { id: 'b', text: 'A fictional story about a user' },
-              {
-                id: 'c',
-                text: 'An informal explanation of a feature from an end-user perspective',
-              },
+              { id: 'a', text: 'Application Performance Issues' },
+              { id: 'b', text: 'Network Configuration Issues' },
+              { id: 'c', text: 'Legal Compliance Tickets' },
+            ],
+            correctOptionId: 'a',
+          },
+          {
+            id: 'ita1-3',
+            question: 'What is the primary purpose of DHL Campfire?',
+            options: [
+              { id: 'a', text: 'To organize outdoor events for employees' },
+              { id: 'b', text: "To manage DHL's logistics operations" },
+              { id: 'c', text: 'To provide a digital learning and collaboration platform' },
             ],
             correctOptionId: 'c',
           },
           {
-            id: 'ita1-3',
-            question: 'What does "MVP" stand for in product development?',
+            id: 'ita1-4',
+            question: 'What is Microsoft Power Automate mainly used for?',
             options: [
-              { id: 'a', text: 'Most Valuable Player' },
-              { id: 'b', text: 'Minimum Viable Product' },
-              { id: 'c', text: 'Maximum Value Proposition' },
+              { id: 'a', text: 'Making coffee automatically' },
+              { id: 'b', text: 'Automating repetitive tasks and workflows' },
+              { id: 'c', text: 'Designing customer logos' },
             ],
             correctOptionId: 'b',
           },
           {
-            id: 'ita1-4',
-            question: 'What is the purpose of a daily standup meeting?',
+            id: 'ita1-5',
+            question: 'Which team has server access in DHL?',
             options: [
-              { id: 'a', text: 'To assign new tasks' },
-              { id: 'b', text: 'To share progress and identify blockers' },
-              { id: 'c', text: 'To review the final product' },
+              { id: 'a', text: 'Marketing Team' },
+              { id: 'b', text: 'Human Resources Team' },
+              { id: 'c', text: 'IT Operations and application Team' },
             ],
-            correctOptionId: 'b',
+            correctOptionId: 'c',
           },
         ],
       },
       level2: {
         id: 'level2',
-        title: 'Programming Logic',
+        title: 'DHL Technology Strategy',
         hintOptions: {
           '4': [{ text: `The number of letters in the word "CODE"` }],
           '3': [{ text: `The number of letters in "API"` }],
@@ -599,41 +606,76 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
         questions: [
           {
             id: 'ita2-1',
-            question: 'What does the acronym "API" stand for?',
+            question: 'What does the WOW Strategy – Technology mainly focus on?',
             options: [
-              { id: 'a', text: 'Application Programming Interface' },
-              { id: 'b', text: 'Advanced Programming Instructions' },
-              { id: 'c', text: 'Automated Program Interaction' },
+              { id: 'a', text: 'Only reducing IT costs' },
+              {
+                id: 'b',
+                text: 'Ensuring IT systems are accessible, secure, and fast from anywhere, plus using data and agile ways of working to deliver new services',
+              },
+              { id: 'c', text: 'Replacing human staff with robots' },
+            ],
+            correctOptionId: 'b',
+          },
+          {
+            id: 'ita2-2',
+            question: 'What does EGAP stand for?',
+            options: [
+              { id: 'a', text: 'Express Global Application Portfolio' },
+              { id: 'b', text: 'Every Global App Process' },
+              { id: 'c', text: 'Enterprise General Access Program' },
             ],
             correctOptionId: 'a',
           },
           {
-            id: 'ita2-2',
-            question: 'In programming, what does a "boolean" value represent?',
-            options: [
-              { id: 'a', text: 'A number' },
-              { id: 'b', text: 'True or false' },
-              { id: 'c', text: 'A line of text' },
-            ],
-            correctOptionId: 'b',
-          },
-          {
             id: 'ita2-3',
-            question: 'What is debugging?',
+            question:
+              'Which of the following tools available on CPHHUB are powered by Power Automate?',
             options: [
-              { id: 'a', text: 'Writing new code' },
-              { id: 'b', text: 'Finding and fixing errors in code' },
-              { id: 'c', text: 'Deleting old files' },
+              { id: 'a', text: 'CPH HUB Tour Tool' },
+              { id: 'b', text: 'Local clearance application' },
+              { id: 'c', text: 'Butterfly Reports' },
             ],
-            correctOptionId: 'b',
+            correctOptionId: 'a',
           },
           {
             id: 'ita2-4',
-            question: 'What does "DRY" principle mean in programming?',
+            question: 'What is an example of something you could automate with Power Automate?',
             options: [
-              { id: 'a', text: "Don't Repeat Yourself" },
-              { id: 'b', text: 'Debug Regularly, Yearly' },
-              { id: 'c', text: 'Develop Rapidly, Yesterday' },
+              { id: 'a', text: 'Automatically send an email when a shipment status changes' },
+              { id: 'b', text: 'Build an airplane' },
+              { id: 'c', text: 'Manage customs regulations directly' },
+            ],
+            correctOptionId: 'a',
+          },
+          {
+            id: 'ita2-5',
+            question:
+              'In DHL, which stakeholders are typically involved in the BRS review process?',
+            options: [
+              { id: 'a', text: 'Only the project team' },
+              { id: 'b', text: 'Only the development team' },
+              { id: 'c', text: 'Project team and Apps Team' },
+            ],
+            correctOptionId: 'c',
+          },
+          {
+            id: 'ita2-6',
+            question: 'In DHL, The Application team responsible for which type of applications?',
+            options: [
+              { id: 'a', text: 'Only locally developed apps' },
+              { id: 'b', text: 'Only regional global apps' },
+              { id: 'c', text: 'Both locally developed & regional global apps' },
+            ],
+            correctOptionId: 'c',
+          },
+          {
+            id: 'ita2-7',
+            question: 'Should each application have a login ID and password for user access?',
+            options: [
+              { id: 'a', text: 'Yes, to ensure security and protect user data.' },
+              { id: 'b', text: 'No, as it complicates the user experience unnecessarily.' },
+              { id: 'c', text: 'Only for mobile applications, not for web applications.' },
             ],
             correctOptionId: 'a',
           },
@@ -641,7 +683,7 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
       },
       level3: {
         id: 'level3',
-        title: 'Development & Operations (DevOps)',
+        title: 'DHL Digital Innovation',
         hintOptions: {
           A: [{ text: `The last letter of "BETA"` }],
           X: [{ text: `The last letter of "HOTFIX"` }],
@@ -649,51 +691,108 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
         questions: [
           {
             id: 'ita3-1',
-            question: 'What is "version control"?',
+            question: 'Which of these is a real benefit of Power Automate for business processes?',
             options: [
-              { id: 'a', text: 'A system for managing changes to code over time, like Git' },
-              { id: 'b', text: 'The version number of an application (e.g., v1.2)' },
-              { id: 'c', text: 'A license for using software' },
+              { id: 'a', text: 'Reducing manual errors by standardizing workflows' },
+              { id: 'b', text: 'Tracking airplane fuel consumption' },
+              { id: 'c', text: 'Forecasting weather in hub cities' },
             ],
             correctOptionId: 'a',
           },
           {
             id: 'ita3-2',
-            question: 'What does "CI/CD" stand for?',
+            question: "In DHL's digitalization journey, what is the role of automation?",
             options: [
-              { id: 'a', text: 'Continuous Integration / Continuous Deployment' },
-              { id: 'b', text: 'Code Integration / Code Delivery' },
-              { id: 'c', text: 'Customer Information / Customer Data' },
+              {
+                id: 'a',
+                text: 'To replace manual tasks with RPA, and robotics for fewer errors and faster operations',
+              },
+              { id: 'b', text: 'To automate employee performance reviews' },
+              { id: 'c', text: 'To create automatic price discounts for all shipments' },
             ],
             correctOptionId: 'a',
           },
           {
             id: 'ita3-3',
-            question: 'What is the main benefit of automated testing?',
+            question: 'The Yellow Book of Architecture includes…',
             options: [
-              { id: 'a', text: 'It makes code run faster' },
-              { id: 'b', text: 'It helps catch bugs early and ensures code quality' },
-              { id: 'c', text: 'It writes code automatically' },
+              {
+                id: 'a',
+                text: 'IT standards and architecture principles, Guidelines for tools and methodologies, Data privacy guidelines.',
+              },
+              { id: 'b', text: "DHL's financial performance reports" },
+              { id: 'c', text: "DHL's annual KPI" },
+            ],
+            correctOptionId: 'a',
+          },
+          {
+            id: 'ita3-4',
+            question: 'Which is a real example of Country Collaboration initiatives at DHL?',
+            options: [
+              { id: 'a', text: 'DHL Language Learning App (Germany)' },
+              {
+                id: 'b',
+                text: 'DHL collaborated with Spotify in Sweden to create a music-streaming app for drivers to reduce stress on long routes',
+              },
+              { id: 'c', text: 'Each country building separate IT stacks.' },
+            ],
+            correctOptionId: 'a',
+          },
+          {
+            id: 'ita3-5',
+            question: 'What is the main difference between IT Developers and Application Analysts?',
+            options: [
+              {
+                id: 'a',
+                text: 'IT Developers primarily focus on coding and building software, while Application Analysts focus on gathering and analyzing business requirements.',
+              },
+              {
+                id: 'b',
+                text: 'IT Developers manage hardware installations, while Application Analysts oversee marketing strategies.',
+              },
+              {
+                id: 'c',
+                text: 'IT Developers work exclusively on user interface design, while Application Analysts handle financial reporting.',
+              },
+            ],
+            correctOptionId: 'a',
+          },
+          {
+            id: 'ita3-6',
+            question: 'How should an application ideally look and function?',
+            options: [
+              {
+                id: 'a',
+                text: 'It should have a complex design with many features that confuse users.',
+              },
+              {
+                id: 'b',
+                text: 'It should be intuitive, user-friendly, and visually appealing, with a clear layout and easy navigation.',
+              },
+              {
+                id: 'c',
+                text: 'It should prioritize flashy graphics over functionality and usability.',
+              },
             ],
             correctOptionId: 'b',
           },
           {
-            id: 'ita3-4',
-            question: 'What does "deployment" mean in software development?',
+            id: 'ita3-7',
+            question: 'What are the key pillars of DHL in terms of IT applications?',
             options: [
-              { id: 'a', text: 'Writing code' },
-              { id: 'b', text: 'Testing applications' },
-              { id: 'c', text: 'Releasing software to production environment' },
+              { id: 'a', text: 'User Experience, Security, Integration, and Scalability' },
+              { id: 'b', text: 'Marketing, Sales, Finance, and HR' },
+              { id: 'c', text: 'Customer Service, Product Development, Logistics, and Branding' },
             ],
-            correctOptionId: 'c',
+            correctOptionId: 'a',
           },
         ],
       },
     },
     finalPuzzle: {
-      title: 'Emergency Production Hotfix',
+      title: 'DHL Digital Platform Recovery',
       description:
-        'The automated deployment pipeline has failed. Use the hints from the three levels to enter the correct emergency hotfix command.',
+        "A critical failure in DHL's digital infrastructure has disrupted global operations. The automated deployment pipeline requires an emergency hotfix command. Apply your DHL technology knowledge to restore all applications and services.",
       solutions: ['D4A', 'C3X'],
     },
   },
