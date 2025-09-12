@@ -192,6 +192,7 @@ export const useGameStore = defineStore('game', () => {
   return {
     gameState,
     currentRoom,
+    currentRoomIndex,
     elapsedTime,
     startGame,
     advanceToNextRoom,
