@@ -147,12 +147,19 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   // ✅ ANTI-CHEAT: Sync player scoring state with database
+  let isSyncing = false // Prevent multiple simultaneous syncs
   async function syncScoreStateToDatabase() {
     if (!firstName.value || !lastName.value || !department.value) {
       console.warn('⚠️ Cannot sync score state - player info not set')
       return
     }
 
+    if (isSyncing) {
+      console.log('🔄 Sync already in progress, skipping duplicate request')
+      return
+    }
+
+    isSyncing = true
     try {
       const response = await fetch('/api/update-game-progress', {
         method: 'POST',
@@ -170,12 +177,19 @@ export const usePlayerStore = defineStore('player', () => {
       })
 
       if (!response.ok) {
+        const errorText = await response.text()
+        console.error('❌ Score sync failed:', response.status, errorText)
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
+      const result = await response.json()
       console.log('✅ Player score state synced to database')
     } catch (error) {
       console.error('❌ Failed to sync score state to database:', error)
+      console.warn('🔄 Game will continue with local scoring only')
+      // Don't throw error - let game continue with local state
+    } finally {
+      isSyncing = false
     }
   }
 

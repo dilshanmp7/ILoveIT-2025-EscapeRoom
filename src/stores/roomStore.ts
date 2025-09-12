@@ -184,15 +184,22 @@ export const useRoomStore = defineStore('room', () => {
     localStorage.setItem('escaperoomRoomState', JSON.stringify(state))
   }
 
-  // ✅ ANTI-CHEAT: Sync room state with database
+  // ✅ ANTI-CHEAT: Sync room state with database 
+  let isSyncingRoom = false // Prevent multiple simultaneous syncs
   async function syncRoomStateToDatabase() {
     const playerStore = usePlayerStore()
-
+    
     if (!playerStore.firstName || !playerStore.lastName || !playerStore.department) {
       console.warn('⚠️ Cannot sync room state - player info not set')
       return
     }
 
+    if (isSyncingRoom) {
+      console.log('🔄 Room sync already in progress, skipping duplicate request')
+      return
+    }
+
+    isSyncingRoom = true
     try {
       const response = await fetch('/api/update-game-progress', {
         method: 'POST',
@@ -217,16 +224,21 @@ export const useRoomStore = defineStore('room', () => {
       })
 
       if (!response.ok) {
+        const errorText = await response.text()
+        console.error('❌ Database sync failed:', response.status, errorText)
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
+      const result = await response.json()
       console.log('✅ Room state synced to database')
     } catch (error) {
       console.error('❌ Failed to sync room state to database:', error)
+      console.warn('🔄 Game will continue with local state only')
+      // Don't throw error - let game continue with local state
+    } finally {
+      isSyncingRoom = false
     }
-  }
-
-  // ✅ ANTI-CHEAT: Restore room state from database
+  }  // ✅ ANTI-CHEAT: Restore room state from database
   function restoreStateFromDatabase(gameData: any) {
     if (gameData?.gameState) {
       const state = gameData.gameState

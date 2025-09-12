@@ -33,6 +33,9 @@ export default async function handler(req, res) {
         progressKeys: Object.keys(progressData),
       })
 
+      // Add detailed logging for debugging
+      console.log('📊 Progress data being sent:', JSON.stringify(progressData, null, 2))
+
       const result = await updateGameProgress(
         firstName.trim(),
         lastName.trim(),
@@ -40,15 +43,22 @@ export default async function handler(req, res) {
         progressData
       )
 
+      console.log('✅ Update game progress successful:', result)
+
       res.json({
         success: true,
         ...result,
       })
     } catch (error) {
       console.error('❌ Update game progress error:', error)
+      console.error('❌ Error stack:', error.stack)
+      console.error('❌ Request body:', req.body)
+      
       res.status(500).json({
         success: false,
         error: 'Failed to update game progress',
+        errorMessage: error.message,
+        errorDetails: process.env.NODE_ENV === 'development' ? error.stack : undefined,
       })
     }
   } else {
