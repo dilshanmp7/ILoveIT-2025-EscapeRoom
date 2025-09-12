@@ -12,10 +12,10 @@ const roomStore = useRoomStore()
 const formattedTime = computed(() => {
   // Only show timer if game is actually playing
   if (gameStore.gameState !== 'playing' || gameStore.elapsedTime === 0) {
-    return '60:00'
+    return '45:00'
   }
 
-  const totalSeconds = Math.max(0, 60 * 60 - gameStore.elapsedTime)
+  const totalSeconds = Math.max(0, 45 * 60 - gameStore.elapsedTime)
   const minutes = Math.floor(totalSeconds / 60)
     .toString()
     .padStart(2, '0')

@@ -24,14 +24,14 @@ export const usePlayerStore = defineStore('player', () => {
     const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
     const wrongAnswersCount = wrongAnswerPenalties.value
 
-    // Case 1: Perfect run bonus - Finished within 1 minute without mistakes
-    if (elapsedSeconds <= 60 && wrongAnswersCount === 0) {
+    // Case 1: Perfect run bonus - Finished within 45 minutes without mistakes
+    if (elapsedSeconds <= 2700 && wrongAnswersCount === 0) {
       return maxScore // 100 points
     }
 
-    // Case 2: Apply time penalty if > 1 minute (scaled, not whole minutes)
-    if (elapsedSeconds > 60) {
-      const extraMinutes = (elapsedSeconds - 60) / 60 // fractional minutes
+    // Case 2: Apply time penalty if > 45 minutes (scaled, not whole minutes)
+    if (elapsedSeconds > 2700) {
+      const extraMinutes = (elapsedSeconds - 2700) / 60 // fractional minutes
       const TIME_PENALTY_VALUE = 2 // adjust difficulty here
       score -= extraMinutes * TIME_PENALTY_VALUE
     }
@@ -62,11 +62,11 @@ export const usePlayerStore = defineStore('player', () => {
   const timePenalty = computed(() => {
     const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
 
-    if (elapsedSeconds <= 60) {
-      return 0 // No penalty for 1 minute or less
+    if (elapsedSeconds <= 2700) {
+      return 0 // No penalty for 45 minutes or less
     }
 
-    const extraMinutes = (elapsedSeconds - 60) / 60 // fractional minutes
+    const extraMinutes = (elapsedSeconds - 2700) / 60 // fractional minutes
     const TIME_PENALTY_VALUE = 2 // 2 points per minute (fractional)
     return Math.round(extraMinutes * TIME_PENALTY_VALUE * 10) / 10 // Round to 1 decimal
   })

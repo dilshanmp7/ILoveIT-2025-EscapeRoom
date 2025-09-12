@@ -195,14 +195,14 @@
             >
               Time Penalty
               <span
-                v-if="elapsedSeconds <= 60"
+                v-if="elapsedSeconds <= 2700"
                 class="text-green-400 block sm:inline text-xs mobile:text-xs sm:text-sm laptop:text-base large:text-lg"
-                >({{ elapsedSeconds }}s ≤ 60s - Perfect Time!)</span
+                >({{ Math.floor(elapsedSeconds / 60) }}:{{ String(elapsedSeconds % 60).padStart(2, '0') }} ≤ 45:00 - Perfect Time!)</span
               >
               <span
                 v-else
                 class="block sm:inline text-xs mobile:text-xs sm:text-sm laptop:text-base large:text-lg"
-                >({{ ((elapsedSeconds - 60) / 60).toFixed(1) }} extra minutes beyond 60s)</span
+                >({{ ((elapsedSeconds - 2700) / 60).toFixed(1) }} extra minutes beyond 45:00)</span
               >
             </span>
             <span

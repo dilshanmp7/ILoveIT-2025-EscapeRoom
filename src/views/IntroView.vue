@@ -312,7 +312,7 @@ onMounted(async () => {
         <p
           class="text-xs mobile:text-sm sm:text-base laptop:text-sm large:text-xl max-w-3xl text-center mb-2 mobile:mb-3 sm:mb-4 laptop:mb-2 large:mb-6 px-2 mobile:px-4"
         >
-          Enter your details to begin your mission. You have 60 minutes to escape the IT lockdown.
+          Enter your details to begin your mission. You have 45 minutes to escape the IT lockdown.
           Good luck!
         </p>
 

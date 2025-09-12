@@ -16,7 +16,7 @@ const isDoorPuzzleVisible = ref(false)
 // NEW: Watch the timer and end the game when time is up
 const elapsedTime = computed(() => gameStore.elapsedTime)
 watch(elapsedTime, (newTime) => {
-  if (newTime >= 3600) {
+  if (newTime >= 2700) {
     gameStore.timeUp()
   }
 })

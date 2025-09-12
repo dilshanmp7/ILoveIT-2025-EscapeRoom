@@ -25,25 +25,25 @@ function startGame() {
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
 
     <div
-      class="relative z-10 flex flex-col items-center justify-center max-w-xs mobile:max-w-sm sm:max-w-lg laptop:max-w-3xl large:max-w-5xl w-full max-h-full overflow-y-auto py-2 mobile:py-3"
+      class="relative z-10 flex flex-col items-center justify-center max-w-xs mobile:max-w-sm sm:max-w-lg laptop:max-w-3xl large:max-w-5xl w-full h-full overflow-y-auto py-1 mobile:py-2"
     >
       <!-- DHL Logo -->
       <img
         :src="dhlLogo"
         alt="DHL Logo"
-        class="w-20 mobile:w-18 sm:w-24 laptop:w-40 large:w-50 mb-1 mobile:mb-1 sm:mb-3 laptop:mb-1 large:mb-4"
+        class="w-20 mobile:w-18 sm:w-24 laptop:w-40 large:w-50 mb-1 mobile:mb-1 sm:mb-3 laptop:mb-1 large:mb-1"
       />
 
       <!-- Game Title -->
       <h1
-        class="text-base mobile:text-lg sm:text-2xl laptop:text-3xl large:text-4xl font-bold font-delivery text-dhl-yellow mb-1 mobile:mb-2 sm:mb-4 laptop:mb-2 large:mb-6 text-center drop-shadow-lg"
+        class="text-base mobile:text-lg sm:text-2xl laptop:text-3xl large:text-4xl font-bold font-delivery text-dhl-yellow mb-1 mobile:mb-2 sm:mb-4 laptop:mb-2 large:mb-1 text-center drop-shadow-lg"
       >
         The IT Lockdown
       </h1>
 
       <!-- Subtitle with I Love IT Logo -->
       <div
-        class="flex items-center justify-center gap-1 mobile:gap-2 laptop:gap-2 large:gap-4 mb-1 mobile:mb-2 laptop:mb-2 large:mb-6"
+        class="flex items-center justify-center gap-1 mobile:gap-2 laptop:gap-2 large:gap-4 mb-1 mobile:mb-2 laptop:mb-2 large:mb-1"
       >
         <span class="text-xs mobile:text-sm laptop:text-sm large:text-xl drop-shadow-md">🎯</span>
         <img
@@ -59,10 +59,10 @@ function startGame() {
 
       <!-- Welcome Content Container -->
       <div
-        class="w-full max-w-xs mobile:max-w-sm sm:max-w-md laptop:max-w-xl large:max-w-3xl bg-black/70 p-2 mobile:p-3 sm:p-5 laptop:p-4 large:p-8 rounded-lg shadow-2xl border border-dhl-yellow/30 mx-1 mobile:mx-2"
+        class="w-full max-w-xs mobile:max-w-sm sm:max-w-md laptop:max-w-xl large:max-w-3xl bg-black/70 p-2 mobile:p-2 sm:p-4 laptop:p-3 large:p-3 rounded-lg shadow-2xl border border-dhl-yellow/30 mx-1 mobile:mx-2"
       >
         <!-- Welcome Message -->
-        <div class="text-center mb-2 mobile:mb-2 laptop:mb-2 large:mb-5">
+        <div class="text-center mb-1 mobile:mb-2 laptop:mb-2 large:mb-1">
           <p
             class="text-xs mobile:text-xs laptop:text-sm large:text-lg text-gray-200 leading-tight mobile:leading-relaxed"
           >
@@ -72,14 +72,14 @@ function startGame() {
         </div>
 
         <!-- Game Rules Section -->
-        <div class="mb-2 mobile:mb-2 laptop:mb-3 large:mb-5">
+        <div class="mb-1 mobile:mb-2 laptop:mb-2 large:mb-1">
           <h3
-            class="text-xs mobile:text-sm laptop:text-base large:text-2xl font-bold text-dhl-red mb-1 mobile:mb-1 laptop:mb-1 large:mb-3 flex items-center"
+            class="text-xs mobile:text-sm laptop:text-base large:text-2xl font-bold text-dhl-red mb-1 mobile:mb-1 laptop:mb-1 large:mb-0.5 flex items-center"
           >
             📋 Game Rules
           </h3>
           <div
-            class="space-y-0.5 mobile:space-y-1 laptop:space-y-1 large:space-y-2 text-xs mobile:text-xs laptop:text-xs large:text-lg text-gray-200"
+            class="space-y-0.5 mobile:space-y-1 laptop:space-y-1 large:space-y-0.5 text-xs mobile:text-xs laptop:text-xs large:text-lg text-gray-200"
           >
             <div class="flex items-start gap-2">
               <span class="text-dhl-yellow font-bold">•</span>
@@ -110,18 +110,24 @@ function startGame() {
                 efficiency</span
               >
             </div>
+            <div class="flex items-start gap-2">
+              <span class="text-dhl-yellow font-bold">•</span>
+              <span
+                ><strong>Hint System:</strong> Use hints when stuck, but each hint costs 3 points and removes one wrong answer option</span
+              >
+            </div>
           </div>
         </div>
 
         <!-- Prizes Section -->
-        <div class="mb-2 mobile:mb-2 laptop:mb-3 large:mb-6">
+        <div class="mb-1 mobile:mb-2 laptop:mb-2 large:mb-1">
           <h3
-            class="text-xs mobile:text-sm laptop:text-base large:text-2xl font-bold text-green-400 mb-1 mobile:mb-1 laptop:mb-1 large:mb-3 flex items-center"
+            class="text-xs mobile:text-sm laptop:text-base large:text-2xl font-bold text-green-400 mb-1 mobile:mb-1 laptop:mb-1 large:mb-0.5 flex items-center"
           >
             🏆 Prize
           </h3>
           <div
-            class="grid grid-cols-1 gap-1 mobile:gap-1 laptop:gap-1 large:gap-3 text-xs mobile:text-xs laptop:text-xs large:text-lg"
+            class="grid grid-cols-1 gap-1 mobile:gap-1 laptop:gap-1 large:gap-1 text-xs mobile:text-xs laptop:text-xs large:text-lg"
           >
             <!-- 1st Place -->
             <div
@@ -140,7 +146,7 @@ function startGame() {
 
         <!-- Additional Info -->
         <div
-          class="bg-dhl-red/20 border border-dhl-red/50 rounded-lg p-1.5 mobile:p-2 laptop:p-2 large:p-3 mb-2 mobile:mb-3 laptop:mb-3 large:mb-5"
+          class="bg-dhl-red/20 border border-dhl-red/50 rounded-lg p-1.5 mobile:p-2 laptop:p-2 large:p-3 mb-1 mobile:mb-2 laptop:mb-2 large:mb-1"
         >
           <h4
             class="text-xs mobile:text-xs laptop:text-sm large:text-lg font-bold text-dhl-red mb-1 mobile:mb-1 laptop:mb-1 large:mb-2 flex items-center"
@@ -172,7 +178,7 @@ function startGame() {
         <!-- Start Game Button -->
         <button
           @click="startGame"
-          class="w-full bg-gradient-to-r from-dhl-red to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-2 mobile:py-3 laptop:py-3 large:py-5 px-3 mobile:px-4 laptop:px-6 large:px-8 rounded-lg text-xs mobile:text-sm laptop:text-base large:text-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] touch-manipulation flex items-center justify-center gap-1 mobile:gap-2"
+          class="w-full bg-gradient-to-r from-dhl-red to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-2 mobile:py-3 laptop:py-3 large:py-2 px-3 mobile:px-4 laptop:px-6 large:px-8 rounded-lg text-xs mobile:text-sm laptop:text-base large:text-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] touch-manipulation flex items-center justify-center gap-1 mobile:gap-2"
         >
           <span class="text-sm mobile:text-base laptop:text-lg large:text-2xl">🎮</span>
           <span>START THE CHALLENGE</span>
@@ -180,7 +186,7 @@ function startGame() {
         </button>
 
         <!-- Tournament Info -->
-        <div class="mt-2 mobile:mt-2 laptop:mt-2 large:mt-4 text-center">
+        <div class="mt-2 mobile:mt-2 laptop:mt-2 large:mt-1 text-center">
           <p
             class="text-xs mobile:text-xs laptop:text-xs large:text-base text-yellow-400 mt-0.5 mobile:mt-1"
           >

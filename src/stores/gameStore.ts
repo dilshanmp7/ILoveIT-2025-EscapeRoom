@@ -20,8 +20,8 @@ export const useGameStore = defineStore('game', () => {
 
   const elapsedTime = computed(() => {
     if (startTime.value === 0) return 0
-    // Cap elapsed time at 1 hour (3600 seconds)
-    return Math.min(3600, Math.floor((currentTime.value - startTime.value) / 1000))
+    // Cap elapsed time at 45 minutes (2700 seconds)
+    return Math.min(2700, Math.floor((currentTime.value - startTime.value) / 1000))
   })
 
   function startGame() {

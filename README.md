@@ -50,10 +50,10 @@ npm run preview
 
 ## 📊 Tournament Scoring
 
-- **100 points**: Perfect run (≤60 seconds, 0 wrong answers)
-- **-10 points**: Each extra minute over 60 seconds
+- **100 points**: Perfect run (≤45 minutes, 0 wrong answers)
+- **-2 points**: Each extra minute over 45 minutes
 - **-5 points**: Each wrong answer
-- **-2 points**: Each hint used
+- **-3 points**: Each hint used
 
 ## 🛠️ Tech Stack
 
