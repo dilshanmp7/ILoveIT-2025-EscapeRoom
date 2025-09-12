@@ -113,14 +113,20 @@ export const usePlayerStore = defineStore('player', () => {
 
   function useHint() {
     hintsUsed.value++
+    // ✅ ANTI-CHEAT: Sync to database immediately
+    syncScoreStateToDatabase()
   }
 
   function deductHintPenalty() {
     hintsUsed.value++
+    // ✅ ANTI-CHEAT: Sync to database immediately
+    syncScoreStateToDatabase()
   }
 
   function applyIncorrectAnswerPenalty() {
     wrongAnswerPenalties.value++
+    // ✅ ANTI-CHEAT: Sync to database immediately
+    syncScoreStateToDatabase()
   }
 
   function setCompletionBonus(rooms: number) {
@@ -138,6 +144,61 @@ export const usePlayerStore = defineStore('player', () => {
     completionBonus.value = 0
     startTime.value = 0
     endTime.value = 0
+  }
+
+  // ✅ ANTI-CHEAT: Sync player scoring state with database
+  async function syncScoreStateToDatabase() {
+    if (!firstName.value || !lastName.value || !department.value) {
+      console.warn('⚠️ Cannot sync score state - player info not set')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/update-game-progress', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: firstName.value,
+          lastName: lastName.value,
+          department: department.value,
+          wrongAnswerPenalties: wrongAnswerPenalties.value,
+          hintsUsed: hintsUsed.value,
+          completionBonus: completionBonus.value,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      console.log('✅ Player score state synced to database')
+    } catch (error) {
+      console.error('❌ Failed to sync score state to database:', error)
+    }
+  }
+
+  // ✅ ANTI-CHEAT: Restore player state from database
+  function restoreStateFromDatabase(gameData: any) {
+    if (gameData?.gameState) {
+      const state = gameData.gameState
+
+      wrongAnswerPenalties.value = state.wrongAnswerPenalties || 0
+      hintsUsed.value = state.hintsUsed || 0
+      completionBonus.value = state.completionBonus || 0
+
+      // Restore timing if available
+      if (gameData.gameStartTime) {
+        startTime.value = gameData.gameStartTime
+      }
+
+      console.log('✅ Player state restored from database:', {
+        wrongAnswers: wrongAnswerPenalties.value,
+        hints: hintsUsed.value,
+        bonus: completionBonus.value,
+      })
+    }
   }
 
   // Helper function to get Copenhagen local time
@@ -385,5 +446,7 @@ export const usePlayerStore = defineStore('player', () => {
     checkExistingScore,
     rehydrate,
     persist,
+    syncScoreStateToDatabase, // ✅ ANTI-CHEAT: Expose sync function
+    restoreStateFromDatabase, // ✅ ANTI-CHEAT: Expose restore function
   }
 })

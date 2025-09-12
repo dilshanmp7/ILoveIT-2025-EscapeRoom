@@ -187,12 +187,44 @@ export const useGameStore = defineStore('game', () => {
     }
     console.log('Saving game state:', state)
     localStorage.setItem('escaperoomGameState', JSON.stringify(state))
+
+    // ✅ ANTI-CHEAT: Also sync with database if playing
+    if (
+      gameState.value === 'playing' &&
+      playerStore.firstName &&
+      playerStore.lastName &&
+      playerStore.department
+    ) {
+      syncGameProgressToDatabase()
+    }
+  }
+
+  // ✅ ANTI-CHEAT: Sync game progress to database
+  async function syncGameProgressToDatabase() {
+    try {
+      await fetch('/api/update-game-progress', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: playerStore.firstName,
+          lastName: playerStore.lastName,
+          department: playerStore.department,
+          currentRoomIndex: currentRoomIndex.value,
+        }),
+      })
+      console.log('✅ Game progress synced to database')
+    } catch (error) {
+      console.warn('⚠️ Failed to sync game progress to database:', error)
+    }
   }
 
   return {
     gameState,
     currentRoom,
     currentRoomIndex,
+    startTime,
     elapsedTime,
     startGame,
     advanceToNextRoom,
@@ -200,6 +232,7 @@ export const useGameStore = defineStore('game', () => {
     timeUp,
     rehydrate,
     saveState,
+    syncGameProgressToDatabase,
     saveFinalResult, // NEW: Expose saveFinalResult function
   }
 })

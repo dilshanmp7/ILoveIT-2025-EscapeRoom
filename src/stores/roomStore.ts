@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { LevelId, LevelStatus, Room, HintOption } from '@/types'
 import { PUZZLE_DATA } from '@/gameData'
+import { usePlayerStore } from './playerStore'
 
 function shuffle(array: any[]) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -101,6 +102,9 @@ export const useRoomStore = defineStore('room', () => {
       }
     })
     finalPuzzle.value = roomPuzzleData.finalPuzzle // ADDED: Set the final puzzle
+
+    // ✅ ANTI-CHEAT: Sync initial room setup to database
+    syncRoomStateToDatabase()
   }
 
   // NEW: Update current question progress
@@ -136,6 +140,9 @@ export const useRoomStore = defineStore('room', () => {
 
     if (levelId === 'level1') levelStatus.value.level2 = 'unlocked'
     if (levelId === 'level2') levelStatus.value.level3 = 'unlocked'
+
+    // ✅ ANTI-CHEAT: Sync to database immediately on level completion
+    syncRoomStateToDatabase()
   }
 
   // NEW: Reset function
@@ -177,6 +184,95 @@ export const useRoomStore = defineStore('room', () => {
     localStorage.setItem('escaperoomRoomState', JSON.stringify(state))
   }
 
+  // ✅ ANTI-CHEAT: Sync room state with database
+  async function syncRoomStateToDatabase() {
+    const playerStore = usePlayerStore()
+
+    if (!playerStore.firstName || !playerStore.lastName || !playerStore.department) {
+      console.warn('⚠️ Cannot sync room state - player info not set')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/update-game-progress', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: playerStore.firstName,
+          lastName: playerStore.lastName,
+          department: playerStore.department,
+          currentRoomId: currentRoomId.value,
+          levelStatus: levelStatus.value,
+          collectedHints: collectedHints.value,
+          currentQuestionIndex: currentQuestionIndex.value,
+          correctAnswersCount: correctAnswersCount.value,
+          // ✅ CRITICAL: Include questions and puzzle data for exact restoration
+          questionsForLevels: questionsForLevels.value,
+          finalPuzzle: finalPuzzle.value,
+          currentSolution: currentSolution.value,
+          currentHints: currentHints.value,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      console.log('✅ Room state synced to database')
+    } catch (error) {
+      console.error('❌ Failed to sync room state to database:', error)
+    }
+  }
+
+  // ✅ ANTI-CHEAT: Restore room state from database
+  function restoreStateFromDatabase(gameData: any) {
+    if (gameData?.gameState) {
+      const state = gameData.gameState
+
+      currentRoomId.value = state.currentRoomId || 'it-security'
+      levelStatus.value = state.levelStatus || {
+        level1: 'unlocked',
+        level2: 'locked',
+        level3: 'locked',
+      }
+      collectedHints.value = state.collectedHints || []
+      currentQuestionIndex.value = state.currentQuestionIndex || { level1: 0, level2: 0, level3: 0 }
+      correctAnswersCount.value = state.correctAnswersCount || { level1: 0, level2: 0, level3: 0 }
+
+      // ✅ CRITICAL: Restore exact questions and puzzle data for precise game resumption
+      if (state.questionsForLevels && Object.keys(state.questionsForLevels).length > 0) {
+        questionsForLevels.value = state.questionsForLevels
+        console.log('✅ Questions restored from database')
+      } else {
+        console.warn(
+          '⚠️ No questions in database, will need to regenerate (this should not happen)'
+        )
+      }
+
+      if (state.finalPuzzle) {
+        finalPuzzle.value = state.finalPuzzle
+      }
+      if (state.currentSolution) {
+        currentSolution.value = state.currentSolution
+      }
+      if (state.currentHints) {
+        currentHints.value = state.currentHints
+      }
+
+      console.log('✅ Room state restored from database:', {
+        roomId: currentRoomId.value,
+        levelStatus: levelStatus.value,
+        questionIndex: currentQuestionIndex.value,
+        hasQuestions:
+          !!state.questionsForLevels && Object.keys(state.questionsForLevels).length > 0,
+        hasFinalPuzzle: !!state.finalPuzzle,
+        hasSolution: !!state.currentSolution,
+      })
+    }
+  }
+
   return {
     currentRoomId, // Expose currentRoomId
     levelStatus,
@@ -197,5 +293,7 @@ export const useRoomStore = defineStore('room', () => {
     reset, // NEW: Expose reset function
     rehydrate, // NEW: Expose rehydrate function
     saveState, // NEW: Expose save function
+    syncRoomStateToDatabase, // ✅ ANTI-CHEAT: Expose sync function
+    restoreStateFromDatabase, // ✅ ANTI-CHEAT: Expose restore function
   }
 })

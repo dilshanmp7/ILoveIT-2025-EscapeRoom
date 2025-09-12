@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/gameStore'
 import { usePlayerStore } from '@/stores/playerStore'
+import { useRoomStore } from '@/stores/roomStore'
 import dhlLogo from '@/assets/dhl_logo2.png'
 import dhlLoveIt2025Background from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
 import iLoveItLogo from '@/assets/IloveIT.png'
@@ -10,6 +11,7 @@ import iLoveItLogo from '@/assets/IloveIT.png'
 const router = useRouter()
 const gameStore = useGameStore()
 const playerStore = usePlayerStore()
+const roomStore = useRoomStore()
 
 // NEW: Local state for form inputs
 const firstName = ref('')
@@ -98,7 +100,9 @@ const checkExistingPlayer = async () => {
     if (result.success && result.hasParticipated) {
       return {
         exists: true,
+        gameInProgress: result.gameInProgress || false,
         playerData: result.playerData,
+        message: result.message,
       }
     }
 
@@ -107,6 +111,98 @@ const checkExistingPlayer = async () => {
     console.error('Error checking existing player:', error)
     // If server check fails, allow registration but show warning
     return { exists: false, serverError: true }
+  }
+}
+
+// Resume a game in progress with hybrid local/database validation
+const resumeGameInProgress = async (playerCheck: any) => {
+  try {
+    console.log('🔄 Resuming game in progress...', playerCheck)
+
+    // Set player info from the saved game data
+    const gameData = playerCheck.playerData || playerCheck.gameData
+    if (gameData) {
+      playerStore.setPlayerInfo({
+        firstName: gameData.firstName,
+        lastName: gameData.lastName,
+        department: gameData.department,
+        workTime: gameData.workTime || workTime.value,
+      })
+
+      // ✅ HYBRID APPROACH: Try local data first, validate against database
+      console.log('🔄 Attempting fast local restoration...')
+
+      // Try to restore from localStorage first (faster)
+      let localStateValid = false
+      try {
+        const localGameState = localStorage.getItem('escaperoomGameState')
+        const localRoomState = localStorage.getItem('escaperoomRoomState')
+        const localPlayerState = localStorage.getItem('escaperoomPlayerState')
+
+        if (localGameState && localRoomState && localPlayerState) {
+          const gameState = JSON.parse(localGameState)
+
+          // ✅ ANTI-CHEAT: Validate critical scoring data against database
+          const dbScoring = gameData.gameState || {}
+          const localScoring = JSON.parse(localPlayerState)
+
+          const scoringMatches =
+            localScoring.wrongAnswerPenalties <= (dbScoring.wrongAnswerPenalties || 0) &&
+            localScoring.hintsUsed <= (dbScoring.hintsUsed || 0) &&
+            gameState.startTime === gameData.gameStartTime
+
+          if (scoringMatches) {
+            console.log('✅ Local state validated - using fast local restoration')
+
+            // Use fast local restoration
+            gameStore.rehydrate(gameState)
+
+            // Rehydrate stores from localStorage
+            const roomState = JSON.parse(localRoomState)
+            roomStore.rehydrate(roomState)
+            playerStore.rehydrate() // Uses localStorage internally
+
+            localStateValid = true
+          } else {
+            console.warn('⚠️ Local state tampering detected - falling back to database')
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ Local state corrupted - falling back to database:', error)
+      }
+
+      // If local validation failed, use authoritative database restoration
+      if (!localStateValid) {
+        console.log('🔄 Using authoritative database restoration...')
+
+        // ✅ ANTI-CHEAT: Restore comprehensive game state from database
+        console.log('🔄 Restoring player scoring state from database...')
+        playerStore.restoreStateFromDatabase(gameData)
+
+        console.log('🔄 Restoring room progress state from database...')
+        roomStore.restoreStateFromDatabase(gameData)
+
+        // Restore the game timer state
+        const savedGameState = {
+          gameState: 'playing',
+          currentRoomIndex: gameData.currentRoomIndex || 0,
+          startTime: gameData.gameStartTime, // Use the original game start time
+        }
+
+        // Restore local game state
+        gameStore.rehydrate(savedGameState)
+      }
+
+      console.log('🎯 Game resumed successfully!')
+      router.push('/game')
+    } else {
+      throw new Error('No game data found')
+    }
+  } catch (error) {
+    console.error('❌ Failed to resume game:', error)
+    errorMessage.value = 'Failed to resume your game. Please try again.'
+  } finally {
+    isCheckingPlayer.value = false
   }
 }
 
@@ -126,7 +222,25 @@ async function handleStartMission() {
     const playerCheck = await checkExistingPlayer()
 
     if (playerCheck.exists) {
-      console.log('🚫 Player already participated in tournament')
+      console.log('🚫 Player already participated in tournament or has game in progress')
+
+      if (playerCheck.gameInProgress) {
+        // Offer to resume the game in progress
+        const resumeGame = confirm(
+          'You have a game in progress. Would you like to continue your current game?'
+        )
+
+        if (resumeGame) {
+          await resumeGameInProgress(playerCheck)
+          return
+        } else {
+          errorMessage.value =
+            'Please use the same registration details to continue your current game.'
+          isCheckingPlayer.value = false
+          return
+        }
+      }
+
       hasAlreadyPlayed.value = true
       finalResult.value = {
         name: `${playerCheck.playerData.firstName} ${playerCheck.playerData.lastName}`,
@@ -145,6 +259,8 @@ async function handleStartMission() {
 
     // Player is new, proceed with game
     console.log('✅ New player validated, starting game...')
+
+    // Set player info first
     playerStore.setPlayerInfo({
       firstName: firstName.value.trim(),
       lastName: lastName.value.trim(),
@@ -152,7 +268,43 @@ async function handleStartMission() {
       workTime: workTime.value,
     })
 
+    // Start the game locally to get the timer
     gameStore.startGame()
+
+    // ✅ ANTI-CHEAT: Mark game as started in database with timer info
+    try {
+      const startGameResponse = await fetch('/api/start-game', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: firstName.value.trim(),
+          lastName: lastName.value.trim(),
+          department: department.value,
+          gameStartTime: gameStore.startTime, // Include the game start time
+        }),
+      })
+
+      const startGameResult = await startGameResponse.json()
+
+      if (!startGameResult.success) {
+        if (startGameResult.alreadyCompleted) {
+          hasAlreadyPlayed.value = true
+          isCheckingPlayer.value = false
+          return
+        }
+        if (startGameResult.gameInProgress) {
+          errorMessage.value =
+            'You already have a game in progress. Please continue your current game.'
+          isCheckingPlayer.value = false
+          return
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to mark game start in database, proceeding locally:', error)
+    }
+
     console.log('🎯 Game started successfully!')
 
     // Navigate to the game view
