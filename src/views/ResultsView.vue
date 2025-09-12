@@ -28,7 +28,7 @@
       class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
     >
       <img
-        :src="winImage"
+        :src="iLoveItImage"
         alt="Win"
         class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
@@ -39,8 +39,8 @@
       class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
     >
       <img
-        :src="teamImage"
-        alt="Team"
+        :src="iLoveItImage"
+        alt="I Love IT"
         class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
@@ -61,8 +61,6 @@
       class="absolute top-1 mobile:top-2 left-1/2 transform -translate-x-1/2 z-10 flex lg:hidden gap-2 mobile:gap-3"
     >
       <img :src="iLoveItImage" alt="I Love IT" class="w-6 mobile:w-8 opacity-70" />
-      <img :src="winImage" alt="Win" class="w-6 mobile:w-8 opacity-70" />
-      <img :src="teamImage" alt="Team" class="w-6 mobile:w-8 opacity-70" />
     </div>
 
     <div
@@ -330,8 +328,6 @@ import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/playerStore'
 import dhlLoveIt2025Background from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
-import winImage from '@/assets/win.png'
-import teamImage from '@/assets/team.png'
 import iLoveItImage from '@/assets/IloveIT.png'
 
 const router = useRouter()
