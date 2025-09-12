@@ -101,7 +101,8 @@ const checkExistingPlayer = async () => {
       return {
         exists: true,
         gameInProgress: result.gameInProgress || false,
-        playerData: result.playerData,
+        playerData: result.playerData || result.gameData, // Fix: Handle both playerData and gameData
+        gameData: result.gameData, // Also provide gameData for game-in-progress cases
         message: result.message,
       }
     }
@@ -120,86 +121,96 @@ const resumeGameInProgress = async (playerCheck: any) => {
     console.log('🔄 Resuming game in progress...', playerCheck)
 
     // Set player info from the saved game data
-    const gameData = playerCheck.playerData || playerCheck.gameData
-    if (gameData) {
-      playerStore.setPlayerInfo({
-        firstName: gameData.firstName,
-        lastName: gameData.lastName,
-        department: gameData.department,
-        workTime: gameData.workTime || workTime.value,
-      })
+    const gameData = playerCheck.gameData || playerCheck.playerData
 
-      // ✅ HYBRID APPROACH: Try local data first, validate against database
-      console.log('🔄 Attempting fast local restoration...')
+    console.log('🔍 Game data found:', !!gameData)
+    console.log('🔍 Game data keys:', gameData ? Object.keys(gameData) : 'No data')
 
-      // Try to restore from localStorage first (faster)
-      let localStateValid = false
-      try {
-        const localGameState = localStorage.getItem('escaperoomGameState')
-        const localRoomState = localStorage.getItem('escaperoomRoomState')
-        const localPlayerState = localStorage.getItem('escaperoomPlayerState')
-
-        if (localGameState && localRoomState && localPlayerState) {
-          const gameState = JSON.parse(localGameState)
-
-          // ✅ ANTI-CHEAT: Validate critical scoring data against database
-          const dbScoring = gameData.gameState || {}
-          const localScoring = JSON.parse(localPlayerState)
-
-          const scoringMatches =
-            localScoring.wrongAnswerPenalties <= (dbScoring.wrongAnswerPenalties || 0) &&
-            localScoring.hintsUsed <= (dbScoring.hintsUsed || 0) &&
-            gameState.startTime === gameData.gameStartTime
-
-          if (scoringMatches) {
-            console.log('✅ Local state validated - using fast local restoration')
-
-            // Use fast local restoration
-            gameStore.rehydrate(gameState)
-
-            // Rehydrate stores from localStorage
-            const roomState = JSON.parse(localRoomState)
-            roomStore.rehydrate(roomState)
-            playerStore.rehydrate() // Uses localStorage internally
-
-            localStateValid = true
-          } else {
-            console.warn('⚠️ Local state tampering detected - falling back to database')
-          }
-        }
-      } catch (error) {
-        console.warn('⚠️ Local state corrupted - falling back to database:', error)
-      }
-
-      // If local validation failed, use authoritative database restoration
-      if (!localStateValid) {
-        console.log('🔄 Using authoritative database restoration...')
-
-        // ✅ ANTI-CHEAT: Restore comprehensive game state from database
-        console.log('🔄 Restoring player scoring state from database...')
-        playerStore.restoreStateFromDatabase(gameData)
-
-        console.log('🔄 Restoring room progress state from database...')
-        roomStore.restoreStateFromDatabase(gameData)
-
-        // Restore the game timer state
-        const savedGameState = {
-          gameState: 'playing',
-          currentRoomIndex: gameData.currentRoomIndex || 0,
-          startTime: gameData.gameStartTime, // Use the original game start time
-        }
-
-        // Restore local game state
-        gameStore.rehydrate(savedGameState)
-      }
-
-      console.log('🎯 Game resumed successfully!')
-      router.push('/game')
-    } else {
-      throw new Error('No game data found')
+    if (!gameData) {
+      throw new Error('No game data found in playerCheck object')
     }
+
+    // Extract player info from the game data
+    const playerInfo = {
+      firstName: gameData.firstName || 'Unknown',
+      lastName: gameData.lastName || 'Unknown',
+      department: gameData.department || department.value,
+      workTime: gameData.workTime || workTime.value,
+    }
+
+    console.log('🔄 Setting player info:', playerInfo)
+    playerStore.setPlayerInfo(playerInfo)
+
+    // ✅ HYBRID APPROACH: Try local data first, validate against database
+    console.log('🔄 Attempting fast local restoration...')
+
+    // Try to restore from localStorage first (faster)
+    let localStateValid = false
+    try {
+      const localGameState = localStorage.getItem('escaperoomGameState')
+      const localRoomState = localStorage.getItem('escaperoomRoomState')
+      const localPlayerState = localStorage.getItem('escaperoomPlayerState')
+
+      if (localGameState && localRoomState && localPlayerState) {
+        const gameState = JSON.parse(localGameState)
+
+        // ✅ ANTI-CHEAT: Validate critical scoring data against database
+        const dbScoring = gameData.gameState || {}
+        const localScoring = JSON.parse(localPlayerState)
+
+        const scoringMatches =
+          localScoring.wrongAnswerPenalties <= (dbScoring.wrongAnswerPenalties || 0) &&
+          localScoring.hintsUsed <= (dbScoring.hintsUsed || 0) &&
+          gameState.startTime === gameData.gameStartTime
+
+        if (scoringMatches) {
+          console.log('✅ Local state validated - using fast local restoration')
+
+          // Use fast local restoration
+          gameStore.rehydrate(gameState)
+
+          // Rehydrate stores from localStorage
+          const roomState = JSON.parse(localRoomState)
+          roomStore.rehydrate(roomState)
+          playerStore.rehydrate() // Uses localStorage internally
+
+          localStateValid = true
+        } else {
+          console.warn('⚠️ Local state tampering detected - falling back to database')
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️ Local state corrupted - falling back to database:', error)
+    }
+
+    // If local validation failed, use authoritative database restoration
+    if (!localStateValid) {
+      console.log('🔄 Using authoritative database restoration...')
+
+      // ✅ ANTI-CHEAT: Restore comprehensive game state from database
+      console.log('🔄 Restoring player scoring state from database...')
+      playerStore.restoreStateFromDatabase(gameData)
+
+      console.log('🔄 Restoring room progress state from database...')
+      roomStore.restoreStateFromDatabase(gameData)
+
+      // Restore the game timer state
+      const savedGameState = {
+        gameState: 'playing',
+        currentRoomIndex: gameData.currentRoomIndex || 0,
+        startTime: gameData.gameStartTime, // Use the original game start time
+      }
+
+      // Restore local game state
+      gameStore.rehydrate(savedGameState)
+    }
+
+    console.log('🎯 Game resumed successfully!')
+    router.push('/game')
   } catch (error) {
     console.error('❌ Failed to resume game:', error)
+    console.error('❌ Error details:', error instanceof Error ? error.message : String(error))
+    console.error('❌ playerCheck object:', playerCheck)
     errorMessage.value = 'Failed to resume your game. Please try again.'
   } finally {
     isCheckingPlayer.value = false
