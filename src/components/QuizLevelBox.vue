@@ -57,7 +57,7 @@ function useHint() {
   const currentQuestionIdx = currentQuestionIndex.value
   hintUsedForQuestions.value.add(currentQuestionIdx)
 
-  // Deduct 3 points from score
+  // Deduct 2 points from score
   playerStore.deductHintPenalty()
 
   // Calculate how many options to hide (50%)
@@ -81,7 +81,7 @@ function useHint() {
       .filter((id: any) => !optionsToHideIds.includes(id))
   }
 
-  feedback.value = `Hint used! ${optionsToHide} option(s) removed. -3 points`
+  feedback.value = `Hint used! ${optionsToHide} option(s) removed. -2 points`
 }
 
 // Watch for question changes to initialize visible options
@@ -231,7 +231,7 @@ function submitAnswer() {
           v-if="isHintAvailable"
           @click="useHint"
           class="ml-2 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs mobile:text-sm laptop:text-base rounded-lg font-bold transition-all hover:shadow-lg"
-          title="Use hint (-3 points)"
+          title="Use hint (-2 points)"
         >
           💡 Hint
         </button>

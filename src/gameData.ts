@@ -98,7 +98,7 @@ export const PUZZLE_DATA: Record<Room['id'], Omit<Room, 'id' | 'name' | 'backgro
               { id: 'a', text: "Check the sender's email address carefully" },
               { id: 'b', text: 'Click on the links to see where they lead' },
               { id: 'c', text: 'Contact the company directly using official contact information' },
-              { id: 'd', text: 'Both A and C' },
+              { id: 'd', text: 'Both first and third answers' },
             ],
             correctOptionId: 'd',
           },

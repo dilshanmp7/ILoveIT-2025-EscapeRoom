@@ -180,11 +180,11 @@
           <div class="flex justify-between items-center py-1 mobile:py-2 border-b border-gray-700">
             <span
               class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
-              >Starting Score</span
+              >Base Score (Game Completion)</span
             >
             <span
               class="text-green-400 font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl"
-              >100</span
+              >+90</span
             >
           </div>
           <div
@@ -195,14 +195,17 @@
             >
               Time Penalty
               <span
-                v-if="elapsedSeconds <= 2700"
+                v-if="elapsedSeconds <= 120"
                 class="text-green-400 block sm:inline text-xs mobile:text-xs sm:text-sm laptop:text-base large:text-lg"
-                >({{ Math.floor(elapsedSeconds / 60) }}:{{ String(elapsedSeconds % 60).padStart(2, '0') }} ≤ 45:00 - Perfect Time!)</span
+                >({{ Math.floor(elapsedSeconds / 60) }}:{{
+                  String(elapsedSeconds % 60).padStart(2, '0')
+                }}
+                ≤ 2:00 - Perfect Time!)</span
               >
               <span
                 v-else
                 class="block sm:inline text-xs mobile:text-xs sm:text-sm laptop:text-base large:text-lg"
-                >({{ ((elapsedSeconds - 2700) / 60).toFixed(1) }} extra minutes beyond 45:00)</span
+                >({{ ((elapsedSeconds - 120) / 60).toFixed(1) }} extra minutes beyond 2:00)</span
               >
             </span>
             <span
@@ -215,17 +218,17 @@
           <div class="flex justify-between items-center py-1 mobile:py-2 border-b border-gray-700">
             <span
               class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
-              >Wrong Answer Penalty ({{ playerStore.wrongAnswerPenalties }} × 5)</span
+              >Wrong Answer Penalty ({{ playerStore.wrongAnswerPenalties }} × 3)</span
             >
             <span
               class="text-red-400 font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl"
-              >-{{ playerStore.wrongAnswerPenalties * 5 }}</span
+              >-{{ playerStore.wrongAnswerPenalties * 3 }}</span
             >
           </div>
           <div class="flex justify-between items-center py-1 mobile:py-2 border-b border-gray-700">
             <span
               class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl"
-              >Hints Penalty ({{ playerStore.hintsUsed }} × 3)</span
+              >Hints Penalty ({{ playerStore.hintsUsed }} × 2)</span
             >
             <span
               class="font-mono text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl"

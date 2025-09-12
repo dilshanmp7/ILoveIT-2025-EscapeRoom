@@ -9,71 +9,76 @@ export const usePlayerStore = defineStore('player', () => {
   const workTime = ref('')
 
   // Scoring components
-  const baseScore = ref<number>(100) // Start with perfect score
-  const wrongAnswerPenalties = ref<number>(0) // Track wrong answers
+  const wrongAnswerPenalties = ref<number>(0) // Tracks count of wrong answers
   const hintsUsed = ref<number>(0)
-  const completionBonus = ref<number>(0) // Bonus for completing all rooms
+  const completionBonus = ref<number>(0) // 10 points on successful completion
   const startTime = ref<number>(0)
   const endTime = ref<number>(0)
 
-  // Enhanced scoring logic (0-100 points) - NEW SPECIFICATION
+  // --- NEW SCORING LOGIC ---
   const finalScore = computed(() => {
-    const maxScore = 100
-    let score = maxScore
-
     const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
-    const wrongAnswersCount = wrongAnswerPenalties.value
 
-    // Case 1: Perfect run bonus - Finished within 45 minutes without mistakes
-    if (elapsedSeconds <= 2700 && wrongAnswersCount === 0) {
-      return maxScore // 100 points
+    // Perfect Scenario Check:
+    // If finished under 2 mins with no wrong answers/hints, award a perfect 100.
+    if (
+      elapsedSeconds <= 120 &&
+      wrongAnswerPenalties.value === 0 &&
+      hintsUsed.value === 0 &&
+      completionBonus.value === 10 // Ensures they actually finished
+    ) {
+      return 100
     }
 
-    // Case 2: Apply time penalty if > 45 minutes (scaled, not whole minutes)
-    if (elapsedSeconds > 2700) {
-      const extraMinutes = (elapsedSeconds - 2700) / 60 // fractional minutes
-      const TIME_PENALTY_VALUE = 2 // adjust difficulty here
-      score -= extraMinutes * TIME_PENALTY_VALUE
+    // 1. Base score for completing all 30 questions (30 × 3 = 90 points)
+    // Deduct 3 points for each wrong answer (which represents inefficient attempts)
+    const BASE_SCORE = 90 // 30 questions × 3 points each
+    const WRONG_ANSWER_PENALTY = 3
+    const answerScore = BASE_SCORE - wrongAnswerPenalties.value * WRONG_ANSWER_PENALTY
+
+    // 2. Calculate Time Penalty if game took longer than 2 minutes (120 seconds)
+    let timePenaltyValue = 0
+    if (elapsedSeconds > 120) {
+      const extraMinutes = (elapsedSeconds - 120) / 60 // fractional minutes
+      const TIME_PENALTY_PER_MINUTE = 1 // 1 point per minute over
+      timePenaltyValue = extraMinutes * TIME_PENALTY_PER_MINUTE
     }
 
-    // Case 3: Apply penalty for wrong answers
-    const WRONG_ANSWER_PENALTY = 5 // 5 points per wrong answer
-    score -= wrongAnswersCount * WRONG_ANSWER_PENALTY
+    // 3. Calculate Penalty for hints used
+    const HINT_PENALTY = 2 // 2 points per hint
+    const hintPenaltyValue = hintsUsed.value * HINT_PENALTY
 
-    // Case 4: Apply hints penalty
-    const HINT_PENALTY = 3 // 3 points per hint
-    score -= hintsUsed.value * HINT_PENALTY
+    // 4. Combine all values: Answer Score + Bonus - Penalties
+    let score = answerScore + completionBonus.value - timePenaltyValue - hintPenaltyValue
 
-    // Case 5: Apply completion bonus
-    score += completionBonus.value
-
-    // Case 6: Ensure score boundaries (0 – 100)
-    if (score > maxScore) {
-      score = maxScore
+    // 5. Ensure score boundaries (0 to 100)
+    if (score > 100) {
+      score = 100
     }
     if (score < 0) {
       score = 0
     }
 
-    return Math.round(score) // Return whole number
+    return Math.round(score) // Return final score as a whole number
   })
 
-  // Computed time penalty for display purposes - NEW SPECIFICATION
+  // Computed time penalty for display purposes
   const timePenalty = computed(() => {
+    if (!endTime.value) return 0 // Don't calculate if game isn't over
     const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
 
-    if (elapsedSeconds <= 2700) {
-      return 0 // No penalty for 45 minutes or less
+    if (elapsedSeconds <= 120) {
+      return 0 // No penalty for 2 minutes or less
     }
 
-    const extraMinutes = (elapsedSeconds - 2700) / 60 // fractional minutes
-    const TIME_PENALTY_VALUE = 2 // 2 points per minute (fractional)
-    return Math.round(extraMinutes * TIME_PENALTY_VALUE * 10) / 10 // Round to 1 decimal
+    const extraMinutes = (elapsedSeconds - 120) / 60 // fractional minutes
+    const TIME_PENALTY_PER_MINUTE = 1 // 1 point per minute
+    return Math.round(extraMinutes * TIME_PENALTY_PER_MINUTE * 10) / 10 // Round to 1 decimal
   })
 
   // Computed hints penalty for display purposes
   const hintsPenalty = computed(() => {
-    const HINT_PENALTY = 3 // 3 points per hint
+    const HINT_PENALTY = 2 // 2 points per hint
     return hintsUsed.value * HINT_PENALTY
   })
 
@@ -128,7 +133,6 @@ export const usePlayerStore = defineStore('player', () => {
     lastName.value = ''
     department.value = ''
     workTime.value = ''
-    baseScore.value = 100
     wrongAnswerPenalties.value = 0
     hintsUsed.value = 0
     completionBonus.value = 0
@@ -311,7 +315,6 @@ export const usePlayerStore = defineStore('player', () => {
       lastName.value = state.lastName || ''
       department.value = state.department || ''
       workTime.value = state.workTime || ''
-      baseScore.value = state.baseScore || 100
       wrongAnswerPenalties.value = state.wrongAnswerPenalties || 0
       hintsUsed.value = state.hintsUsed || 0
       completionBonus.value = state.completionBonus || 0
@@ -329,7 +332,6 @@ export const usePlayerStore = defineStore('player', () => {
         lastName: lastName.value,
         department: department.value,
         workTime: workTime.value,
-        baseScore: baseScore.value,
         wrongAnswerPenalties: wrongAnswerPenalties.value,
         hintsUsed: hintsUsed.value,
         completionBonus: completionBonus.value,
@@ -344,7 +346,6 @@ export const usePlayerStore = defineStore('player', () => {
     lastName,
     department,
     workTime,
-    baseScore,
     wrongAnswerPenalties,
     hintsUsed,
     completionBonus,

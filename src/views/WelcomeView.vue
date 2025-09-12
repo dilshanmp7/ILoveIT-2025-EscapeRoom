@@ -113,7 +113,8 @@ function startGame() {
             <div class="flex items-start gap-2">
               <span class="text-dhl-yellow font-bold">•</span>
               <span
-                ><strong>Hint System:</strong> Use hints when stuck, but each hint costs 3 points and removes one wrong answer option</span
+                ><strong>Hint System:</strong> Use hints when stuck, but each hint costs 2 points
+                and removes some wrong answer options</span
               >
             </div>
           </div>

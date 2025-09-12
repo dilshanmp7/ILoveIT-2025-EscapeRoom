@@ -95,7 +95,9 @@ export const useRoomStore = defineStore('room', () => {
       // Handle legacy questions structure (for other levels)
       else if (levelData.questions) {
         const allQuestions = levelData.questions
-        questionsForLevels.value[levelKey] = shuffle([...allQuestions]).slice(0, 3)
+        // Level 3 gets 4 questions, others get 3
+        const questionCount = levelKey === 'level3' ? 4 : 3
+        questionsForLevels.value[levelKey] = shuffle([...allQuestions]).slice(0, questionCount)
       }
     })
     finalPuzzle.value = roomPuzzleData.finalPuzzle // ADDED: Set the final puzzle
