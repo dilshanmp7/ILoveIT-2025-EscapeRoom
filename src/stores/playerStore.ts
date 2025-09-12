@@ -140,6 +140,23 @@ export const usePlayerStore = defineStore('player', () => {
     endTime.value = 0
   }
 
+  // Helper function to get Copenhagen local time
+  const getCopenhagenTime = (): string => {
+    return (
+      new Date()
+        .toLocaleString('sv-SE', {
+          timeZone: 'Europe/Copenhagen',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        })
+        .replace(' ', 'T') + '+02:00'
+    ) // Adding timezone offset for CEST
+  }
+
   // ✅ BACKUP STRATEGY + CENTRALIZED DATA COLLECTION
   // Enhanced saveToLeaderboard with backend integration
   async function saveToLeaderboard() {
@@ -152,7 +169,7 @@ export const usePlayerStore = defineStore('player', () => {
       timeSpent: timeSpent.value,
       wrongAnswers: wrongAnswerPenalties.value,
       hintsUsed: hintsUsed.value,
-      completionTime: new Date().toISOString(),
+      completionTime: getCopenhagenTime(),
       timestamp: Date.now(),
     }
 

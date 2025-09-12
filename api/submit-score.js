@@ -3,6 +3,23 @@
 
 import { savePlayerScore } from '../lib/database.js'
 
+// Helper function to get Copenhagen local time
+const getCopenhagenTime = () => {
+  return (
+    new Date()
+      .toLocaleString('sv-SE', {
+        timeZone: 'Europe/Copenhagen',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
+      .replace(' ', 'T') + '+02:00'
+  ) // Adding timezone offset for CEST
+}
+
 export default async function handler(req, res) {
   // ✅ PUBLIC HOSTING READY - Enable CORS for all domains
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -67,7 +84,7 @@ export default async function handler(req, res) {
       // Return success with rank information
       res.json({
         ...result,
-        timestamp: new Date().toISOString(),
+        timestamp: getCopenhagenTime(),
       })
     } catch (error) {
       console.error('❌ Score submission error:', error)
