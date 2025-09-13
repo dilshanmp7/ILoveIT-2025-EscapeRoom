@@ -26,6 +26,7 @@ const finalResult = ref<{ name: string; score: number; timeSpent: string; rank?:
 )
 const isCheckingPlayer = ref(false)
 const errorMessage = ref('')
+const gameJustStarted = ref(false) // 🔧 NEW: Track if we just started a game
 
 const departments = [
   'IT',
@@ -230,8 +231,16 @@ const resumeGameInProgress = async (playerCheck: any) => {
 
 // NEW: Enhanced function to handle starting the mission with server validation
 async function handleStartMission() {
+  console.log('🎮 handleStartMission called - start')
+  
   if (!isFormValid.value) {
     errorMessage.value = 'Please fill in all required fields.'
+    return
+  }
+
+  // 🔧 FIX: Prevent multiple simultaneous executions
+  if (isCheckingPlayer.value) {
+    console.log('⚠️ Registration already in progress, ignoring duplicate request')
     return
   }
 
@@ -283,6 +292,16 @@ async function handleStartMission() {
       console.log('🚫 Player already participated in tournament or has game in progress')
 
       if (playerCheck.gameInProgress) {
+        // 🔧 FIX: Don't show "game in progress" if we just started the game ourselves
+        if (gameJustStarted.value) {
+          console.log('🎯 Ignoring "game in progress" because we just started this game')
+          // Reset the flag and continue with normal game flow
+          gameJustStarted.value = false
+          // Navigate to game
+          router.push('/game')
+          return
+        }
+
         // Offer to resume the game in progress
         const resumeGame = confirm(
           'You have a game in progress. Would you like to continue your current game?'
@@ -365,7 +384,10 @@ async function handleStartMission() {
 
     console.log('🎯 Game started successfully!')
 
-    // Navigate to the game view
+    // 🔧 FIX: Mark that we just started a game to prevent immediate "game in progress" detection
+    gameJustStarted.value = true
+
+    // Navigate to a non-special route so App.vue uses game state system
     router.push('/game')
   } catch (error) {
     console.error('❌ Error during player validation:', error)
