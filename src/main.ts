@@ -14,7 +14,7 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 
-// NEW: Restore state from localStorage on app startup
+// NEW: Smart state restoration that validates player identity
 function restoreState() {
   try {
     console.log('Attempting to restore state from localStorage...')
@@ -26,6 +26,35 @@ function restoreState() {
     console.log('Found playerState in localStorage:', !!playerState)
     console.log('Found roomState in localStorage:', !!roomState)
 
+    // 🔧 FIX: Only restore if we have complete player identity
+    // This prevents restoring previous player's state before checking current user
+    if (!gameState || !playerState) {
+      console.log('⚠️ Incomplete state data - skipping restoration')
+      return
+    }
+
+    const parsedGameState = JSON.parse(gameState)
+    const parsedPlayerState = JSON.parse(playerState)
+
+    // 🔧 FIX: Only restore if player has valid identity data
+    // This ensures we don't restore anonymous/incomplete sessions
+    if (!parsedPlayerState.firstName || !parsedPlayerState.lastName) {
+      console.log('⚠️ No player identity found - clearing old state')
+      localStorage.removeItem('escaperoomGameState')
+      localStorage.removeItem('playerStore')
+      localStorage.removeItem('escaperoomRoomState')
+      return
+    }
+
+    // 🔧 FIX: Only restore "playing" games, not "intro" or "finished"
+    // This prevents restoring completed or invalid game states
+    if (parsedGameState.gameState !== 'playing') {
+      console.log('⚠️ Game not in playing state - skipping restoration')
+      return
+    }
+
+    console.log('✅ Valid game state found - proceeding with restoration')
+
     const gameStore = useGameStore()
     const playerStore = usePlayerStore()
     const roomStore = useRoomStore()
@@ -36,17 +65,17 @@ function restoreState() {
       roomStore.rehydrate(JSON.parse(roomState))
     }
 
-    if (playerState) {
-      console.log('Restoring player state...')
-      playerStore.rehydrate()
-    }
+    console.log('Restoring player state...')
+    playerStore.rehydrate()
 
-    if (gameState) {
-      console.log('Restoring game state:', JSON.parse(gameState))
-      gameStore.rehydrate(JSON.parse(gameState))
-    }
+    console.log('Restoring game state:', parsedGameState)
+    gameStore.rehydrate(parsedGameState)
   } catch (error) {
     console.warn('Failed to restore state from localStorage:', error)
+    // Clear corrupted data
+    localStorage.removeItem('escaperoomGameState')
+    localStorage.removeItem('playerStore')
+    localStorage.removeItem('escaperoomRoomState')
   }
 }
 

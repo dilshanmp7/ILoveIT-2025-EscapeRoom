@@ -377,8 +377,48 @@ async function handleStartMission() {
 
 // NEW: Check for completed game on component mount (both local and server)
 onMounted(async () => {
-  // First check localStorage for quick feedback, but only if form is already filled
-  // This prevents showing wrong player's completed game
+  // 🔧 FIX: Check for cross-player contamination on component mount
+  // This handles the case where localStorage contains previous player's active game
+  const localGameState = localStorage.getItem('escaperoomGameState')
+  const localPlayerState = localStorage.getItem('playerStore')
+
+  if (localGameState && localPlayerState) {
+    try {
+      const gameState = JSON.parse(localGameState)
+      const playerData = JSON.parse(localPlayerState)
+
+      // If there's an active game but no form input, this is likely cross-player contamination
+      if (gameState.gameState === 'playing' && !firstName.value.trim() && !lastName.value.trim()) {
+        console.log(
+          '🧹 Detected cross-player contamination on mount - clearing previous player data'
+        )
+
+        // Clear all localStorage data from previous player
+        localStorage.removeItem('escaperoomGameState')
+        localStorage.removeItem('escaperoomRoomState')
+        localStorage.removeItem('playerStore')
+        localStorage.removeItem('dhl-it-lockdown-completed-game')
+
+        // Reset stores to clean state
+        gameStore.gameState = 'intro'
+        gameStore.currentRoomIndex = 0
+        gameStore.startTime = 0
+        playerStore.reset()
+        roomStore.reset()
+
+        console.log('✅ Cross-player contamination cleared on mount')
+        return // Skip further processing
+      }
+    } catch (error) {
+      console.warn('⚠️ Error checking for cross-player contamination:', error)
+      // Clear corrupted data
+      localStorage.removeItem('escaperoomGameState')
+      localStorage.removeItem('playerStore')
+      localStorage.removeItem('escaperoomRoomState')
+    }
+  }
+
+  // Original completed game check logic
   const completedGame = localStorage.getItem('dhl-it-lockdown-completed-game')
   if (completedGame) {
     try {

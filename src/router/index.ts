@@ -57,6 +57,45 @@ router.beforeEach(async (to, from, next) => {
   const gameStore = useGameStore()
   const playerStore = usePlayerStore()
 
+  // 🔧 FIX: Check for cross-player contamination on app startup
+  // If game is in playing state but user is going to intro/welcome,
+  // this means a different player is trying to register
+  if (gameStore.gameState === 'playing' && (to.name === 'intro' || to.name === 'welcome')) {
+    // Get current player data from localStorage
+    const savedPlayerState = localStorage.getItem('playerStore')
+
+    if (savedPlayerState) {
+      try {
+        const playerData = JSON.parse(savedPlayerState)
+        console.log('🔍 Checking for cross-player contamination...')
+
+        // If there's a playing game but user is accessing intro/welcome,
+        // this likely means localStorage contains previous player's data
+        console.log(
+          '🧹 Detected potential cross-player contamination - clearing previous game data'
+        )
+
+        // Clear all game-related localStorage
+        localStorage.removeItem('escaperoomGameState')
+        localStorage.removeItem('escaperoomRoomState')
+        localStorage.removeItem('playerStore')
+        localStorage.removeItem('dhl-it-lockdown-completed-game')
+
+        // Reset stores
+        gameStore.gameState = 'intro'
+        gameStore.currentRoomIndex = 0
+        gameStore.startTime = 0
+        playerStore.reset()
+
+        console.log('✅ Cross-player data cleared, proceeding to intro')
+        next()
+        return
+      } catch (error) {
+        console.warn('⚠️ Error checking player data:', error)
+      }
+    }
+  }
+
   // If player has a game in progress, restrict navigation
   if (gameStore.gameState === 'playing') {
     // Allow navigation to results when game finishes
