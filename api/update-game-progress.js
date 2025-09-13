@@ -53,7 +53,7 @@ export default async function handler(req, res) {
       console.error('❌ Update game progress error:', error)
       console.error('❌ Error stack:', error.stack)
       console.error('❌ Request body:', req.body)
-      
+
       res.status(500).json({
         success: false,
         error: 'Failed to update game progress',

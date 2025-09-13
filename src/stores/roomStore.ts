@@ -184,11 +184,11 @@ export const useRoomStore = defineStore('room', () => {
     localStorage.setItem('escaperoomRoomState', JSON.stringify(state))
   }
 
-  // ✅ ANTI-CHEAT: Sync room state with database 
+  // ✅ ANTI-CHEAT: Sync room state with database
   let isSyncingRoom = false // Prevent multiple simultaneous syncs
   async function syncRoomStateToDatabase() {
     const playerStore = usePlayerStore()
-    
+
     if (!playerStore.firstName || !playerStore.lastName || !playerStore.department) {
       console.warn('⚠️ Cannot sync room state - player info not set')
       return
@@ -238,7 +238,7 @@ export const useRoomStore = defineStore('room', () => {
     } finally {
       isSyncingRoom = false
     }
-  }  // ✅ ANTI-CHEAT: Restore room state from database
+  } // ✅ ANTI-CHEAT: Restore room state from database
   function restoreStateFromDatabase(gameData: any) {
     if (gameData?.gameState) {
       const state = gameData.gameState

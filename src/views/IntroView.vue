@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/gameStore'
 import { usePlayerStore } from '@/stores/playerStore'
@@ -74,6 +74,17 @@ const isFormValid = computed(() => {
     department.value !== '' &&
     workTime.value !== ''
   )
+})
+
+// 🔧 NEW: Watch for form changes to reset "already played" status for different players
+watch([firstName, lastName], () => {
+  // Reset already played status when player details change
+  // This allows a new player to register on the same browser
+  if (hasAlreadyPlayed.value) {
+    hasAlreadyPlayed.value = false
+    finalResult.value = null
+    errorMessage.value = ''
+  }
 })
 
 // ✅ TOURNAMENT INTEGRITY - Check if player already participated
@@ -229,6 +240,42 @@ async function handleStartMission() {
   errorMessage.value = ''
 
   try {
+    // 🔧 FIX: Check if different player is trying to register on same browser
+    const localPlayerState = localStorage.getItem('playerStore')
+    if (localPlayerState) {
+      try {
+        const savedPlayerData = JSON.parse(localPlayerState)
+        const currentPlayerKey = `${firstName.value.trim()}-${lastName.value.trim()}`.toLowerCase()
+        const savedPlayerKey = `${savedPlayerData.firstName || ''}-${
+          savedPlayerData.lastName || ''
+        }`.toLowerCase()
+
+        if (currentPlayerKey !== savedPlayerKey) {
+          console.log('🔄 Different player detected, clearing previous game data...')
+          // Clear all game-related localStorage data for the previous player
+          localStorage.removeItem('escaperoomGameState')
+          localStorage.removeItem('escaperoomRoomState')
+          localStorage.removeItem('playerStore')
+          localStorage.removeItem('dhl-it-lockdown-completed-game')
+
+          // Reset stores to initial state
+          playerStore.reset()
+          roomStore.reset()
+
+          // Reset game store manually
+          gameStore.gameState = 'intro'
+          gameStore.currentRoomIndex = 0
+          gameStore.startTime = 0
+
+          console.log('✅ Previous player data cleared, proceeding with new registration')
+        }
+      } catch (error) {
+        console.warn('⚠️ Error checking saved player data:', error)
+        // If there's an error parsing, clear the corrupted data
+        localStorage.removeItem('playerStore')
+      }
+    }
+
     // Check server for existing player
     const playerCheck = await checkExistingPlayer()
 
@@ -330,16 +377,32 @@ async function handleStartMission() {
 
 // NEW: Check for completed game on component mount (both local and server)
 onMounted(async () => {
-  // First check localStorage for quick feedback
+  // First check localStorage for quick feedback, but only if form is already filled
+  // This prevents showing wrong player's completed game
   const completedGame = localStorage.getItem('dhl-it-lockdown-completed-game')
   if (completedGame) {
-    hasAlreadyPlayed.value = true
-    const data = JSON.parse(completedGame)
-    finalResult.value = {
-      name: `${data.firstName} ${data.lastName}`,
-      score: data.score,
-      timeSpent: data.timeSpent || '00:00',
-      rank: data.rank,
+    try {
+      const data = JSON.parse(completedGame)
+
+      // Only show completed game if form is pre-filled with same player details
+      if (firstName.value.trim() && lastName.value.trim()) {
+        const currentPlayerKey = `${firstName.value.trim()}-${lastName.value.trim()}`.toLowerCase()
+        const completedPlayerKey = `${data.firstName || ''}-${data.lastName || ''}`.toLowerCase()
+
+        if (currentPlayerKey === completedPlayerKey) {
+          hasAlreadyPlayed.value = true
+          finalResult.value = {
+            name: `${data.firstName} ${data.lastName}`,
+            score: data.score,
+            timeSpent: data.timeSpent || '00:00',
+            rank: data.rank,
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️ Error parsing completed game data:', error)
+      // Clear corrupted data
+      localStorage.removeItem('dhl-it-lockdown-completed-game')
     }
   }
 })
