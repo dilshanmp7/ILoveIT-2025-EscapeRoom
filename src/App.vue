@@ -19,8 +19,8 @@ const isSpecialRoute = computed(() => {
     route.path === '/about' ||
     route.path === '/results' ||
     route.path === '/leaderboard' ||
-    route.path === '/' ||
-    route.path === '/intro'
+    route.path === '/'
+    // 🔧 REMOVED: '/intro' so game state system takes precedence when gameState === 'playing'
   )
 })
 </script>

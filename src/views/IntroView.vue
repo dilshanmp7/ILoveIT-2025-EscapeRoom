@@ -232,7 +232,7 @@ const resumeGameInProgress = async (playerCheck: any) => {
 // NEW: Enhanced function to handle starting the mission with server validation
 async function handleStartMission() {
   console.log('🎮 handleStartMission called - start')
-  
+
   if (!isFormValid.value) {
     errorMessage.value = 'Please fill in all required fields.'
     return
