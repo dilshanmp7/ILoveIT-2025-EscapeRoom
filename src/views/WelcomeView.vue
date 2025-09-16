@@ -93,14 +93,6 @@ function startGame() {
                 and removes some wrong answer options</span
               >
             </div>
-            <div class="flex items-start gap-2">
-              <span class="text-dhl-yellow font-bold">•</span>
-              <span>
-                <strong>Forfeit Rule:</strong> If you leave the game before finishing (forfeit),
-                your score will be permanently set to
-                <span class="text-dhl-red font-bold">40 points</span>.
-              </span>
-            </div>
           </div>
         </div>
 
