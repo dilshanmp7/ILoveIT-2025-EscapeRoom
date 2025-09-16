@@ -99,7 +99,7 @@ const roomProgress = computed(() => {
               <span v-else>🚪</span>
             </div>
             <div
-              class="text-xs large:text-xs font-medium text-center max-w-[40px] large:max-w-[45px] truncate"
+              class="text-xs large:text-xs font-medium text-center max-w-[40px] large:max-w-[45px]"
               :class="{
                 'text-green-400': room.isCompleted,
                 'text-dhl-yellow': room.isCurrent,
