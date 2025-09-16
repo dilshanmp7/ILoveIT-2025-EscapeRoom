@@ -157,9 +157,10 @@ export const useGameStore = defineStore('game', () => {
     gameState.value = state.gameState
     currentRoomIndex.value = state.currentRoomIndex
     startTime.value = state.startTime
+    // Restore currentTime if available, else use Date.now()
+    currentTime.value = state.currentTime ? state.currentTime : Date.now()
 
     if (gameState.value === 'playing') {
-      currentTime.value = Date.now()
       if (timerInterval) clearInterval(timerInterval)
       timerInterval = setInterval(() => {
         currentTime.value = Date.now()
@@ -177,6 +178,7 @@ export const useGameStore = defineStore('game', () => {
       gameState: gameState.value,
       currentRoomIndex: currentRoomIndex.value,
       startTime: startTime.value,
+      currentTime: currentTime.value,
     }
     localStorage.setItem('escaperoomGameState', JSON.stringify(state))
 
@@ -202,9 +204,11 @@ export const useGameStore = defineStore('game', () => {
           lastName: playerStore.lastName,
           department: playerStore.department,
           currentRoomIndex: currentRoomIndex.value,
+          startTime: startTime.value,
+          currentTime: currentTime.value,
         }),
       })
-      console.log('✅ Game progress synced to database')
+      console.log('✅ Game progress synced to database (with timer state)')
     } catch (error) {
       console.warn('⚠️ Failed to sync game progress to database:', error)
     }
