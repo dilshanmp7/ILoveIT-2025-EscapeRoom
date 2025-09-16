@@ -212,6 +212,7 @@ export const useRoomStore = defineStore('room', () => {
           lastName: playerStore.lastName,
           department: playerStore.department,
           currentRoomId: currentRoomId.value,
+          currentRoomIndex: useGameStore().currentRoomIndex,
           levelStatus: levelStatus.value,
           collectedHints: collectedHints.value,
           currentQuestionIndex: currentQuestionIndex.value,
