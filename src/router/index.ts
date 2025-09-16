@@ -123,8 +123,8 @@ router.beforeEach(async (to, from, next) => {
         try {
           // Force submit current score to database to mark as completed
           // Note: This prevents the player from restarting even if they forfeit
-          await playerStore.saveToLeaderboard()
-          console.log('✅ Forfeit score submitted to database - player cannot restart')
+          await playerStore.saveToLeaderboard(true) // true = forfeit submission (40 points)
+          console.log('✅ Forfeit score (40 points) submitted to database - player cannot restart')
         } catch (error) {
           console.error('❌ Failed to submit forfeit score:', error)
           // Even if submission fails, still prevent restart by resetting local state

@@ -3,13 +3,10 @@
 @tailwind utilities;
 
 /* =================
-   RESPONSIVE DESIGN FOR SPECIFIC SCREEN SIZES
-   - Mobile (iPhone SE): 375 × 667 px
-   - Laptop: 1528 × 740 px
-   - Large Monitor: 1912 × 1074 px
+   RESPONSIVE TYPOGRAPHY
    ================= */
 
-/* Mobile-first responsive design - iPhone SE (375x667) */
+/* Mobile-first responsive design */
 @media (max-width: 374px) {
   html {
     font-size: 12px; /* Extra small font for very small screens */
@@ -20,41 +17,6 @@
   html {
     font-size: 14px; /* Optimal font size for mobile */
   }
-
-  /* Ensure full viewport usage on mobile with proper spacing for GameUI */
-  #app {
-    height: 100dvh; /* Dynamic viewport height */
-    min-height: 667px;
-  }
-
-  /* Mobile-specific button sizing */
-  button,
-  .clickable {
-    min-height: 44px;
-    min-width: 44px;
-    touch-action: manipulation;
-  }
-
-  /* Mobile game area - account for GameUI header (60px) and footer (120px) */
-  .mobile-game-area {
-    height: calc(100vh - 180px);
-    margin-top: 60px;
-    margin-bottom: 120px;
-  }
-
-  /* Better text scaling for mobile */
-  .mobile-text-xs {
-    font-size: 0.75rem;
-  }
-  .mobile-text-sm {
-    font-size: 0.875rem;
-  }
-  .mobile-text-base {
-    font-size: 1rem;
-  }
-  .mobile-text-lg {
-    font-size: 1.125rem;
-  }
 }
 
 /* Tablet and small desktop optimization */
@@ -62,95 +24,83 @@
   html {
     font-size: 15px;
   }
-
-  #app {
-    height: 100vh;
-    min-height: 600px;
-  }
 }
 
-/* Laptop screen optimization - 1528x740px */
+/* Laptop screen optimization */
 @media (min-width: 1528px) and (max-width: 1911px) {
   html {
     font-size: 16px; /* Standard font size */
   }
-
-  #app {
-    height: 100vh;
-    min-height: 740px;
-  }
-
-  /* Optimize game container for laptop screens */
-  .laptop-game-container {
-    padding: 1.5rem !important;
-    gap: 1rem !important;
-    min-height: calc(100vh - 140px); /* Account for header/footer */
-  }
-
-  /* Better space utilization on laptop */
-  .laptop-quiz-content {
-    width: 30% !important;
-    flex-shrink: 0;
-  }
-
-  /* Ensure proper height constraints for quiz boxes */
-  .laptop-quiz-box {
-    height: 100% !important;
-    max-height: calc(100vh - 200px) !important;
-    overflow: hidden;
-  }
-
-  /* Scrollable content areas */
-  .laptop-quiz-scroll {
-    overflow-y: auto !important;
-    max-height: calc(100% - 200px);
-  }
 }
 
-/* Large monitor optimization - 1912x1074px and above */
+/* Large monitor optimization */
 @media (min-width: 1912px) {
   html {
     font-size: 18px; /* Larger font for big screens */
   }
+}
 
-  #app {
-    height: 100vh;
-    min-height: 1074px;
-  }
+/* =================
+   BASE STYLES & RESETS
+   ================= */
 
-  /* Large screen specific optimizations */
-  .large-game-container {
-    padding: 2rem !important;
-    gap: 1.5rem !important;
-    min-height: calc(100vh - 160px);
-  }
+:root {
+  --vt-c-white: #ffffff;
+  --vt-c-white-soft: #f8f8f8;
+  --vt-c-white-mute: #f2f2f2;
+  --vt-c-black: #181818;
+  --vt-c-black-soft: #222222;
+  --vt-c-black-mute: #282828;
+  --vt-c-indigo: #2c3e50;
+  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
+  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
+  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  --vt-c-text-light-1: var(--vt-c-indigo);
+  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  --vt-c-text-dark-1: var(--vt-c-white);
+  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --color-background: var(--vt-c-white);
+  --color-border: var(--vt-c-divider-light-2);
+  --color-heading: var(--vt-c-text-light-1);
+  --color-text: var(--vt-c-text-light-1);
+}
 
-  .large-quiz-box {
-    height: 100% !important;
-    max-height: calc(100vh - 240px) !important;
-    overflow: hidden;
-  }
-
-  .large-quiz-content {
-    width: 28% !important;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--vt-c-black);
+    --color-border: var(--vt-c-divider-dark-2);
+    --color-heading: var(--vt-c-text-dark-1);
+    --color-text: var(--vt-c-text-dark-2);
   }
 }
 
-/* Universal base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
 body {
-  background-color: #111827; /* bg-gray-900 */
-  color: white;
-  font-family: 'Inter', 'Aptos', 'Arial', sans-serif;
-  -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  text-size-adjust: 100%;
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+  transition: color 0.5s, background-color 0.5s;
+  line-height: 1.6;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Cantarell,
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* The ONLY #app rule needed. This provides the non-scrolling base for the entire site. */
 #app {
   width: 100vw;
-  overflow-x: hidden;
-  overflow-y: auto;
+  height: 100vh; /* Fallback for older browsers */
+  height: 100dvh; /* Best for modern devices */
+  overflow: hidden; /* This is the key */
 }

@@ -14,6 +14,9 @@ export const useGameStore = defineStore('game', () => {
   const roomStore = useRoomStore()
   const playerStore = usePlayerStore()
 
+  // NEW: A computed property to hold the list of all rooms
+  const allRooms = computed(() => ROOM_DATA)
+
   const currentRoom = computed(() => {
     return ROOM_DATA[currentRoomIndex.value]
   })
@@ -22,6 +25,18 @@ export const useGameStore = defineStore('game', () => {
     if (startTime.value === 0) return 0
     // Cap elapsed time at 45 minutes (2700 seconds)
     return Math.min(2700, Math.floor((currentTime.value - startTime.value) / 1000))
+  })
+
+  // ADDED: A computed property to format the remaining time for the UI
+  const formattedTime = computed(() => {
+    const totalGameTime = 2700 // 45 minutes in seconds
+    const remainingSeconds = totalGameTime - elapsedTime.value
+    if (remainingSeconds <= 0) return '00:00'
+
+    const minutes = Math.floor(remainingSeconds / 60)
+    const seconds = remainingSeconds % 60
+
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
   })
 
   function startGame() {
@@ -67,17 +82,14 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  // MODIFIED: Takes a 'success' flag
   function endGame(success: boolean = false) {
     if (timerInterval) {
       clearInterval(timerInterval)
     }
 
-    // End player timing and set completion bonus
     playerStore.endTiming()
     playerStore.setCompletionBonus(success ? 3 : currentRoomIndex.value)
 
-    // Save to leaderboard if successful
     if (success) {
       console.log('🎯 Game completed successfully! Submitting score to tournament...')
       playerStore
@@ -98,13 +110,11 @@ export const useGameStore = defineStore('game', () => {
     gameState.value = success ? 'finished' : 'intro'
   }
 
-  // NEW: Game over logic when time runs out
   function timeUp() {
     if (timerInterval) clearInterval(timerInterval)
 
-    // End timing and save result
     playerStore.endTiming()
-    playerStore.setCompletionBonus(0) // No bonus for timeout
+    playerStore.setCompletionBonus(0)
 
     console.log('⏰ Time up! Submitting partial score to tournament...')
     playerStore
@@ -116,17 +126,15 @@ export const useGameStore = defineStore('game', () => {
         console.error('❌ Timeout score submission failed:', error)
       })
 
-    localStorage.removeItem('dhl-it-lockdown-state') // Clean up in-progress game
+    localStorage.removeItem('dhl-it-lockdown-state')
 
-    // Reset stores to initial state
     playerStore.reset()
     roomStore.reset()
 
-    gameState.value = 'intro' // Redirect to intro screen
+    gameState.value = 'intro'
     alert(`Time's up! Your final score: ${playerStore.finalScore} points`)
   }
 
-  // NEW: Helper to save the final game result
   function saveFinalResult() {
     const finalResult = {
       firstName: playerStore.firstName,
@@ -135,16 +143,13 @@ export const useGameStore = defineStore('game', () => {
       score: playerStore.finalScore,
       timeSpent: playerStore.timeSpent,
       completed: true,
-      timestamp: Date.now(), // Add timestamp for better tracking
+      timestamp: Date.now(),
     }
 
-    // Save individual completed game with unique identifier
     const gameId = `dhl-it-lockdown-completed-${Date.now()}-${Math.random()
       .toString(36)
       .substr(2, 9)}`
     localStorage.setItem(gameId, JSON.stringify(finalResult))
-
-    // Also keep the single completed game for replay prevention
     localStorage.setItem('dhl-it-lockdown-completed-game', JSON.stringify(finalResult))
   }
 
@@ -160,21 +165,9 @@ export const useGameStore = defineStore('game', () => {
         currentTime.value = Date.now()
       }, 1000)
 
-      // Only fix room ID if there's a mismatch, but don't call setupRoom
-      // which would reset all progress. The roomStore should already be restored.
       const expectedRoomId = ROOM_DATA[currentRoomIndex.value].id
       if (roomStore.currentRoomId !== expectedRoomId) {
-        console.log(
-          'Room mismatch detected. Expected:',
-          expectedRoomId,
-          'Got:',
-          roomStore.currentRoomId
-        )
-        console.log('Setting currentRoomId without resetting progress...')
-        // Just set the room ID without calling setupRoom to preserve restored state
         roomStore.setRoomId(expectedRoomId)
-      } else {
-        console.log('Room correctly set:', roomStore.currentRoomId)
       }
     }
   }
@@ -185,10 +178,8 @@ export const useGameStore = defineStore('game', () => {
       currentRoomIndex: currentRoomIndex.value,
       startTime: startTime.value,
     }
-    console.log('Saving game state:', state)
     localStorage.setItem('escaperoomGameState', JSON.stringify(state))
 
-    // ✅ ANTI-CHEAT: Also sync with database if playing
     if (
       gameState.value === 'playing' &&
       playerStore.firstName &&
@@ -199,7 +190,6 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  // ✅ ANTI-CHEAT: Sync game progress to database
   async function syncGameProgressToDatabase() {
     try {
       await fetch('/api/update-game-progress', {
@@ -226,6 +216,8 @@ export const useGameStore = defineStore('game', () => {
     currentRoomIndex,
     startTime,
     elapsedTime,
+    formattedTime, // EXPOSED: Make formattedTime available
+    allRooms, // EXPOSED: Make allRooms available
     startGame,
     advanceToNextRoom,
     endGame,
@@ -233,6 +225,6 @@ export const useGameStore = defineStore('game', () => {
     rehydrate,
     saveState,
     syncGameProgressToDatabase,
-    saveFinalResult, // NEW: Expose saveFinalResult function
+    saveFinalResult,
   }
 })

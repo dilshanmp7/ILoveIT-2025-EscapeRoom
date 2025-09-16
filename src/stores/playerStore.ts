@@ -9,14 +9,20 @@ export const usePlayerStore = defineStore('player', () => {
   const workTime = ref('')
 
   // Scoring components
-  const wrongAnswerPenalties = ref<number>(0) // Tracks count of wrong answers
-  const hintsUsed = ref<number>(0)
-  const completionBonus = ref<number>(0) // 10 points on successful completion
+  const wrongAnswerPenalties = ref(0)
+  const hintsUsed = ref(0)
+  const completionBonus = ref(0)
   const startTime = ref<number>(0)
   const endTime = ref<number>(0)
+  const isForfeitSubmission = ref(false)
 
   // --- NEW SCORING LOGIC ---
   const finalScore = computed(() => {
+    // Forfeit submissions always receive exactly 40 points
+    if (isForfeitSubmission.value) {
+      return 40
+    }
+
     const elapsedSeconds = Math.floor((endTime.value - startTime.value) / 1000)
 
     // Perfect Scenario Check:
@@ -144,6 +150,7 @@ export const usePlayerStore = defineStore('player', () => {
     completionBonus.value = 0
     startTime.value = 0
     endTime.value = 0
+    isForfeitSubmission.value = false
   }
 
   // ✅ ANTI-CHEAT: Sync player scoring state with database
@@ -234,7 +241,10 @@ export const usePlayerStore = defineStore('player', () => {
 
   // ✅ BACKUP STRATEGY + CENTRALIZED DATA COLLECTION
   // Enhanced saveToLeaderboard with backend integration
-  async function saveToLeaderboard() {
+  async function saveToLeaderboard(isForfeited = false) {
+    // Set forfeit flag for score calculation
+    isForfeitSubmission.value = isForfeited
+
     const playerResult = {
       firstName: firstName.value,
       lastName: lastName.value,
@@ -246,6 +256,7 @@ export const usePlayerStore = defineStore('player', () => {
       hintsUsed: hintsUsed.value,
       completionTime: getCopenhagenTime(),
       timestamp: Date.now(),
+      isForfeited: isForfeited, // Track forfeit status
     }
 
     // 1. ✅ BACKUP STRATEGY - Always save to localStorage first
@@ -443,6 +454,7 @@ export const usePlayerStore = defineStore('player', () => {
     completionBonus,
     startTime,
     endTime,
+    isForfeitSubmission,
     finalScore,
     timePenalty,
     hintsPenalty,

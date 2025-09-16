@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen text-white flex items-center justify-center p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
+    class="h-screen text-white flex items-center justify-center p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
     :style="{
       backgroundImage: `url('${dhlLoveIt2025Background}')`,
       backgroundSize: 'cover',
@@ -8,11 +8,8 @@
       backgroundRepeat: 'no-repeat',
     }"
   >
-    <!-- Dark overlay for better text readability -->
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
 
-    <!-- Branding Images Around the View - Responsive positioning -->
-    <!-- Top Left - I Love IT -->
     <div
       class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
     >
@@ -22,8 +19,6 @@
         class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
-
-    <!-- Top Right - Win -->
     <div
       class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
     >
@@ -33,8 +28,6 @@
         class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
-
-    <!-- Bottom Left - Team -->
     <div
       class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
     >
@@ -44,8 +37,6 @@
         class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
-
-    <!-- Bottom Right - Additional I Love IT -->
     <div
       class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
     >
@@ -55,8 +46,6 @@
         class="w-8 mobile:w-10 laptop:w-12 large:w-16 opacity-70 hover:opacity-100 transition-opacity"
       />
     </div>
-
-    <!-- Mobile Branding Row (visible only on mobile) -->
     <div
       class="absolute top-1 mobile:top-2 left-1/2 transform -translate-x-1/2 z-10 flex lg:hidden gap-2 mobile:gap-3"
     >
@@ -64,9 +53,8 @@
     </div>
 
     <div
-      class="max-w-2xl mobile:max-w-3xl sm:max-w-4xl laptop:max-w-5xl large:max-w-6xl w-full relative z-20"
+      class="max-w-2xl mobile:max-w-3xl sm:max-w-4xl laptop:max-w-5xl large:max-w-6xl w-full relative z-20 max-h-full overflow-y-auto pb-8"
     >
-      <!-- Header - Fully responsive -->
       <div class="text-center mb-6 mobile:mb-8 sm:mb-10 laptop:mb-12 large:mb-16">
         <img
           src="@/assets/dhl_logo2.png"
@@ -91,7 +79,6 @@
         </div>
       </div>
 
-      <!-- Main Score Card - Fully responsive -->
       <div
         class="bg-gradient-to-r from-dhl-red/20 via-black to-dhl-yellow/20 border-2 border-dhl-yellow rounded-xl p-3 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 mb-4 mobile:mb-6 sm:mb-8 laptop:mb-10 text-center shadow-2xl"
       >
@@ -106,7 +93,6 @@
           Final Score (out of 100)
         </div>
 
-        <!-- Performance Badge - Responsive sizing -->
         <div class="mb-3 mobile:mb-4 sm:mb-6 laptop:mb-8">
           <div
             class="inline-block px-3 mobile:px-4 sm:px-6 laptop:px-8 large:px-10 py-2 mobile:py-2 sm:py-3 laptop:py-4 large:py-5 rounded-full text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl font-bold"
@@ -116,7 +102,6 @@
           </div>
         </div>
 
-        <!-- Game Statistics - Responsive grid -->
         <div
           class="grid grid-cols-1 sm:grid-cols-3 gap-2 mobile:gap-3 sm:gap-4 laptop:gap-6 large:gap-8 mt-4 mobile:mt-6 sm:mt-8 laptop:mt-10"
         >
@@ -165,7 +150,6 @@
         </div>
       </div>
 
-      <!-- Detailed Breakdown - Responsive table -->
       <div
         class="bg-black/60 border border-gray-600 rounded-xl p-3 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 mb-4 mobile:mb-6 sm:mb-8 laptop:mb-10"
       >
@@ -262,7 +246,6 @@
         </div>
       </div>
 
-      <!-- Tournament Message - Responsive container -->
       <div
         class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 border border-dhl-yellow rounded-lg p-3 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 mb-4 mobile:mb-6 sm:mb-8 laptop:mb-10 text-center"
       >
@@ -277,7 +260,6 @@
           You've completed the I Love IT 2025 Escape Room Challenge!
         </p>
 
-        <!-- Score Submission Status - Responsive -->
         <div
           class="bg-black/40 border rounded-lg p-2 mobile:p-3 laptop:p-4 large:p-5 mb-3 mobile:mb-4"
           :class="submissionStatus.submitted ? 'border-green-500' : 'border-yellow-500'"
@@ -296,13 +278,11 @@
           </p>
         </div>
 
-        <!-- Encouraging Message -->
         <p class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl">
           🎯 Thanks for participating in the I Love IT 2025 tournament!
         </p>
       </div>
 
-      <!-- Action Buttons - Responsive layout and sizing -->
       <div
         class="flex flex-col sm:flex-row justify-center space-y-3 mobile:space-y-4 sm:space-y-0 sm:space-x-4 laptop:space-x-6 large:space-x-8"
       >

@@ -12,25 +12,26 @@ const route = useRoute()
 const gameStore = useGameStore()
 const gameState = computed(() => gameStore.gameState)
 
-// Check if we're on a route that should bypass the game state system
 const isSpecialRoute = computed(() => {
+  // If a game is active, it should always take priority over special routes.
+  if (gameStore.gameState === 'playing') {
+    return false
+  }
+  // Otherwise, check for special routes.
   return (
     route.path.startsWith('/admin') ||
     route.path === '/about' ||
     route.path === '/results' ||
     route.path === '/leaderboard' ||
     route.path === '/'
-    // 🔧 REMOVED: '/intro' so game state system takes precedence when gameState === 'playing'
   )
 })
 </script>
 
 <template>
-  <main class="w-full h-full bg-black">
-    <!-- Show router view for special routes (admin, about, results, leaderboard, welcome, intro) -->
+  <main class="w-full h-full">
     <router-view v-if="isSpecialRoute" />
 
-    <!-- Show game views based on game state for main game -->
     <template v-else>
       <IntroView v-if="gameState === 'intro'" />
       <GameView v-else-if="gameState === 'playing'" />
