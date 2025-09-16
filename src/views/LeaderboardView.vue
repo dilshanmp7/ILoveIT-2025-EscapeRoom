@@ -184,7 +184,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
 
 <template>
   <div
-    class="min-h-screen text-white p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
+    class="h-screen text-white p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
     :style="{
       backgroundImage: `url('${dhlLoveIt2025Background}')`,
       backgroundSize: 'cover',
@@ -192,11 +192,8 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
       backgroundRepeat: 'no-repeat',
     }"
   >
-    <!-- Dark overlay for better text readability -->
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
 
-    <!-- Branding Images Around the View - Responsive positioning -->
-    <!-- Top Left - I Love IT -->
     <div
       class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
     >
@@ -206,8 +203,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
-
-    <!-- Top Right - Win -->
     <div
       class="absolute top-2 mobile:top-4 laptop:top-6 large:top-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
     >
@@ -217,8 +212,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
-
-    <!-- Bottom Left - Team -->
     <div
       class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 left-2 mobile:left-4 laptop:left-6 large:left-8 z-10 hidden lg:block"
     >
@@ -228,8 +221,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         class="w-12 laptop:w-16 large:w-20 opacity-80 hover:opacity-100 transition-opacity"
       />
     </div>
-
-    <!-- Bottom Right - Additional I Love IT -->
     <div
       class="absolute bottom-2 mobile:bottom-4 laptop:bottom-6 large:bottom-8 right-2 mobile:right-4 laptop:right-6 large:right-8 z-10 hidden lg:block"
     >
@@ -239,8 +230,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         class="w-8 mobile:w-10 laptop:w-12 large:w-16 opacity-70 hover:opacity-100 transition-opacity"
       />
     </div>
-
-    <!-- Mobile Branding Row (visible only on mobile) -->
     <div
       class="absolute top-1 mobile:top-2 left-1/2 transform -translate-x-1/2 z-10 flex lg:hidden gap-2 mobile:gap-3"
     >
@@ -248,9 +237,8 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
     </div>
 
     <div
-      class="max-w-3xl mobile:max-w-4xl sm:max-w-5xl laptop:max-w-6xl large:max-w-7xl mx-auto relative z-20"
+      class="max-w-3xl mobile:max-w-4xl sm:max-w-5xl laptop:max-w-6xl large:max-w-7xl w-full mx-auto relative z-20 max-h-full overflow-y-auto pb-8"
     >
-      <!-- Header with Live Updates - Responsive -->
       <div class="text-center mb-6 mobile:mb-8 laptop:mb-10">
         <img
           :src="dhlLogo"
@@ -268,7 +256,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
           🏆 "The IT Lockdown" Champions
         </h2>
 
-        <!-- Real-time status - Responsive -->
         <div
           class="flex flex-col sm:flex-row items-center justify-center gap-2 mobile:gap-3 laptop:gap-4 mb-4 mobile:mb-6"
         >
@@ -288,7 +275,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
           </button>
         </div>
 
-        <!-- Error notification - Responsive -->
         <div
           v-if="error"
           class="bg-orange-900/50 border border-orange-500 rounded-lg p-2 mobile:p-3 laptop:p-4 mb-4 mobile:mb-6 text-orange-200 text-xs mobile:text-sm laptop:text-base"
@@ -296,7 +282,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
           ⚠️ {{ error }}
         </div>
 
-        <!-- Statistics - Responsive grid -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mobile:gap-4 sm:gap-6">
           <div class="bg-black/60 border border-dhl-yellow rounded-lg p-3 mobile:p-4 laptop:p-5">
             <div
@@ -331,8 +316,10 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         </div>
       </div>
 
-      <!-- No data message - Responsive -->
-      <div v-if="leaderboardData.length === 0" class="text-center py-8 mobile:py-12 laptop:py-16">
+      <div
+        v-if="leaderboardData.length === 0 && !isLoading"
+        class="text-center py-8 mobile:py-12 laptop:py-16"
+      >
         <div class="text-4xl mobile:text-5xl laptop:text-6xl large:text-7xl mb-3 mobile:mb-4">
           🏆
         </div>
@@ -346,9 +333,14 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         </p>
       </div>
 
-      <!-- Leaderboard Table - Responsive -->
-      <div v-else class="bg-black/60 border border-gray-600 rounded-xl overflow-hidden">
-        <!-- Top 3 Spotlight - Responsive -->
+      <div v-if="isLoading" class="text-center py-8 mobile:py-12 laptop:py-16 text-gray-400">
+        Loading Leaderboard...
+      </div>
+
+      <div
+        v-if="leaderboardData.length > 0 && !isLoading"
+        class="bg-black/60 border border-gray-600 rounded-xl overflow-hidden"
+      >
         <div
           class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 p-3 mobile:p-4 sm:p-6 laptop:p-8 border-b border-gray-600"
         >
@@ -384,7 +376,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
           </div>
         </div>
 
-        <!-- Full Leaderboard Table - Mobile responsive -->
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead class="bg-gray-800 border-b border-gray-600">
@@ -474,7 +465,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         </div>
       </div>
 
-      <!-- Action Button - Responsive -->
       <div class="text-center mt-6 mobile:mt-8 laptop:mt-10">
         <button
           @click="goBack"
