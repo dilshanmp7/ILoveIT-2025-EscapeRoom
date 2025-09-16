@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen text-white flex items-center justify-center p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
+    class="min-h-screen text-white flex items-center justify-center p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative"
     :style="{
       backgroundImage: `url('${dhlLoveIt2025Background}')`,
       backgroundSize: 'cover',
@@ -53,7 +53,7 @@
     </div>
 
     <div
-      class="max-w-2xl mobile:max-w-3xl sm:max-w-4xl laptop:max-w-5xl large:max-w-6xl w-full relative z-20 max-h-full overflow-y-auto pb-8"
+      class="max-w-2xl mobile:max-w-3xl sm:max-w-4xl laptop:max-w-5xl large:max-w-6xl w-full relative z-20"
     >
       <div class="text-center mb-6 mobile:mb-8 sm:mb-10 laptop:mb-12 large:mb-16">
         <img
@@ -92,7 +92,6 @@
         >
           Final Score (out of 100)
         </div>
-
         <div class="mb-3 mobile:mb-4 sm:mb-6 laptop:mb-8">
           <div
             class="inline-block px-3 mobile:px-4 sm:px-6 laptop:px-8 large:px-10 py-2 mobile:py-2 sm:py-3 laptop:py-4 large:py-5 rounded-full text-sm mobile:text-base sm:text-lg laptop:text-xl large:text-2xl font-bold"
@@ -101,7 +100,6 @@
             {{ performanceBadge }}
           </div>
         </div>
-
         <div
           class="grid grid-cols-1 sm:grid-cols-3 gap-2 mobile:gap-3 sm:gap-4 laptop:gap-6 large:gap-8 mt-4 mobile:mt-6 sm:mt-8 laptop:mt-10"
         >
@@ -259,7 +257,6 @@
         >
           You've completed the I Love IT 2025 Escape Room Challenge!
         </p>
-
         <div
           class="bg-black/40 border rounded-lg p-2 mobile:p-3 laptop:p-4 large:p-5 mb-3 mobile:mb-4"
           :class="submissionStatus.submitted ? 'border-green-500' : 'border-yellow-500'"
@@ -277,7 +274,6 @@
             Total Tournament Participants: {{ submissionStatus.rank }}+
           </p>
         </div>
-
         <p class="text-gray-300 text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl">
           🎯 Thanks for participating in the I Love IT 2025 tournament!
         </p>
