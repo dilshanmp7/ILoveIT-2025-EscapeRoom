@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { useRoomStore } from '@/stores/roomStore'
 import Room from '@/components/Room.vue'
@@ -40,10 +40,24 @@ function onDoorUnlocked() {
   gameStore.advanceToNextRoom()
 }
 
+function handleExitAlert(event: BeforeUnloadEvent) {
+  event.preventDefault()
+  event.returnValue =
+    'Are you sure you want to exit the game? Your progress will be saved, but you will need to resume from where you left off.'
+  return 'Are you sure you want to exit the game? Your progress will be saved, but you will need to resume from where you left off.'
+}
+
 onMounted(() => {
   if (roomStore.areAllLevelsSolved) {
     isDoorPuzzleVisible.value = true
   }
+  window.addEventListener('beforeunload', handleExitAlert)
+  window.addEventListener('popstate', handleExitAlert)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', handleExitAlert)
+  window.removeEventListener('popstate', handleExitAlert)
 })
 </script>
 

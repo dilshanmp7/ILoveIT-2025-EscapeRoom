@@ -163,7 +163,7 @@ export const useGameStore = defineStore('game', () => {
     if (gameState.value === 'playing') {
       if (timerInterval) clearInterval(timerInterval)
       timerInterval = setInterval(() => {
-        currentTime.value = Date.now()
+        currentTime.value += 1000 // Increment by 1 second
       }, 1000)
 
       const expectedRoomId = ROOM_DATA[currentRoomIndex.value].id
