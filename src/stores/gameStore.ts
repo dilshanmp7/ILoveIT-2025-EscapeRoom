@@ -230,5 +230,6 @@ export const useGameStore = defineStore('game', () => {
     saveState,
     syncGameProgressToDatabase,
     saveFinalResult,
+    currentTime, // EXPOSED: Make currentTime available
   }
 })

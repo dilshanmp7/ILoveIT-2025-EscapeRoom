@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { LevelId, LevelStatus, Room, HintOption } from '@/types'
 import { PUZZLE_DATA } from '@/gameData'
 import { usePlayerStore } from './playerStore'
+import { useGameStore } from './gameStore'
 
 function shuffle(array: any[]) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -215,6 +216,7 @@ export const useRoomStore = defineStore('room', () => {
           collectedHints: collectedHints.value,
           currentQuestionIndex: currentQuestionIndex.value,
           correctAnswersCount: correctAnswersCount.value,
+          currentTime: useGameStore().currentTime,
           // ✅ CRITICAL: Include questions and puzzle data for exact restoration
           questionsForLevels: questionsForLevels.value,
           finalPuzzle: finalPuzzle.value,
