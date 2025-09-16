@@ -184,7 +184,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
 
 <template>
   <div
-    class="min-h-screen text-white flex items-center justify-center p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative"
+    class="h-screen text-white p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
     :style="{
       backgroundImage: `url('${dhlLoveIt2025Background}')`,
       backgroundSize: 'cover',
@@ -237,7 +237,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
     </div>
 
     <div
-      class="max-w-3xl mobile:max-w-4xl sm:max-w-5xl laptop:max-w-6xl large:max-w-7xl w-full mx-auto relative z-20"
+      class="max-w-3xl mobile:max-w-4xl sm:max-w-5xl laptop:max-w-6xl large:max-w-7xl w-full mx-auto relative z-20 max-h-full overflow-y-auto pb-8 custom-scrollbar"
     >
       <div class="text-center mb-6 mobile:mb-8 laptop:mb-10">
         <img
@@ -255,6 +255,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         >
           🏆 "The IT Lockdown" Champions
         </h2>
+
         <div
           class="flex flex-col sm:flex-row items-center justify-center gap-2 mobile:gap-3 laptop:gap-4 mb-4 mobile:mb-6"
         >
@@ -272,12 +273,14 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
             {{ isLoading ? '⏳ Updating...' : '🔄 Refresh Now' }}
           </button>
         </div>
+
         <div
           v-if="error"
           class="bg-orange-900/50 border border-orange-500 rounded-lg p-2 mobile:p-3 laptop:p-4 mb-4 mobile:mb-6 text-orange-200 text-xs mobile:text-sm laptop:text-base"
         >
           ⚠️ {{ error }}
         </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mobile:gap-4 sm:gap-6">
           <div class="bg-black/60 border border-dhl-yellow rounded-lg p-3 mobile:p-4 laptop:p-5">
             <div
@@ -312,7 +315,10 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         </div>
       </div>
 
-      <div v-if="leaderboardData.length === 0" class="text-center py-8 mobile:py-12 laptop:py-16">
+      <div
+        v-if="leaderboardData.length === 0 && !isLoading"
+        class="text-center py-8 mobile:py-12 laptop:py-16"
+      >
         <div class="text-4xl mobile:text-5xl laptop:text-6xl large:text-7xl mb-3 mobile:mb-4">
           🏆
         </div>
@@ -326,7 +332,17 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
         </p>
       </div>
 
-      <div v-else class="bg-black/60 border border-gray-600 rounded-xl overflow-hidden">
+      <div
+        v-if="isLoading"
+        class="text-center py-8 mobile:py-12 laptop:py-16 text-gray-400 text-lg"
+      >
+        ⏳ Loading Leaderboard...
+      </div>
+
+      <div
+        v-if="leaderboardData.length > 0 && !isLoading"
+        class="bg-black/60 border border-gray-600 rounded-xl overflow-hidden"
+      >
         <div
           class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 p-3 mobile:p-4 sm:p-6 laptop:p-8 border-b border-gray-600"
         >
@@ -361,6 +377,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
             </div>
           </div>
         </div>
+
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead class="bg-gray-800 border-b border-gray-600">
