@@ -52,8 +52,20 @@ export const useGameStore = defineStore('game', () => {
     playerStore.startTiming()
 
     if (timerInterval) clearInterval(timerInterval)
+    let lastSyncTime = Date.now()
     timerInterval = setInterval(() => {
       currentTime.value = Date.now()
+      // Throttle sync to every 30 seconds
+      if (
+        gameState.value === 'playing' &&
+        playerStore.firstName &&
+        playerStore.lastName &&
+        playerStore.department &&
+        Date.now() - lastSyncTime >= 60000 // 1 minute
+      ) {
+        syncGameProgressToDatabase()
+        lastSyncTime = Date.now()
+      }
     }, 1000)
     gameState.value = 'playing'
 
@@ -182,14 +194,7 @@ export const useGameStore = defineStore('game', () => {
     }
     localStorage.setItem('escaperoomGameState', JSON.stringify(state))
 
-    if (
-      gameState.value === 'playing' &&
-      playerStore.firstName &&
-      playerStore.lastName &&
-      playerStore.department
-    ) {
-      syncGameProgressToDatabase()
-    }
+    // Only sync on explicit state save events, not every second
   }
 
   async function syncGameProgressToDatabase() {
