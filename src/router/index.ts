@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import WelcomeView from '../views/WelcomeView.vue'
 import IntroView from '../views/IntroView.vue'
 import HomeView from '../views/HomeView.vue'
+import GameView from '../views/GameView.vue'
 import LeaderboardView from '../views/LeaderboardView.vue'
 import ResultsView from '../views/ResultsView.vue'
 import AdminLeaderboardView from '../views/AdminLeaderboardView.vue'
@@ -22,9 +23,10 @@ const router = createRouter({
       component: IntroView,
     },
     {
+      // IMPORTANT: Changed component from HomeView to GameView to match your setup
       path: '/game',
-      name: 'home',
-      component: HomeView,
+      name: 'game',
+      component: GameView,
     },
     {
       path: '/about',
@@ -99,7 +101,7 @@ router.beforeEach(async (to, from, next) => {
   // If player has a game in progress, allow navigation and resuming
   // No forfeit logic: player can reload or navigate and resume their game
   // Only block cross-player contamination (see above)
-  next();
-});
+  next()
+})
 
 export default router
