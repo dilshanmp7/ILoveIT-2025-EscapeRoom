@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/gameStore'
 import { useRoomStore } from '@/stores/roomStore'
 import Room from '@/components/Room.vue'
@@ -9,6 +10,7 @@ import DoorLockPuzzle from '@/components/puzzles/DoorLockPuzzle.vue'
 import dhlLoveIt2025Background from '@/assets/DHL_LOVE_IT_ 2025 _Into_1.png'
 
 const gameStore = useGameStore()
+const router = useRouter()
 const roomStore = useRoomStore()
 
 const currentRoomData = computed(() => gameStore.currentRoom)
@@ -18,6 +20,7 @@ const elapsedTime = computed(() => gameStore.elapsedTime)
 watch(elapsedTime, (newTime) => {
   if (newTime >= 2700) {
     gameStore.timeUp()
+    router.push({ name: 'results' })
   }
 })
 
