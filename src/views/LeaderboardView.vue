@@ -304,7 +304,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
           class="bg-gradient-to-r from-dhl-yellow/20 to-dhl-red/20 p-3 sm:p-6 border-b border-gray-600"
         >
           <h3 class="text-lg sm:text-3xl font-bold text-dhl-yellow text-center mb-4">
-            🏆 Prize Winners 🏆
+            🏆 Winners 🏆
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4">
             <div
