@@ -503,7 +503,7 @@ onMounted(async () => {
           <span class="text-base sm:text-lg laptop:text-sm large:text-2xl drop-shadow-md">🎯</span>
           <img :src="iLoveItLogo" alt="I Love IT" class="w-10 sm:w-16 laptop:w-14 large:w-24" />
           <span class="text-xs sm:text-base laptop:text-sm large:text-xl drop-shadow-md"
-            >2025 - Escape Room Challenge</span
+            >I love IT 2025 - Escape Room Challenge</span
           >
         </div>
 
