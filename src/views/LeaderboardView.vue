@@ -184,7 +184,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
 
 <template>
   <div
-    class="h-screen text-white p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative overflow-hidden"
+    class="min-h-screen text-white flex items-center justify-center p-2 mobile:p-4 sm:p-6 laptop:p-8 large:p-10 relative"
     :style="{
       backgroundImage: `url('${dhlLoveIt2025Background}')`,
       backgroundSize: 'cover',
@@ -237,7 +237,7 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
     </div>
 
     <div
-      class="max-w-3xl mobile:max-w-4xl sm:max-w-5xl laptop:max-w-6xl large:max-w-7xl w-full mx-auto relative z-20 max-h-full overflow-y-auto pb-8 custom-scrollbar"
+      class="max-w-3xl mobile:max-w-4xl sm:max-w-5xl laptop:max-w-6xl large:max-w-7xl w-full mx-auto relative z-20"
     >
       <div class="text-center mb-6 mobile:mb-8 laptop:mb-10">
         <img
@@ -377,7 +377,6 @@ const totalPlayers = computed(() => tournamentStats.value.totalPlayers)
             </div>
           </div>
         </div>
-
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead class="bg-gray-800 border-b border-gray-600">
