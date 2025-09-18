@@ -150,6 +150,23 @@ function startGame() {
           </p>
         </div>
       </div>
+      <div class="mt-6 text-center text-xs text-gray-400">
+        <a
+          href="/privacy-policy.html"
+          target="_blank"
+          rel="noopener"
+          class="underline hover:text-dhl-yellow"
+          >Privacy Policy</a
+        >
+        &nbsp;|&nbsp;
+        <a
+          href="/contact.html"
+          target="_blank"
+          rel="noopener"
+          class="underline hover:text-dhl-yellow"
+          >Contact</a
+        >
+      </div>
     </div>
   </div>
 </template>
