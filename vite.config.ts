@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       // Proxy API calls to production with enhanced error handling
       '/api': {
-        target: 'https://dhllockdowngame.vercel.app',
+        target: 'https://i-love-it-2025-escape-room.vercel.app',
         changeOrigin: true,
         secure: true,
         timeout: 30000, // Increased timeout to 30 seconds
