@@ -51,7 +51,7 @@ function checkCode() {
             type="text"
             class="w-full p-3 mobile:p-4 laptop:p-5 large:p-6 bg-gray-800 text-dhl-yellow text-2xl mobile:text-3xl laptop:text-4xl large:text-5xl text-center font-mono rounded uppercase tracking-widest touch-manipulation"
             autofocus
-            placeholder="Enter code"
+            placeholder=""
           />
           <button
             type="submit"
