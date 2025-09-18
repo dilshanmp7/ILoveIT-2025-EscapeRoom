@@ -167,7 +167,7 @@ onMounted(() => {
   refreshInterval = setInterval(() => {
     console.log('⏰ Auto-refreshing leaderboard from production database')
     loadLeaderboard()
-  }, 30000) // Refresh every 30 seconds
+  }, 1800000) // Refresh every 30 mintues
 })
 
 onUnmounted(() => {
