@@ -157,7 +157,7 @@ function submitAnswer() {
           Hint Awarded:
         </p>
         <p
-          class="text-xs mobile:text-sm sm:text-base laptop:text-lg large:text-xl font-mono bg-black px-2 py-2 mobile:px-3 mobile:py-2 sm:px-3 sm:py-3 laptop:px-4 laptop:py-3 large:px-5 large:py-4 rounded-lg border border-green-500 text-center leading-relaxed break-words"
+          class="text-xs mobile:text-sm sm:text-base text-gray-200 laptop:text-lg large:text-xl font-mono bg-black px-2 py-2 mobile:px-3 mobile:py-2 sm:px-3 sm:py-3 laptop:px-4 laptop:py-3 large:px-5 large:py-4 rounded-lg border border-green-500 text-center leading-relaxed break-words"
         >
           "{{ assignedHint.text }}"
         </p>
@@ -227,7 +227,7 @@ function submitAnswer() {
           Submit Answer
         </button>
         <p
-          class="text-center h-4 mobile:h-5 sm:h-6 laptop:h-5 large:h-7 text-sm mobile:text-base sm:text-lg laptop:text-base large:text-xl font-bold leading-normal"
+          class="text-center text-gray-200 h-4 mobile:h-5 sm:h-6 laptop:h-5 large:h-7 text-sm mobile:text-base sm:text-lg laptop:text-base large:text-xl font-bold leading-normal"
         >
           {{ feedback }}
         </p>

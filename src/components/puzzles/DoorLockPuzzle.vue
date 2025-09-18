@@ -45,13 +45,22 @@ function checkCode() {
       </p>
 
       <div class="bg-black p-3 mobile:p-4 sm:p-6 laptop:p-8 rounded">
-        <form @submit.prevent="checkCode">
+        <form @submit.prevent="checkCode" class="flex flex-col gap-3 items-center">
           <input
             v-model="code"
             type="text"
             class="w-full p-3 mobile:p-4 laptop:p-5 large:p-6 bg-gray-800 text-dhl-yellow text-2xl mobile:text-3xl laptop:text-4xl large:text-5xl text-center font-mono rounded uppercase tracking-widest touch-manipulation"
             autofocus
+            placeholder="Enter code"
           />
+          <button
+            type="submit"
+            :disabled="!code"
+            class="px-4 py-2 rounded bg-dhl-yellow text-gray-900 font-bold text-lg laptop:text-xl large:text-2xl transition-opacity duration-200"
+            :class="{ 'opacity-50 cursor-not-allowed': !code, 'hover:bg-yellow-400': code }"
+          >
+            Submit
+          </button>
         </form>
         <p
           class="text-center h-6 mobile:h-8 laptop:h-10 large:h-12 mt-3 mobile:mt-4 laptop:mt-6 text-base mobile:text-lg sm:text-xl laptop:text-2xl large:text-3xl font-bold animate-pulse"
